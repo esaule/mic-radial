@@ -1,0 +1,34 @@
+\section{List of Tables and Figures}
+\begin{enumerate}
+\item
+Table: Notation for formulas
+\item
+Table: List of relevant vector instructions
+\item
+Figure: Matrix-Vector multiplication
+\item
+\item
+\item
+\item
+\end{enumerate}
+
+\section{Suggested Benchmarks}
+\begin{enumerate}
+\item
+SpMM with 16 floats (or 8 doubles) vectors (will give upper bound in speed). Implement algorithm  from Saul \etal. 
+\item
+SpMM with 4 floats or 4 doubles (to compare against SpMM). As a precursor to adding more matrices. 
+\item
+Try to figure out why our performance is so much lower than peak. 
+\end{enumerate}
+
+\newfig{figures/rbf_stencils.pdf}{0.7}{RBFFD Stencils. Each node of the mesh is connected to $n_z-1$ stencil nodes in addition to itself. In the figure, node $A$ is connected to $B$, but $B$ is {\em not\/} connected to $A$. Thus adjacency graph of $A$ is not-symmetric. This must be corrected when reducing the bandwidth of $A$ with a Cuthill\-McKee algorithm, which assumes symmetry.}
+{fig:rbf_stencils}
+
+\newfig{figures/matrix_structure.pdf}{0.7}{Matrix Structure.}{fig:mat_struct}
+\newfig{figures/swizzling.pdf}{0.7}{Duplication of the first four bytes of each channel across the entire channel.}{fig:swizzling}
+\newfig{figures/channel_permutation.pdf}{0.7}{Channel Permutations on the MIC}{fig:permulatio.n}
+\newfig{figures/tensor_product.pdf}{0.7}{Tensor scalar product using channels and swizzling.}{fig:tensor_product}
+
+\newfig{figures/theoretical_performance.png}{0.7}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 190 Gbytes/sec (based on best measurements with specialized code) and 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:peak_perf}
+

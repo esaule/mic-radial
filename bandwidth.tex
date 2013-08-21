@@ -1,0 +1,39 @@
+\section{Bandwidth}
+I measured bandwidth reduction using a Reverse Cuthill-McKee [], implemented 
+in ViennaCL []. Two kinds of grids were considered. A 2D and a 3D Cartesian mesh of sizes ranging from $32^3$ to $64^3$ and $128^2$ to $256^2$. 
+Stencils of size 32 and 64 were considered and computed using a Kd-Tree. 
+(we also considered an overlayed grid (NO TIMINGS YET) and various forms of space filling curves. See Bollig thesis [].)  (There we no subdomain decompostion. In Bollig notation, the figures below correspond to a single 
+square matrix. 
+
+\begin{verbatim}
+  N2D      reduced bandwidth  (stencil size: 32)
+  128^2       1031
+  256^2       2055    (bw = 8 * N)
+
+        (stencil size 64)
+  128^2      1522
+  256^2      3059     (bw = 12 * N)
+
+
+  N3D   reduced bandwidth (stencil size 32)
+  32^3   4902
+  64^3  11184    (bw = 4.8 * N^2)
+
+  N3D   reduced bandwidth (stencil size 64) 
+  32^3   6573   
+  64^3   26923  (bw = 6.5 * N^2)
+\end{verbatim}
+
+Matrix representations after bandwidth reduction. (NEED FIGURE.)
+
+\section{Register Density}
+Calculate Register Density (RD) (Saule et al.). For each row of the \ttt{ col\_id} matrix, compute the number $n_c$ of cache lines touched by all the nonzero elements in the vector $x$ $(Ax)$. Divide the number of nonzeros $nnz$ by the number of elements that can be held $n_c$  cachelines, to obtained the 
+$$
+   RD = \frac{nnz}{n_e n_c}
+$$
+Each cache line is 64 bytes, which holds 16 floats or 8 doubles. 
+
+We have computed the RD for a variety of 2D and 3D matrices with 32 or 64 nonzeros per row, that correspond to 2D ($32^2$, $64^2$, $128^2$ and $256^2$ grids, and 3D grids of size $32^3$, $64^3$, and $128^3$. The results are generated before and after bandwidth reduction (assume symmetric adjacency matrix (SHOW RESULTS: slightly better results than non-symmetric adjacency matrix (EXPLAIN IN PAPER.)
+
+\begin{verbatim}
+\end{verbatim}

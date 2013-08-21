@@ -1,0 +1,206 @@
+\section{Notation}
+In this section, we introduce some variables that will prove useful to 
+describe our experiments and construct a working model to examine the pros and cons of various assumptions. While deceptively simple, the MIC architecture requires a careful consideration of the properties of cache, memory bandwidth, cores and their interaction, threads per core (1-4), parallelization and vectorization. We will also seek to perform experiments that measure the best possible performance of the SPMV with maximum and minimum cache thrashing \qes{same as cache misses?}, with and without floating point operations, and with and without memory transfer. At the onset, we expect the dominant cost to e the transfer of the vector $x$ from memory, because contiguous elements of $x$ are not accessed sequentially. 
+
+Relevant notation is contained in Table~\ref{tab:not}. 
+
+\begin{center}
+\begin{tabular}{|c|l|}
+%\hline
+%& & \\
+\hline
+$b_i$ & number of bytes per int \\
+$b_x$ & number of bytes per float(4)/double(8) \\
+$n_z$ & number of nonzeros per row $A$ \\
+$n_r$ & number of rows of $A$ \\
+$n_c$ & total number of elements in $col_id$: $n_z n_r$ \\
+$b_w$ & matrix bandwidth \\
+$b_c$ & total L2 cache per core ($512k=2^{19}$ bytes) \\
+$b_T$ & theoretical minimum number of bytes transferred  \\
+$b_{wT}$ & theoretical minimum number of bytes written to memory  \\
+$b_{rT}$ & theoretical minimum number of bytes read from memory  \\
+$n_C$ & total number of cores used  \\
+$t_C$ & total number of threads used per core \\
+$\rho$ & average cache density  \\
+$n_v, n_m$ & number of vectors and matrices \\
+$n_F$ & total number of floating point operations  \\
+\hline
+\end{tabular}
+\end{center}
+
+- weights and vector elements are either all floats or all doubles. 
+
+Let us first estimate the memory (in a serial implementation) required to compute $y = Ax$ where $y$ has $n_r$ rows and $n_m$ columns, $A$ has
+$n_c=n_r n_z$ nonzero elements, and $x$ is a vector of $n_r$ rows and 
+$n_v$ columns. In this paper, we assume that the adjacency matrix for the
+$n_m$ matrices $A$ is constant, but the values stored in the various $A$ differ. We are therefore executing $n_v n_m$ spmv operations. The objective of course, is to minimize wall-clock time on the MIC.
+
+The total number of bytes is 
+$$
+   b_T = n_r (n_z b_i + n_z b_x n_m + b_x n_v)
+$$
+The ratio of $b_T$ to the total cache  over all cores is given by
+$$
+   R = \frac{b_T}{b_c}
+$$
+Clearly, the memory $b_T$ is composed of the memory required by the vectors $x$, $y$, the nonzeros of $A$ and the elements of the matrix \ttt{col}, which stores the nonzero columns in each row, and is an integral component of the Ellpack compressed matrix format specification. While the Ellpack format is less general than CSR, it is the idea structure for the RBBF simulations we are intersted in, wherein the number of RBF nodes per stencil is constant throughout the 2D or 3D grid and in time. 
+
+Let us consider separately the number of bytes read from and written to memory.
+Both the matrix $n_m$ matrices $A$ \qes{need an index on $A$ since there are more than one?} and \ttt{col\_id} are read from memory, as is $x$, whereas, the vector$y$ are stored to memory. In a later sections, we will discuss the practical performance of these operations and estimate the dominant contributions. 
+\qes{We also wish to isolate the effects of read, write and compute operations as a function of the number of cores and threads to see how they influence the results and to estimate whether our results have the potential to scale similarly on systems with a higher number of cores. We "might" also compare are results against the best implementation using OpenCL, or do so in the paper.}
+
+The total number of bytes read into memory is
+$$ 
+n_{rT} = n_r n_v b_x + n_r n_z b_i + n_r n_m n_z b_x
+$$
+while the total number of bytes written to memory is
+$$
+n_{wT} = n_r n_m n_v b_x
+$$
+
+Experiments similar to those performed in Saule \etal \cite{} suggest a maximum read  memory bandwidth of $190 Gbytes/sec$ using all threads on all four cores. The maximum speed advertised by Intel is $??? Gbytes/sec$, which we have found impossible to achieve in practice. To achieve $150 Gbytes/sec$ required allocating enough arrays to fill the 32 Gbytes of memory on the MIC, enabling prefetching, adding an explicit software prefetch, storing data as nrngo (prevent a rewrite to cache from memory prior to sending data to memory), and ensuring measurements in a steady-state regime.  With prefetching turned on, the maximum performances for each number of cores can be achieved with a single thread. However, when prefetching is turned off, performance increases as the number of active threads increases. Scaling is sublinear as a function of the number of cores (Fig. 1 in Saule \etal~\cite{}).  This suggests that when one computes the spmv, software prefetching might be useful to allow efficient transfer of data from memory {\em during\/} the calculation. 
+
+Writing of data is less efficient with a maximum rate of 150 Gbytes/sec when using the No-Read hint and  no global reordering. \qes{We will return later to this issue. Prefetching with irregular access may not be practical}.
+With only Vectorization and No-Read Hint, only 100 Gbytes/sec are achieved. Performance increase as the number of threads per core is increased, and the scaling is linear in the number of cores (Fig. 1b in \cite{Saule}). 
+
+\qes{Perform your memory bandwidth experiments on my machine.}
+\qes{How does Erik measure store and load separately?}
+
+\subsection{Performance}
+The best compute rate measured by Saule \etal~\cite{} is on the order of 20 Gflops for matrices 13 and 18, using $-O3$ compiler optimization \qes{icc compiler?} which have on the order of 100 and 200 average nonzero elements per row and a nonzero density on the order of $10^-3$. We work with matrices with density that ranges from $10^{-3}$ to $.3\times 10^{-5}$.  Lower density implies higher level of sparsity, and usually, higher sparsity leads to decreased performance \qes{may I say this?}. Based on Table 1, matrix 14 appears to have the closest characteristics to ours, with a constant number of nonzeros per row (41 nonzeros per row and a density of $10^{-5}$). From Figure 5 (Saule \etal), we see that matrix 22 has a cache line density between 0.15 and 0.25 . After bandwidth reduction, our matrices have a cache line density of about $0.15$, in single precision (I BELIEVE THIS WOULD double in double precision (not yet checked). All results in Saule \etal are in double precision \qes{can you confirm this?}. 
+
+In the benchmarks to be described, we will demonstrate spmv at $100 Gflops$, or 5x the best performance in Saule \etal by simultaneously computing four spmvs of identical size where the four matrices have the same adjacency structure, with each spmv applied to four vectors. This would correspond in an RBFFD code to computing four derivatives of four functions, resulting in 16 vectors. 
+
+\ge{I need a figure describing our three problems. Perhaps one figure for the 1x1 problem and one for the 4x4 problems.}
+Rather than rely on the Intel compiler to perform the optimization, we program all our kernels in the Intel vector  syntax, combined with OpenMP pragmas. We will compare with straightforward implementations in C++. Naturally, the low level vector implementations cannot run on the host, or on previous generations of the Intel architecture. The advantage is that one gets a better feeling for the relationship between implementation and performance. If the Intel compiler is "good enough", better performance should be achieved, since, depending on the matrix parameters, more complex coding might be implemented, such as loop unrolling. 
+
+
+\bold{Vector operations} \\
+All matrices are aligned to 64 bytes, the size of a cache line, and the size of the vector registers. 
+Each core has 32 vector registers, shared by 4 hardware threads. 
+\qes{Is only a single thread responsible for loading up a vector register? So the other threads are either in a wait state or loading another register, or initiating a load/store?} \qes{I believe only two hardware threads can be involved in operations? That means 4 ops per second (using MADD) if both threads are active.}
+
+Registers on the MIC are 512 bits wide, and can store 16 floats or 8 doubles. It is through these registers that the \#SIMD pragma is able to achieve vectorization. (In comparison to OpenCL or CUDA, one can think of these registers as a warp.) 
+We use the following vector operations in our code, which we'll explain in the text. 
+
+\def\loadps{\ttt{\_mm512\_load\_ps}}
+\def\loadds{\ttt{\_mm512\_load\_ds}}
+\def\fmadps{\ttt{\_mm512\_fmad\_ps}}
+\def\gatherps{\ttt{\_mm512\_i32gather\_ps}}
+\def\swizzleps{\ttt{\_mm512\_swizzle\_ps}}
+\def\storenrngops{\ttt{\_mm512\_storenrngo\_ps}}
+\def\castsi{\ttt{\_mm512\_castsi512\_ps}}
+\def\permute{\ttt{\_mm512\_permute4f128\_epi32}}
+\def\intmask{\ttt{\_mm512\_int2mask}}
+\def\loadunpack{\ttt{\_mm512\_mask\_loadunpacklo\_epi32}}
+\def\castitops{\ttt{\_mm512\_castsi512\_ps}}
+\def\castpstoi{\ttt{\_mm512\_castps\_si512\_ps}}
+%
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\loadps &  load 16 consecutive floats to register\\
+\fmadps &  multiply/add of 16 floats\\
+\gatherps &  gather 16, possibly disconnected floats from memory\\
+\swizzleps &  reorder a channel, and duplicate across channels\\
+\storenrngops &  store 16 floats to memory without register rewrite or reordering\\
+\castpstoi & reinterpret 16 floats as integers\\
+\castitops & reinterpret 16 integers as floats\\
+\permute &  permute channels; do not change individual channels\\
+\intmask &  \\
+\loadunpack &  \\
+\hline
+\end{tabular}
+\end{center}
+%
+In the vector instructions, \ttt{ps} refers to a float (4 bytes), while \ttt{epi32} refers to a 4-byte integer. Although we do not discuss double precision in this paper, \ttt{ds} refers to an 8 byte double precision real number (i.e., \loadds). 
+Each vector register is broken up into four channels of 128 bits each. It is possible to interchange these channels at a cost of a "few" \qes{exact numbers?} cycles, and it is also possible to execute swizzle operations within a channel. For example, if the 128 bytes of each channel are labelled as $ABCD$, the vector instruction 
+\ttt{\_mm512\_swizzle\_ps(v, \_MM\_SWIZ\_REG\_AAAA)}
+replaces each channel by $AAAA$. 
+
+Here is a function that reads in four floats (a,b,c,d) and creates the 16-float vector dddd,cccc,bbbb,aaaa: 
+\begin{verbatim}
+__m512 read_aaaa(float* a)                                                              
+{
+    int int_mask_lo = (1 << 0) + (1 << 4) + (1 << 8) + (1 << 12);
+    __mmask16 mask_lo = _mm512_int2mask(int_mask_lo);
+    __m512 v1_old;
+    v1_old = _mm512_setzero_ps();
+    v1_old = _mm512_mask_loadunpacklo_ps(v1_old, mask_lo, a);
+    v1_old = _mm512_mask_loadunpackhi_ps(v1_old, mask_lo, a);
+    v1_old = _mm512_swizzle_ps(v1_old, _MM_SWIZ_REG_AAAA);
+    return v1_old;
+}
+\end{verbatim}
+
+Here is a function that takes four floats from float register \ttt{v1}, and 
+places them in each of the four lanes. Because the permulation function only 
+operates on 4-byte integers, it is necessary to convert (in place) each float
+to an integer (the bit structure is not changed), permute the lanes and cast
+the integers back to floats (with no modification of the bit structure)
+\begin{verbatim}
+__m512 permute(__m512 v1, _MM_PERM_ENUM perm)                                           
+{
+    __m512i vi = _mm512_castps_si512(v1);
+    vi = _mm512_permute4f128_epi32(vi, perm);
+    v1 = _mm512_castsi512_ps(vi);
+    return v1;
+}
+\end{verbatim}
+
+%----------------------------------------------------------------------
+\section{Base implementation}
+We present an implementation written in C++ for the case of 4 matrices and 4 vectors to run on the host system and serve as base of comparison against more optimized code written with register based routines optimized for the MIC. Such an implementation is as follows:
+\begin{verbatim}
+\end{verbatim}
+%----------------------------------------------------------------------
+\section{Floating point operations}
+We compute the floating point operations of the SpMV with general $n_v$ and $n_m$. Calling the total number of floating point operations $N_F$, we find
+$$
+  N_F = 2 n_r n_z n_v m_m
+$$
+Thus the number of flpos to bytes transferred is $N_F / (n_{rT} + n_{wT})$, which when written out, 
+\begin{eqnarray}
+N_F &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_v  + n_r n_z b_i + n_r n_m n_z b_x + n_r n_m n_v b_x} \nonb \\
+N_F &=& \frac{2 n_z n_v n_m}{b_x ( n_v + n_m n_z + n_m n_v) + n_z b_i}  \nonb \\
+%N_F &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_v (n_v+n_m) + n_r n_z b_i + n_r n_m n_z b_x} \nonb \\
+    %&=& \frac{2 n_z n_v n_m}{b_x (n_v+n_m) + n_z (b_i + n_m b_x)} \nonb 
+\end{eqnarray}
+In the special case $n_v=n_m=1$, 
+$$
+N_F = \frac{2 n_z}{n_z b_i + (n_z +2) b_x}
+$$
+Neglecting $2$ compared to $n_z$, we find that $N_F = 2/(b_i+b_x)$, which leads to 
+$N_F = 2/8=1/4$ and  $N_F=2/12=1/6$ for single and double precision, respectively. 
+In the general case, in the condition of $n_z$ large compared to 2, 
+$$
+N_F =  \frac{2 n_v n_m}{n_m b_x + b_i}
+$$ 
+The case are interested in is $n_m=n_v=4$, so that
+$$
+N_F = \frac{8}{ b_x + 1}
+$$
+which is 8/5 and 8/9 in single and double precision, respectively. 
+In single and double precision, we get $N_F=32/36=8/5$ and $N_F=32/68=8/9$, respectively.
+The third column of the following table (TABLE ???) is the maximum achievable Gflop rate, assuming 
+a maximum memory transfer speed of $150 Gflops$ (see earlier benchmark in this paper). 
+(higher speeds can be achieved in practice,  upwards of 190 Gflops (Saule \etal\cite{}), but we use
+a benchmark code similar to our current algorithm, without the indirect acessing required for $x$, but keeping the same use of vector registers used in our fastest implementation. (DO WE INCLUDE the CODE?)
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Precision & $n_m=n_v=1$ & $n_m=n_v=4$     \\
+\hline
+single    &  1/4  (37.5)     &   8/9 (133) \\
+double    &  1/6  (25.5)     &   8/17 (62) \\
+\hline
+\end{tabular}
+\end{center}
+(With a 190 Gflop peak memory rate, maximum performance is 47.5 and 170 Mflops for the 1/1 case, while we calculate 32 and 90 Gflops in the 4/4/ case. 
+
+Let us also calculate the flop to byte ratio for the case of 1/4 and 4/1 ($n_v$/$n_m$). One notices the symmetry with respect to $n_v$ and $n_m$. 
+One gets $N_F = \frac{2*4}{5 b_x + 4}$ equal to 8/24 (=.33) and 8/44 (=.18), in single and double precision, respectively, which corresponds to 49 and 27 Gflops if a maximum of 150 Gflops is assumed.
+As $n_m$ and $n_v$ keep increasing, $N_F$ tends towards $2/b_x$, equal to $0.5$ and $0.25$ respectively for single and double precision, which leads to peak speed of 75 and 37.5 Gflops.
+
+In single precision, our best benchmarks achieve 20 Gflops for single precions for on matrix/one vector, and 100 Glops for the 4/4 matrix/vector case, or 53\% and 75\% of peak performance, respectivey. We conclude that we achieve a higher percentage of peak performance for this algorithm when calculating 16 output $y$ vectors. The results are even more impressive when measured against the peak perforance of 2Tflops of the MIC in double precision.

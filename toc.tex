@@ -1,0 +1,34 @@
+\section{Table of Contents}
+\begin{enumerate}
+\item Introduction (1 page) 
+\item Motivation, RBF derivatives, stenciles, RBFFD  (1 page)
+\item D=Ax, sparse vector matrix  multiplication
+  - Ellpack format only
+\item Notation (1 page)
+\item Multiple derivatives of a single function
+\item Single derivative of multiple functions
+\item Multiple derivatives of multiple functions
+\item MIC architecture (1 page)
+\item Basic implementation with OpenMP (1 page)
+\item MIC Vector hardware instructions, gather, masks, Pack/Unpack
+  (1 page)
+\item Mathematical model to predict timings, taking into account latencies, 
+   cache sizes, problem size, cost of memory, cost of operations. 
+\item Benchmarks. Effect of (3 pages)
+\begin{itemize}
+ \item Problem size
+ \item Single/Double precision
+ \item Bandwidth reduction
+ \item Breaking up the domain into smaller pieces 
+ \item Cache thrashing
+ \item Indirect addressing (addressed in previous papers)
+\end{itemize}
+\item Domain decomposition to minimize cache thrashing
+\item Bandwidth reduction, effect of domain decomposition
+\item Do not address
+\begin{itemize}
+  \item Cost of matrix assembly
+  \item Cost of accessing the derivatives in an application code (future paper)
+\end{itemize}
+\item Bibliography (1 page)
+\end{enumerate}

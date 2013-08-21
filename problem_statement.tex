@@ -1,0 +1,14 @@
+\section{Problem Statement}
+There has been much work on the problem of efficient sparse matrix/vector (spmv) and sparse matrix  (spmm) multiplication over the years \cite{} specialized for a range of computer architectures \cite{}. In the past 10 years, researchers have addressed implementations on the GPU using mostly CUDA \cite{}, and on multicore sytems, exemplified by the chips produced by Intel~\cite{}. In general, spvm consists of multiplying the matrix $A$ of size $N\times N$ by a vector $x$ of size $N\times 1$ to produce a vector $y$ of size $N\times 1$. More succinctly, $ y = A x $ .
+
+In the theory of Radial Basis Functions Finite-Difference (RBFFD), derivatives of a function $f(\rvec)$ at node $i$ are expressed as a linear combination of the function values at the stencil center and the nodes connected to node $i$ (Figure~\ref{fig:rbf_stencils}). Thus $y$ is a discrete derivative of the vector $x$. 
+
+
+When solving a one dimensional system of PDEs, one might require an $x$ derivative of multiple functions. For example, the Euler equations require the $x$ derivative of the three components of velocity and pressure. In this case, there are $n_v=4$ vectors $x^k$, $k=0,\cdots,3$. 
+
+Thus for each vector element $y_i$, we compute $y_i = \sum_j A_{ij} x_j$. If $A_i$ is row $i$ of $A$, $y_i$ is simply the dot product $A_i x$. The next level of generality is to consider $n_v$ vectors $x^k$, $k=0,\cdots,n_v-1$. Whatever the spmv implementation, one achieves improved performance if the matrix formed from the columns $x^k$ are stored in row major order. Thus, $x^0_0,x^1_0,\cdots,x^{n_v-1}_0$, are stored in consecutive memory location. The random access of the elements of $x$ is thus reduced. Maximum efficiency is achieved when $n_v=16$ floats or $8$ doubles, given that cache lines take 64 bytes. We will benchmark this case, labeled $Svn$, where $n$ refers to the number of vectors (Iv4 uses four vectors). The $S$ refers to singe precision. A double precision run is labelled $Dvn$. 
+
+Alternatively, when solving a PDE, one might require derivatives of a given scalar function with respect to coordinate directions $x$, $y$, $z$. Second order operators of often required, such as a second derivative with respect to $x$ or a Laplacian operator. In the RBFFD formulation, on can compute different derivatives using the same stencil, but with different weights. In other words, the adjacency matrix that corresponds to $A$ remains constant, but the matrix elements of $A$ change with the particular derivative. 
+In this case, label with a superscript $l$ the particular matrix $A^k$. Since the adjacency matrix is assumed invariant, there is only need for a single matrix \ttt{C{ij}}. In Ellpack format, each row is of constant size (the number of nonzeros per row of $A$. $C_{ij}$ is the column number that locates the $j^{th}$ nonzero in row $i$ of $A$.
+
+\ge{Must rewrite the above.}
