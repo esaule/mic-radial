@@ -159,16 +159,28 @@ We compute the floating point operations of the SpMV with general $n_v$ and $n_m
 $$
   N_F = 2 n_r n_z n_v m_m
 $$
-Thus the number of flpos to bytes transferred is $N_F / (n_{rT} + n_{wT})$, which when written out, 
+Two cases must be distinguished in regards to $x$. In the first, in a worst case scenario, each element 
+of $x$ is transferred $n_z$ times from memory. In the best case, the case of infinite cache, each element is transferred only once. Thus, we provide best and worst case scenarios and will compare against matrices $A$
+in each of these extreme situations to evaluate the degree we approach idea performance. 
+Thus the number of flops to bytes transferred is $N_F / (n_{rT} + n_{wT})$, which when written out, 
 \begin{eqnarray}
-N_F &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_v  + n_r n_z b_i + n_r n_m n_z b_x + n_r n_m n_v b_x} \nonb \\
-N_F &=& \frac{2 n_z n_v n_m}{b_x ( n_v + n_m n_z + n_m n_v) + n_z b_i}  \nonb \\
+N_{Fw} &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_z n_v  + n_r n_z b_i + n_r n_m n_z b_x + n_r n_m n_v b_x} \nonb \\
+    &=& \frac{2 n_v n_m}{b_x ( n_v + n_m + n_m n_v n_z^{-1}) + b_i}  \nonb \\
 %N_F &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_v (n_v+n_m) + n_r n_z b_i + n_r n_m n_z b_x} \nonb \\
     %&=& \frac{2 n_z n_v n_m}{b_x (n_v+n_m) + n_z (b_i + n_m b_x)} \nonb 
 \end{eqnarray}
+while in the best case, 
+\begin{eqnarray}
+N_{Fb} &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_v  + n_r n_z b_i + n_r n_m n_z b_x + n_r n_m n_v b_x} \nonb \\
+    &=& \frac{2 n_v n_m}{b_x ( n_v n_z^{-1} + n_m  + n_m n_v n_z^{-1}) + b_i } 
+\end{eqnarray}
 In the special case $n_v=n_m=1$, 
 $$
-N_F = \frac{2 n_z}{n_z b_i + (n_z +2) b_x}
+N_{Fw} = \frac{2}{b_x (2+n_z^{-1}) + b_i}
+$$
+and 
+$$
+N_{Fb} = \frac{2}{b_x (1 + 2 n_z^{-1}) + b_i}
 $$
 Neglecting $2$ compared to $n_z$, we find that $N_F = 2/(b_i+b_x)$, which leads to 
 $N_F = 2/8=1/4$ and  $N_F=2/12=1/6$ for single and double precision, respectively. 

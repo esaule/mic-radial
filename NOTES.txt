@@ -1,0 +1,54 @@
+"An overview of programming for intel xeon ..."
+Discussion of cache, p. 15 . Do not worry about core placement. Two prefetches per memory reference:
+memory to L2 and L2 to L1. -opt-prefetch=0 (turns off prefetching). Or -opt-prefetch=0,2 to turn off
+prefetch into L2 (leaving "on" prefetch into L1). 
+
+Such limits mean that organizing data streams is best when the number of streams of data per thread is less than eight and prefetching is actively used on each stream of data. 
+
+As a rule of thumb, the number of active prefetches per core should be managed to about 30 or 40 and be divided across the active data streams.
+
+QUESTION: what is a data stream in this context? 
+----------------------------------------------------------------------
+book_COLFAXmization...
+p. 25: 8-way cache. 
+L2 set conflict: 65kB (???)
+L2 latency: 15-30 cycles. 
+L1 latency: 1 cycle. 
+
+Associativity of L2 cache
+Eight-way associativity strikes a balance between the low overhead of direct-mapped caches and the versatility of fully-associative caches. An 8-way set associative cache chooses, for each memory address, one of 8 ways of cache (i.e., cache segments) into which the data at that memory address be placed. Within the way, the data can be placed anywhere.
+
+Replacement Policy
+The Least Recently Used policy is such behavior of a cache that when some data has to be evicted from cache in order to load new data, the data is evicted from least recently used set. LRU is implemented by dedicated hardware units in the cache.
+
+Set Conflicts
+To the developer, an important property of multi-way associative caches with LRU is the possibility of set conflict. A set conflict may occur when the code processes data with a certain stride in virtual memory. For KNC, the stride is 4 KB in the L1 cache and 64 KB in L2 cache. With this stride, data from memory must be mapped into same set, and, if LRU is not functioning properly, some data may be evicted prematurely, causing performance loss.
+
+p. 140
+Applications that are not optimized for data locality in space and time, and programs with complex memory access patterns may exhibit better performance on the host system than on the Intel Xeon Phi coprocessor.
+
+p. 174: 
+Structure of arrays usually better than array of structures. 
+
+p. 158
+Data alignment on a 64-byte boundary is required for vector instructions in the Many Integrated Core architecture of Intel Xeon Phi coprocessors.
+
+If the programmer can guarantee that pointer-based arrays in a vectorized loop are aligned, it is beneficial totellthecompilertoassumealignmentatthebeginningoftheloop.Thisisdoneusing#pragma vector aligned. Listing 4.22 demonstrates the use of this pragma.
+
+p. 171
+4.4.2 False Sharing. Solution: Data Padding and Private Variables
+False sharing is a situation similar to a race condition, except that it occurs when two or more threads access the same cache line or the same block of cache in a coherent cache system (as opposed to accessing the same data element), and one of those accesses is a write. False sharing does not result in a race condition, however, it negatively impact performance.
+WITH EXAMPLE IN BOOK. 
+
+p. 192
+Discussion of KMP_AFFINITY with examples. 
+
+p. 197
+4.5 Memory Access: Computational Intensity and Cache Management (IMPORTANT)
+
+p. 199
+4.5.1 Cache Organization on Intel Xeon Processors and Intel Xeon Phi Coprocessors
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+

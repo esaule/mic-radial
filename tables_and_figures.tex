@@ -30,5 +30,9 @@ Try to figure out why our performance is so much lower than peak.
 \newfig{figures/channel_permutation.pdf}{0.7}{Channel Permutations on the MIC}{fig:permulatio.n}
 \newfig{figures/tensor_product.pdf}{0.7}{Tensor scalar product using channels and swizzling.}{fig:tensor_product}
 
-\newfig{figures/theoretical_performance.png}{0.7}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 190 Gbytes/sec (based on best measurements with specialized code) and 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:peak_perf}
+%\newfig{figures/theoretical_performance.png}{0.7}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 190 Gbytes/sec (based on best measurements with specialized code) and 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:peak_perf}
+
+\newfig{figures/gflops_peak.png}{0.7}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:gflops_peak_perf}
+
+\newfig{figures/speedup_wrt_base.png}{0.7}{Speedup relative to base case using one matrix and one vector.} {fig:speedkup}
 
