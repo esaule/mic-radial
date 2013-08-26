@@ -19,7 +19,9 @@ SpMM with 16 floats (or 8 doubles) vectors (will give upper bound in speed). Imp
 \item
 SpMM with 4 floats or 4 doubles (to compare against SpMM). As a precursor to adding more matrices. 
 \item
-Try to figure out why our performance is so much lower than peak. 
+Try to figure out why our performance is so much lower than peak stated in Figure \ref{fig:gflops_peak_per}.
+Expecially in the case of compact. To do this, remove permutes, and replace gather by straight forward C++
+without using vector notation, but using SIMD commands in addition to OPENPM commands. Make sure we use -O3, and contrast to -O1 and -O2. 
 \end{enumerate}
 
 \newfig{figures/rbf_stencils.pdf}{0.7}{RBFFD Stencils. Each node of the mesh is connected to $n_z-1$ stencil nodes in addition to itself. In the figure, node $A$ is connected to $B$, but $B$ is {\em not\/} connected to $A$. Thus adjacency graph of $A$ is not-symmetric. This must be corrected when reducing the bandwidth of $A$ with a Cuthill\-McKee algorithm, which assumes symmetry.}
@@ -35,4 +37,13 @@ Try to figure out why our performance is so much lower than peak.
 \newfig{figures/gflops_peak.png}{0.7}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:gflops_peak_perf}
 
 \newfig{figures/speedup_wrt_base.png}{0.7}{Speedup relative to base case using one matrix and one vector.} {fig:speedkup}
+
+\newfig{figures/test1_readwrite.png}{0.7}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions.}{fig:band_rw}
+
+\newfig{figures/test1_gather.png}{0.7}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector      instructions.}{fig:band_gather}
+
+\newfig{figures/test3_gather.png}{0.7}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector      instructions. The greater speed of the cpp version is obtained throught the use of \#Ivdep {\em and\/} \_\_assumed\_aligned. }{fig:band_gather_ivdep}
+
+
+
 
