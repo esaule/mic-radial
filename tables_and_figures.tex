@@ -1,16 +1,16 @@
-\section{List of Tables and Figures}
-\begin{enumerate}
-\item
-Table: Notation for formulas
-\item
-Table: List of relevant vector instructions
-\item
-Figure: Matrix-Vector multiplication
-\item
-\item
-\item
-\item
-\end{enumerate}
+%\section{List of Tables and Figures}
+%\begin{enumerate}
+%\item
+%Table: Notation for formulas
+%\item
+%Table: List of relevant vector instructions
+%\item
+%Figure: Matrix-Vector multiplication
+%\item
+%\item
+%\item
+%\item
+%\end{enumerate}
 
 \section{Suggested Benchmarks}
 \begin{enumerate}
@@ -19,31 +19,39 @@ SpMM with 16 floats (or 8 doubles) vectors (will give upper bound in speed). Imp
 \item
 SpMM with 4 floats or 4 doubles (to compare against SpMM). As a precursor to adding more matrices. 
 \item
-Try to figure out why our performance is so much lower than peak stated in Figure \ref{fig:gflops_peak_per}.
+Try to figure out why our performance is so much lower than peak stated in Figure \ref{fig:gflops_peak_perf}.
 Expecially in the case of compact. To do this, remove permutes, and replace gather by straight forward C++
 without using vector notation, but using SIMD commands in addition to OPENPM commands. Make sure we use -O3, and contrast to -O1 and -O2. 
 \end{enumerate}
 
-\newfig{figures/rbf_stencils.pdf}{0.7}{RBFFD Stencils. Each node of the mesh is connected to $n_z-1$ stencil nodes in addition to itself. In the figure, node $A$ is connected to $B$, but $B$ is {\em not\/} connected to $A$. Thus adjacency graph of $A$ is not-symmetric. This must be corrected when reducing the bandwidth of $A$ with a Cuthill\-McKee algorithm, which assumes symmetry.}
-{fig:rbf_stencils}
+\def\wide{2.5in}
+\newfig{figures/rbf_stencils.pdf}{\wide}{RBFFD Stencils. Each node of the mesh is connected to $n_z-1$ stencil nodes in addition to itself. In the figure, node $A$ is connected to $B$, but $B$ is {\em not\/} connected to $A$. Thus adjacency graph of $A$ is not-symmetric. This must be corrected when reducing the bandwidth of $A$ with a Cuthill\-McKee algorithm, which assumes symmetry.}{fig:rbf_stencils}
 
-\newfig{figures/matrix_structure.pdf}{0.7}{Matrix Structure.}{fig:mat_struct}
-\newfig{figures/swizzling.pdf}{0.7}{Duplication of the first four bytes of each channel across the entire channel.}{fig:swizzling}
-\newfig{figures/channel_permutation.pdf}{0.7}{Channel Permutations on the MIC}{fig:permulatio.n}
-\newfig{figures/tensor_product.pdf}{0.7}{Tensor scalar product using channels and swizzling.}{fig:tensor_product}
+\newfig{figures/matrix_structure.pdf}{\wide}{Matrix Structure.}{fig:mat_struct}
+\newfig{figures/swizzling.pdf}{\wide}{Duplication of the first four bytes of each channel across the entire channel.}{fig:swizzling}
+\newfig{figures/channel_permutation.pdf}{\wide}{Channel Permutations on the MIC}{fig:permutation}
+\newfig{figures/tensor_product.pdf}{\wide}{Tensor scalar product using channels and swizzling.}{fig:tensor_product}
 
-%\newfig{figures/theoretical_performance.png}{0.7}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 190 Gbytes/sec (based on best measurements with specialized code) and 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:peak_perf}
+%\newfig{figures/theoretical_performance.png}{\wide}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 190 Gbytes/sec (based on best measurements with specialized code) and 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:peak_perf}
 
-\newfig{figures/gflops_peak.png}{0.7}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:gflops_peak_perf}
+\newfig{figures/gflops_peak.png}{2.5in}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:gflops_peak_perf}
 
-\newfig{figures/speedup_wrt_base.png}{0.7}{Speedup relative to base case using one matrix and one vector.} {fig:speedkup}
+\newfig{figures/speedup_wrt_base.png}{\wide}{Speedup relative to base case using one matrix and one vector.}{fig:speedup}
 
-\newfig{figures/test1_readwrite.png}{0.7}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions.}{fig:band_rw}
+\newfig{figures/test1_readwrite.png}{\wide}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions.}{fig:band_rw}
 
-\newfig{figures/test1_gather.png}{0.7}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector      instructions.}{fig:band_gather}
+\newfig{figures/test1_gather.png}{\wide}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions.}{fig:band_gather}
 
-\newfig{figures/test3_gather.png}{0.7}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector      instructions. The greater speed of the cpp version is obtained throught the use of \#Ivdep {\em and\/} \_\_assumed\_aligned. }{fig:band_gather_ivdep}
+\newfig{figures/test3_gather.png}{\wide}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions. The greater speed of the cpp version is obtained throught the use of \ttt{\#Ivdep} {\em and\/} \ttt{\_\_assumed\_aligned}. All memory is aligned on 64 bytes.}{fig:band_gather_ivdep}
 
+\newfig{figures/host_test1_readwrite_no_temporal_hint.png}{\wide}{Bandwidth performance on the host under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without AVX vector instructions. The speed on the CPU matches the speed with AVX instructions. All memory is aligned on 32 bytes.}{fig:read_write}
 
+\newfig{figures/mic_performance_nb_threads.png}{\wide}{Performance of $y=Ax$ on the MIC. Squares: base 1/1 case, solid circles: 4/4 case implemented in C++, solid triangles: 4/4 case implemented with MIC vector instructions. $-O3$ compilation options. Each group consists of four cases: grids of $64^3$ and $96^3$ with and without Reverse Cuthill McKee.}{fig:mic_performance}
 
-
+% NOTES: why is result the same at 32 processors. I should find out the distribution of threads. 16 threads means one thread on each of 16 cores (YES, I BELIEVE), or 2 threads on each of 8 cores.} Must run the experiment with different nodes orderings. 
+%export OMP_SCHEDULE=guided,64    (I should redo experiment with Dynamic or static and compact for KMP_AFFINITY
+%export KMP_AFFINITY=compact
+% MUST PRINT OUT OMP_SCHEDULE and KMP_AFFINITY inside the program. 
+% WHY the very high performance with very few nodes? STRANGE. 
+\newfig{figures/host_performance.png}{\wide}{Performance of $y=Ax$ on the Host. Squares: base 1/1 case, solid circles: 4/4 case implemented in C++, solid triangles: 4/4 case implemented with MIC vector instructions. $-O3$ compilation options. The four colors distinguish grid resolution and whether or not
+Reverse Cuthill McKee is applied.}{fig:host_performance}
