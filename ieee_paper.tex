@@ -460,17 +460,9 @@ OpenMP; MIC; spmv; sparse matrix; Radial Basis Function;
 
 
 \section{Introduction}
+\cite{Bell08, Vuduc05, Nishtala07, Stock12-TACC, Cuthill69, cramer2012openmp, Buluc2009_SPAA, Buluc11, Im01, Mellor-Crummey04, Nishtala07, Saad94sparskit, Williams07}
 \input{problem_statement}
-% no \IEEEPARstart
-
-\subsection{Subsection Heading Here}
-Subsection text here.
-
-
-\subsubsection{Subsubsection Heading Here}
-Subsubsection text here.
-
-\input{tables_and_figures}
+\input{intel_phi}
 \input{tables_and_figures}
 \input{bandwidth}
 \input{notation}
@@ -598,18 +590,10 @@ more thanks here
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
+%5\begin{thebibliography}{1}
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
-
-\end{thebibliography}
-
-
-
-
-% that's all folks
+\bibliographystyle{plain} %{IEEEabrv,paper.bib}
+\bibliography{paper, bollig}
 \end{document}
 
 

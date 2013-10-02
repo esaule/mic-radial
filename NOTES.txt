@@ -50,5 +50,240 @@ p. 199
 4.5.1 Cache Organization on Intel Xeon Processors and Intel Xeon Phi Coprocessors
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
+TO DISCUSS IN THE PAPER
+- Additional potential gains in speed: cache, registers, blocking, prefetching. 
+- Lots of the above techniques are less useful given that we are using multiple vectors and multiple matrices. 
+- Notion of best possible performance for a given algorithm 
+  (min. number of operations, maximum speed, fixe bandwidth per flop) How well do we perform. 
+- formulas as a function of single/double precision, number of vectors, number of matrices. Extract theoretical 
+  performance
+- mention bandwidth results from Saule paper, no register rewrite (for more efficient writes.)
+- measure difference of data retrieval only using gatherd, versus regular approach, both for non-cache misses
+(small dataset) and large datasets (beyond cache size.)
+- mention benchmarks with super compact (no cache misses, and no issues of indirect addressing). 
+- What is largest problem size possible without exceeding cache (HOW TO MEASURE?)
+  Saule states that for cache, only vector size is important (vector accessed many times), but not matrix
+  size. Yes, when putting matrix element, col_id, into register, we have no need for it at a later time, so 
+  expulsion is not an issue. But matrix takes 32*N elements, vectors only N*#vectors. 
+  So the more space is used up by the matrix, the less space there is for the vector x (y=A*x), increasing
+  the chances of y expulsion. WHAT AM I MISSING? TALK TO ERIK. 
+- register density of matrix A. Way below 50%, so register blocking not useful (Saule paper.)
+- effect of RCM (speed gain 30% on mic, none on host because of low bandwidth). 
+  Question for Erik: what is the ratio of speed to bandwidth?)
+  150 Gbytes/sec <===> 2000 Gflops ==> 150 10^9 / 2 10^12 = 1.5 10^11/2 10^12 = 1.5 / 20  = 1/13 in 
+  single precision. Ratio is 6.5 in double precision.  WHERE DOES RATIO 1:9 come from?
+- discussion of AFFINITY and SCHEDULING
+- discussion of MIC architecture (diagram?) Just what is needed for the paper. Contrast with host architecture.
+- 
 ----------------------------------------------------------------------
+From QCD Lattice paper
+The recently released Intel⃝R Xeon PhiTM coprocessor architecture features many in- order cores on a single die. Each core has 4-way hyper-threading support to help hide
+￼
+Lattice QCD on Intel Xeon Phi 3
+memory and multi-cycle instruction latency. In addition, each core has 32 vector regis- ters, 512 bits wide, and its vector unit executes 16-wide (8-wide) single (double) pre- cision SIMD instructions in a single clock, which can be paired with scalar instruc- tions and data prefetches. KNC has two levels of cache: single-cycle 32 KB first level data cache (L1) and larger globally coherent second level cache (L2) that is partitioned among the cores. Each core has a private 512 KB partition. KNC also has hardware support for iregular data accesses and features several flavors of prefetch instructions for each level of the memory hierarchy.
+KNC is physically mounted on a PCIe slot and has dedicated GDDR memory. Com- munication between the host CPU and KNC is therefore done explicitly through mes- sage passing. However, unlike many other coprocessors, it runs a complete Linux-based operating system, with full paging and virtual memory support, and features a shared memory model across all threads and hardware cache coherence. Thus, in addition to common programming models for coprocessors, such as OpenCL, KNC supports more traditional multiprocessor programming models such as pthreads and OpenMP.
+p. 1/13
+sustains 280 GFLOPS on a single node which corresponds to nearly 80% of achievable performance. 
+Conjugate Gradients or BiCGStab. Sparse matrices.
+0.92 flops per byte for algorithm. 
+p. 4/13
+The generation of L1 prefetch instructions is part of the code generating routines. The L2 prefetches are generated in a separate pass and the two in- struction streams are intermixed. T]
+ Gathering (scat- tering) spinors from (to) their soa × ngy XY blocks is supported both via the gather intrinsics on Xeon Phi, or via a sequence of masked load-unpack, or pack-store in- structions. To take advantage of streaming stores we use in-register shuffles to pack full cache lines, which are then streamed to memory using nontemporal store instructions.
 
+ Read page 9-10/13. 80% of peak is sustained. 20% lost to memory bandwidth. 
+----------------------------------------------------------------------
+PAPER: When Cache Blocking of Sparse Matrix Vector Multiply Works and Why_2007_nishtala.pdf@
+What does this mean? 
+----------------------------------------------------------------------
+From Erik: 
+Modeling the LRU policy is known for being difficult. But essentially
+for a cache line of the matrix to be kept in memory while a line of
+    the vector is kicked out, you need that the line of the vector has not
+    been accessed since the line of the matrix was used.
+
+    To have that effect becoming a problem, you need to have a pattern
+    that is very regular so that the cache fills up with the matrix (and a
+    few lines of the vector that are accessed again and again). But that
+    pattern is actually very good for the computation, since it is
+    essentially your supercompact case. If you have somethign that is
+    mostly diagonal banded, with some random access, then most of the
+    cache stores the banded part and so it is mostly useful. Or you need
+    something random, in which case the cache is either completely useless
+    because the matrix is too big and you are always out of cache or the
+    matrix is small enough and you are mostly in cache. What's in between
+    is actually pretty small in the space of all matrices.
+----------------------------------------------------------------------
+Test driving Phi, N-body simulation, Vadim
+p. 1
+Intel Xeon Phi coprocessor is a symmetric multiprocessor in the form factor of a PCI express device. Intel’s James Reinders has defined the purpose of Intel Xeon Phi coprocessors in the following way2: “Intel Xeon Phi coprocessors are designed to extend the reach of applications that have demonstrated the ability to fully utilize the scaling capabilities of Intel Xeon processor-based systems and fully exploit available processor vector capabilities or memory bandwidth.” It cannot be used as a stand-alone processor. However, up to eight Intel Xeon Phi coprocessors can be used in a single chassis3. Each coprocessor features more than 50 cores clocked at 1 GHz or more, supporting 64-bit x86 instructions. The exact number of cores depends on the model and the generation of the product. These in-order cores support four-way hyper- threading, resulting in more than 200 logical cores. Cores of Intel Xeon Phi coprocessors are interconnected by a high-speed bidirectional ring, which unites L2 caches of the cores into a large coherent aggregate cache over 25 MB in size. The coprocessor also has over 6 GB of onboard GDDR5 memory. The speed and energy efficiency of Intel Xeon Phi coprocessors comes from its vector units. Each core contains a vector arithmetics unit with 512-bit SIMD vectors supporting a new instruction set called Intel Initial Many-Core Instructions (Intel IMCI). The Intel IMCI include, among other instructions, the fused multiply-add, reciprocal, square root, power and exponent operations, commonly used in physical modeling and statistical analysis. The theoretical peak performance of an Intel Xeon Phi coprocessor is 1 TFLOP/s in double precision. This performance is achieved at the same power consumption as in two Intel Xeon processors, which yield up to 300 GFLOP/s.
+
+In order to completely utilize the full power of Intel Xeon Phi coprocessors (as well as Intel Xeon-based systems), applications must utilize several levels of parallelism:
+1. taskparallelismindistributedmemorytoscaleanapplicationacrossmultiplecoprocessorsormultiple compute nodes,
+2. task parallelism in shared memory to utilize more than 200 logical cores,
+3. and at last, but definitely not the least, — data parallelism to employ the 512-bit vector units.
+
+In the architecture of Intel Xeon processors and Intel Xeon Phi coprocessors, it is a general rule that similar methods of optimization benefit both architectures. 
+
+Finally, we relax the floating point arithmetics accuracy control and gain additional speed-up, without sacrificing the code simplicity. (CaN WE DO THAT?)
+
+The code is parallelized in shared memory using the OpenMP framework. 
+
+Use the compiler argument -vec-report3. to verify what is or what is not vectorized.  ***
+We use the compiler argument -std=c99 in order to enable some abbreviated C syntax, -openmp to enable pragma-directed parallelization in OpenMP, and -mkl to link the Intel Math Kernel Library (Intel MKL) for random number generatio
+
+ The number of arithmetic operations per iteration of the j-loop can be estimated by counting the arithmetic operations in the loop body, and this number is no less than A = 15 (counting multiply-add as two operations). 
+
+p. 6/15
+Counts OPC (operations per clock cycle): nb float ops in inner loop divided by total clock cycles
+
+Execute in native mode (In order to produce an executable for the coprocessor, the code must be compiled with the flag -mmic.) ***
+Possible use of micnativeloadex;
+
+ Less efficient (initially) on MIC than on XEON.  Strange, 
+ especially considering that SIMD vector registers on Intel Xeon Phi coprocessors are 512 bits wide, compared to the 256-bit AVX registers on Xeon E5 processors. 
+
+ p. 8
+ The key to unlocking the performance of Intel Xeon Phi coprocessors is exploiting thread parallelism in combination with data parallelism.
+
+ the data access pattern is lacking a very important property. This property is unit-stride data access.
+
+ In each memory access, the core loads not one byte, but a whole cache line, which is 64 bytes wide. 
+----------------------------------------------------------------------
+papers: When does caching work? 
+The Sparsity generators employed a variety of performance optimiza- tion techniques, including register blocking, cache blocking, and multiplication by multiple vectors.
+
+We classify the set of matrices on which we see benefits from cache blocking, concluding that cache blocking is most e↵ective when simultaneously 1) x does not fit in cache 2) y fits in cache, 3) the nonzeros are distributed throughout the matrix (as opposed to a band matrix) and 4) the non-zero density is suWhen does caching workgh. I
+
+In our case, the non-zero density is not sufficiently high. CSR format. DOES THIS APPLY TO OUR PROBLEM (cache blocking)
+
+Detailed modeling. 
+
+p. 11
+Matrices 12–14 are so sparse that there is e↵ectively no reuse when accessing the source vector and thus blocking does not help, even though their source vector is large
+Matrices with densities higher than 10e-5 (all matrices except Matrix 3 and Matrices 12–14) were helped with cache blocking, provided that their column block size is large enough (greater than 200,000 elements, e.g. Mll matrices except Matrix 3 and Matrices 12–14) were helped with cache blocking, provided that their column block size is large enough (greater than 200,000 elements, e.g. Matrix 2, Matrices 4–8, Matrices 10–11).atrix 2, Matrices 4–8, Matrices 10–11).
+
+OUR MATRICES: if 64x64x64 and stencils with 32: nonzero density: 32/64^3 = 10^{-4}
+If 128^3, density: 32/128^3 = 1.5e-5 . SO MATRICES LESS THAN 128^3, COULD be helped by cache blocking (IS THIS TRUE?)
+
+p. 11
+Rectangular matrices benefit the most (small number rows, large number columns). OUR MATRICES ARE SQUARE.
+ 
+ We expect that as the average number of cycles to access the memory grows, cache blocking will provide a good improvement in performance since cache blocking allows us to reduce expensive accesses to the main memory
+
+GE CONCLUSION: Exepect good gains on the host (low memory bandwidth), but not on the MIC (High memory bandwidth). ***
+
+Cache blocking significantly reduces cache misses in SpM⇥V particularly when x is large, y is small, the distribution of nonzeros is nearly random, and the nonzero density is su***
+
+Cache blocking significantly reduces cache misses in SpM⇥V particularly when x is large, y is small, the distribution of nonzeros is nearly random, and the nonzero density is sugh. When these conditions appear in the ma- trix, we find that TLB misses are an important factor of the execution time.
+----------------------------------------------------------------------
+Performance Optimizations and Bounds for Sparse Matrix-Vector Multiply, 2002
+Richard Vuduc James W. Demmel Katherine A. Yelick Shoaib Kamil Rajesh Nishtala Benjamin Lee
+(appeared previous to previous paper.)
+
+Register blocking.   (Different from cache blocking, which is break up of matrices to fit into cache.)
+
+Abstract
+ of sparse matrix-vector multiply (SpM×V), one of the most impor- tant computational kernels in scientific applications. 
+
+Specifically, we develop upper and lower bounds on the performance (Mflop/s) of SpM×V when tuned using our previously proposed register blocking optimization.
+
+We find that we can often get within 20% of the upper bound, particularly on a class of matrices from finite element modeling (FEM) problems; on non-FEM matrices, performance improvements of 2× are still possible.
+
+Collectively, our results suggest that future performance improvements, beyond those that we have already demonstrated for SpM×V, will come from two sources: (1) consideration of higher-level matrix structures (e.g., exploiting symmetry, matrix reordering, multiple register block sizes), and (2) optimizing kernels ***with more opportunity for data reuse*** (e.g., ***sparse matrix-multiple vector multiply***, multiplication of AT A by a vector).
+WE GO FURTHER: WE HAVE MULTIPLE MATRICES. So STATE: multiple vectors is standard. MULTIPLE MATRICES HELPS WHEN 
+INSUFFICIENT VECTORS. 
+
+p. 2/35
+It is not unusual to see SpM×V run at under 10% of the peak floating point performance of a single processor.
+(ON PHI: 2 TFLOPS, 30 GFLOPS Peak ==> 1.5% of peak performance. This is due to multiple cores. Memory bound. 
+
+ In this paper, we focus on register block- ing (Section 3) and ask the fundamental questions of what limits exist on such performance tuning, and how close tuned code gets to these limits (Section 4).
+
+in the upper bound any value that has been used before is modeled as a cache hit (no conflict misses), whereas the lower bound assumes that all data must be reloaded (THAT IS WHAT I DO). Put in introduction.  ****
+
+Uses Hardware counter data (I DO NOT USE THAT.)
+
+The new heuristic can improve SpM×V by as much as 2.5× over an unblocked implementation
+Improvements do not occur on Power3, but occur on Itanium and Pentium 3, and Ultra 2i. 
+
+LIBRARIES: SPARSKIT, OKSI, SPARSITY (some with autotuning), register/cache blocking, etc. 
+None can get additional performance using additional matrices. 
+
+4/35
+We use the PAPI v2.1 library for access to hardware counters on all platforms [6]; we use the cycle counters as timers. Counter values reported are the median of 25 consecutive trials.1
+
+For SpM×V, reported performance in Mflop/s always uses “ideal” flops. That is, if a transformation of the matrix requires filling in explicit zeros (as with register blocking, described in Section 3), arithmetic with these extra zeros are not counted as flops when determining performance.
+GE: THAT MEANS  THAT FLOPS ARE LOWER THAN IF ZEROS WERE COUNTED. MORE HONEST.
+
+Peak machine performance in those days 500MFlops/s (Intel Pentium 3), 1.5Gflops (IBM Power 3). 10 years: 1000 faster. 
+List clock rate, peak memory bandwidth, peak flop rate. 
+
+NOT COMPLETED
+----------------------------------------------------------------------
+Reduced-Bandwidth Multithreaded Algorithms for Sparse Matrix-Vector Multiplication
+buluc, et al, Demmel, 2011. 
+
+p. 1/13
+On multicore architectures, the ratio of peak memory bandwidth to peak floating-point performance (byte:flop ratio) is decreasing as core counts increase. Paper deals with symmetric matrices (with doubling speed.)
+New datastructure (bitmasked register blocks)  which promises significant reductions on bandwidth requirements by reducing the number of index- ing elements without introducing additional fill-in zeros. Speedup of up to 3.5 on already parallel versions. 
+
+For multicore optimization, one key performance aspect is exposing sufficient par- allelism to avoid idle processors and attain scalability. Another critical performance component is minimizing bandwidth requirements by reducing the indexing overhead as the SPMV kernel does not exhibit temporal locality
+
+WHAT IS "INDEXING OVERHEAD"
+
+One limitation of BCSR is the matrix fill-in zeros, which often occur when a register block is not completely dense, creating a performance bottleneck on matrices that do not have small dense block structures. 
+
+However, CSB does not provide any bandwidth reduction schemes. ... the multiplication algorithm requires streaming the triangular matrix twice into main memory (only on parallel algorithms, not serial).
+
+p.2 
+We observe that peak performance has grown quickly via a doubling of both the core count and SIMD (single instruction multiple data) width.  As peak bandwidth has not kept pace, the machine balance (as measured in flops/byte) has roughly doubled.  Such trends have profound implications for memory bound computations like SpMV as the memory subsystem cannot keep the cores occupied, resulting in wasted compute capability.
+
+**** LATENCY: cost of one memory transfer. Others are free, essentially. If streaming large datasets, Latency
+only active every cache line. (IS THIS TRUE?) CONFUSED. 
+
+----------------------------------------------------------------------
+SPARSITY: Optimization framework, ....
+p. 18: Only matrices with very large dimensions will benefit from cache blocking, i.e., if the source vector easily fits in a cache and still leaves room for the matrix and destination elements to stream through without significant conflicts, there is no benefit to blocking. Matrices 40–44 are large enough to cause conflicts of this kind, since the source vectors are large—in particular, the source vectors are all at least 2 MB in size, which is at least as large as the L2 cache on all four machines.
+
+For these matrices, the benefits are significant: we see speedups of up to 2.2x. 
+--
+p. 20/39: multiple vectors. 
+
+WE ARE ESSENTIALLY DOING REGISTER BLOCKING in our algorithm. 
+The question of how to choose the number of vectors v when multiplying by a set of vectors is partly dependent on the application and partly on the performance of the multiplication operation. For example, there may be a fixed limit to the number of right-hand sides or the convergence of an iterative algorithm may slow as the number of vector increases. If there are a large number of vectors available, and the only concern is performance, the optimization space is still quite complex because there are three parameters to consider: the number of rows and columns in register blocks, and the number of vectors.
+Here we look at the interaction between the register-blocking factors and the number of vectors. This interaction is particularly important because the register-blocked code for multiple vectors unrolls both the register block and multiple vector loops. How e↵ectively the registers are reused in this inner loop is dependent on the compiler.
+
+Tests up to vectors of size 20. Max speedups differ between random and dense matrices. 
+
+Multiple vectors typically pay o↵ for matrices throughout the regularity and density spectrum.
+However, with respect to choosing optimization parameters, the dense and random matrices behave very di↵erently. The random matrix tends to have a peak with some relatively small number of vectors (2- 5), whereas the dense matrix tends to continue increase in speedup for larger number of vectors. (DENSE BEHAVIOR IS STRANGE)
+
+p. 23
+Further experiments with 9 vectors  (GE: 2004, smaller caches. Today, a larger number of vectors would be necessary
+for increase performance.)
+
+p. 23: benefits either from register blocking or vectors. Rarely does cache+register blocking help.
+
+Conclusions, p. 32/39
+we have described optimization techniques to improve memory eRarely does cache+register blocking help.
+ 4⇥ improvement for register blocking, 2⇥ for cache blocking, and nearly 10⇥ for register blocking combined with multiple vectors
+
+Register blocking, cache blocking (random matrices), and multiple vectors. 
+
+Our performance studies showed that all of these optimization have sig- nificant performance improvements on some matrices and some machines, but the performance is highly depedent on both.
+----------------------------------------------------------------------
+Conclusions p. 20/21
+Performance Optimization and Modeling of Blocked Sparse Kernels, 2006, Buttari et al.
+4 reasons for inefficiencies of spmv: 1) indirect addressing, 2) high per row overhead, 3) low spatial and 4) temporal locality.  VERY GOOD DESCRIPTION on p. 3/21.
+
+register blocking: 3/21 is the point of this paper to increase performance. 
+The optimization of the sparse matrix-vector operations presented in this paper consists in tiling the matrix with small dense blocks that are chosen to cover the nonzero structure of the matrix.
+
+We gave a detailed analysis of the spatial and temporal locality of blocked algorithms, relating it to processor elements such as cache lines, memory bandwidth and write-back behaviour, and TLB effects. 
+our software also is more accurate in picking the optimal blocksize: in nearly all cases the model predicts the actually optimal blocksize.
+
+Derives estimates of fill-in.  Time for execution of spmv \prop fillin / performance
+Paper discusses various models of performance. 
+----------------------------------------------------------------------
+IN OUR PAPER, rather than study matrices in general, WE HAVE A PARTICULAR APPLICATION: RBF ***
+----------------------------------------------------------------------
