@@ -287,3 +287,88 @@ Paper discusses various models of performance.
 ----------------------------------------------------------------------
 IN OUR PAPER, rather than study matrices in general, WE HAVE A PARTICULAR APPLICATION: RBF ***
 ----------------------------------------------------------------------
+
+Parallel sparse matrix-vector multiplication as a test case for hybrid MPI+OpenMP programming, 2010
+Discusses bytes per flop. MPI with dedicated thread across multile processors for com/comp overlap. 
+Most results in literature are hardware-specific and often contradictory. 
+
+----------------------------------------------------------------------
+Performance evaluation of the sparse matrix-vector multiplication on modern architectures
+VERY GOOD INFO IN PAPER. Models, timings. 
+----------------------------------------------------------------------
+Sparse matrix-vector multiplication on GPGPU clusters: A new storage format and a scalable implementation
+Discusses bytes per flop, there are models. 
+----------------------------------------------------------------------
+Memory Bandwidth ... (useful benchmarks)
+2013 intel xeon phi ... (architural components)
+A New approach ... for GPUs (special algorithmic features specific to NVIDIA)
+x Accelerating sparse matrix ... (M.S. thesis). (useful info on formats)
+Sparse matrix kernels, auto-tuning (Vuduc), 455 p. thesis. 
+Best Practice Guide for Phi (how to optimize). **** USEFUL. 
+x CUDA vs Phi for developers (discuss differences between CUDA and phi thread.)
+x Characterizing behavior of sparse algorithm on cache, 1992.  Paper on modeling cache use.  ***
+   Cache Traffic optimization ...2013 (CIlk, OpenMP) Relates to optimization.  Plots of different regimes: vectoriation, cache thrashing, cache-optimal.  
+Efficient Sparse/Matrix-Vector Multiplication on CUDA (nice discussion of formats, different matrix patterns)
+  (use to justify our use of ELLPACK)
+Efficient Sparse/Matrix-Vector Multiplication on X86-based on many-core processors. 
+   - discusses performance bounds, memory bandwidth measures, relation between compute time 
+   and memory transfer time.  Latency?  Discussion of cache-miss latency, of ELLPACK.  *** 
+   Proposes new format. 
+Improving Memory-System Performance of Sparse Matrix Multiplication. (19p.)  *** (IMPORTANT)
+
+Intel Xeon Phi Coprocessor Instrucdtion Set Instruction Manual, 2012. 725p. (learn to use masks and channels)
+OpenMP Programing on Intel Xeon Phi Coprocessors ... , 2012. Microbenchmarks to measure time of 
+   different OMP directives. COULD BE USEFUL. Discusses spmv. Max theoretical performance is 20Gflops or 40 Gflops 
+   (not clear what the two numbers mean.) Plot of spmv w/ and w/o vectorization (why is there no difference when 
+   all threads are active?)
+Optimization of Sparse Matrix-Vector Multiplication on Emerging Multicore Platforms. 2008. Williams. 
+   Important paper. 
+Optimization Sparse Matrix Computations for Register Reuse in SPARSITY.  (Im and Yelick)
+  register blocking. 
+Parallel sparse matrix-vector multiplication as a test case for hybrid MPI+OpenMP programming
+     Discusses bytes/flop. Performance graphs. Modeling.  USEFUL. 
+Performance Evaluation of Sparse Matrix Multiplication Kernels on Intel Xeon Phi. 2013 (Saule). 
+Reduced-Bandwidth Multithreaded Algorithms for Sparse Matrix-Vector Multiplication, 2011, Buluc.  Register blocks. 
+  performance modelign. 
+Sparse Matrix Reordering Algorithms for Cluster Identification
+Sparse matrix-vector multiplication on GPGPU clusters: A new storage format and a scalable implementation, 2012.  (discusses ELLPACK_R) (only marginal to our paper)
+When cache blocking of sparse matrix vector multiply works and why
+--
+LESS USEFUL
+Building native applications for Intel ...
+Cache Traffic Optimization: transpose.  2013. 
+Exact sparse/matrix-vector multiplication (rings, etc.)
+Getting to 1 Tflop in Intel Phi. (Dr. Dobbs)
+How to write your own blazingly fast libraries on the Phi. 
+Identifying the key features of the Intel Phi.  (SGEMM, discusses varous benchmarks.) 
+   How to use varous features of Phi.  (COULD BE USEFUL)
+Intel-Xeon-Phi (MIC) Cluster. (docs)
+Intel many-integrated core  (MIC) Programming Intel Xeon Phi  (slides)
+Intel VTune
+Introduction to Xeon Phi (slides) (architecture details + performance numbers, memory, processors, etc.)
+Lattice QCD on Intel Xeon Phi, 2013. Complex. Might be closest ot our code, but paper hard to understand. 
+Measuring Cache and Memory latency. 2008. Intel document.  COULD BE USEFUL. 
+Memory Performance and Cache Coherency effects on Intel Nehalem. 2009. 
+    Latency results + bandwidth results. COULD BE USEFUL. 
+Minimizing  Communication in sparse matrix solvers. Slides. 
+Model-driven autotuning of Sparse Matrix/vector multiply on GPUs. Vuduc 2010. Has modeling of results. 
+OpenCL Design and Programing Guide for Intel Phi. COULD BE USEFUL (similar to CUDA). 
+Optimization and Performance Tuning for Intel® Xeon PhiTM Coprocessors - 
+    Part 1: Optimization Essentials 2012. How to speed up code. MAY BE USEFUL. 
+Optimization and Performance Tuning for Intel® Xeon PhiTM Coprocessors - 
+    Part 2: hardware events.  Explains hardware events (TLB, misses, cache, L1, L2, etc.)
+Optimizing OpenCL Applications on Intel® Xeon PhiTM Coprocessor (tutorial)
+  (important since threads on PHi is not the same as thread on GPU)
+Performance Optimization and Modeling of Blocked Sparse Kernels, 2006. (automatic parameter selection)
+Performance Optimizations and Bounds for Sparse Matrix-Vector Multiply (2002, Vuduc) Upper and lower bounds of performance using register blocking. Has heat maps of performance as a function of register block width and height. 
+Programming Intel's Xeon Phi: A Jumpstart Introduction
+Towards a Fast Sparse Parallel Matrix-Vector Multiplication.  (IBM SP2) (1999?) 
+   (Good explanation of register blocking, matrix reordering, MPI) 
+SPARSITY: Optimization Framework for Sparse Matrix Kernels
+Sparse Approximate Inverse Preconditioners for Iterative Solvers on GPUs
+Sparse Matrix-Vector Multiplication and Matrix Formats (slides) *** VERY USEFUL for programming
+Test-driving Intel, 2012. Xeon PhiTM coprocessors with a basic N-body simulation, 2013. 
+An􏶖Overview􏶖of􏶖 Programming􏶖for􏶖Intel®􏶖Xeon®􏶖processors􏶖 and􏶖Intel®􏶖Xeon􏶖PhiTM􏶖coprocessors􏶖
+Intel® Xeon PhiTM Coprocessor DEVELOPER’S QUICK START GUIDE
+Intel® Xeon PhiTM Coprocessor System Software Developers Guide
+PARALUTION - User Manual (Softwarwe Library, finite element and other stuff.)

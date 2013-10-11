@@ -1,0 +1,14 @@
+Introduction: RBFs -> derivatives -> spmv -> multiple derivatives of multiple functions --> our approach
+Description of previous work (obviously superficial), automatic
+systems (SPARSITY, OKSY, etc.), work on GPUs
+Description of MIC architecture, your work on the MIC. Perhaps other
+work if there are results out there.
+Description of our matrices and matrix types (supercompact, random,
+compact, and realistic (based on true derivative calculation). use of
+ELLPACK format.)
+Description of theoretical results (measured bandwidth, measured
+performance, number of floats per byte.) Plots of maximum possible
+performance in best and worst cases given bandwidth results.
+Description of numerical results (host version, MIC version, base
+version, 4/4 version with and without RCM)
+Conclusion
