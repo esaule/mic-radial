@@ -68,8 +68,8 @@ plt.legend(loc=2)  # upper left
 plt.grid(True)
 
 plt.tight_layout()
-plt.savefig.format = "png"
-plt.savefig("gflops_peak.png")
+plt.savefig.format = "pdf"
+plt.savefig("gflops_peak.pdf")
 #plt.show()
 #### END OF CHART
 
@@ -96,5 +96,5 @@ plt.legend(loc=2)  # upper left
 plt.grid(True)
 
 plt.tight_layout()
-plt.savefig.format = "png"
-plt.savefig("speedup_wrt_base.png")
+plt.savefig.format = "pdf"
+plt.savefig("speedup_wrt_base.pdf")

@@ -1,0 +1,6 @@
+Caption. 
+Performance on a MIC of derivative computation for RBFFD with 884,736 nodes distributed quasi-randomly in a cube. Single derivative of a single function (base case, triangle) and four derivatives of four functions (multi case, circles). No bandwidth reduction (blue) and Reverse Cuthill-McKee (red).  
+
+Description
+Derivatives in an RBFFD formulation are expressed as a sparse matrix/vector multiplication (SpMV). Using the full 61 nodes of a MIC processor, and all four threads of each node, we achieve lowly 18 Gflops when calculating a single vector of a single function. Bandwidth reduction has minimal effect since the cache is large enough to store both the derivative matrix and the solution vector. We increase the number of computations per byte transferred by calculating four different derivatives of four different functions. With bandwidth reduction, we speed the calculation by a factor of 8, and achieve upwards of 140 Gflops.
+
