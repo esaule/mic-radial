@@ -79,7 +79,76 @@ DBLP:journals/corr/abs-1101-0091, conf/ipps/BulucWOD11, conf/ipps/KreutzerHWFBB1
 kumar2012accelerating, journals/concurrency/VazquezFG11}
 
 
+SpMV is an important kernel for lots of stuff. So improving the
+performance of SpMV has caputred the interest of many researcher.
 
+The main challenge that is faced to improve good performance for SpMV
+is that the operation are conducted using memory location that are
+irregular and often unpredictible. That make that the kernels are
+mostly memory bound and there is a significant instruction overhead
+per flop.
+
+Common improvement techniques such as register blocking, bandiwdth
+reduction (matrix reordering), partitioning to fit in cache or TLB
+have impacts which are very dependent on the matrix and overall do not
+lead to dramatic improvement. Assuming register blocking does not
+apply well to the matrix at hand (which is true for most matrices),
+there is about 8 bytes of the matrix to move in per non zero (assuming
+single precision); each nonzero requires two floating point operations
+leading to a flop-to-byte ratio of at most $\frac{1}{4}$. This limits
+the obtained performance to at most a quarter of the bandwidth of the
+architecture wasting a lot of potentially useful cycles. The commonly
+used techniques are mostly designed to reach that bound rather than
+overcome it.
+
+Fortunately that fate is not inevitable. One solution would be to pair
+multiple component of an application to schedule a more instruction
+intensive kernel simultaneously with SpMV, relying on some hardware
+threading capabilities, such as HyperThreading, to reduce the cycle
+wastage. However most ot the applications that use SpMV do not
+typically have an instruction intensive kernel to run simultaneously.
+
+An other solution, and the one we pursue in this paper, is to compute
+multiple SpMV at once on matrices that have the same sparsity
+patterns. Obviously not all the applications have such a property. But
+important classes of applications such as graph
+recommendation~\cite{}, eigensolving~\cite{} and the computation of
+derivative of Radial Basis Functions(RBF)~\cite{} can use multiple
+SpMVs simultaneously. In this paper in particular, we investigate the
+case of the derivative of RBFs where four derivatives of four
+different function is expressed as the multiplication of four vectors
+by four matrices with identical sparsity patterns leading to the
+simultaneous execution of 16 SpMVs at a time.
+
+To perform our analysis, we focus our attention on the improvement
+that we can achieve on the Intel Xeon Phi processor. It follow the
+Many Integrated Core (MIC) architecture, which has a significant
+memory bandwidth and peak flop throughput thanks to its 512-bit large
+SIMD registers. The Xeon Phi processor has been shown to be promising
+for sparse linear algebra compared to more classical CPU or GPU
+architecture~\cite{}.
+
+In Section~\ref{} we present the computation of RBFs and how it can be
+expressed 16 multiplication of 4 vectors by 4 matrices. Section~\ref{}
+presents an estimation of the instruction intensity of various form of
+the computations and we show that a 5- to 6- fold improvement can be
+expected when computing the 16 multiplications simultaneously and
+reach a total of about 200 Gflop/s. This performance represents
+approximatively 10\% of the available flop/s of a Knight Corner
+coprocessor. Therefore, it is necessary to have implementations that
+perform the computation in as little amount of instructions as
+possible. We describe in Section~\ref{} the details of the MIC
+architecture and how to use specialized load, store, swizzle and
+permutation instruction to efficiently bring the data in the vector
+registers to be processed. Section~\ref{} gives some experimental
+result about the amount of bandwidth that can be achieved depending on
+how the spmv kernel is written and the actual performance of the
+various kernel on multiple classes of matrices some generated for
+analysis purpose and some extracted from and RBF
+application. Concluding remarks and perspectives are provided in
+Section~\ref{}.
+
+\section{Derivatives of Radial Basis Functions}
 
 \input{problem_statement}
 \input{intel_phi}
