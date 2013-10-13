@@ -29,6 +29,8 @@
 \def\ge#1{}
 %\usepackage{morefloats}
 
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+
 
 \usepackage[pdftex]{graphicx}
 \usepackage{subfigure}
@@ -304,145 +306,130 @@ that locates the $j^{th}$ nonzero in row $i$ of $A$.
 \section{Modelization of the Potential Improvements}
 \label{sec:model}
 
+We saw in the previous section that one can express the RBF problem as
+a multiplication of four matrices by four vectors. We present here an
+estimation of the variation on the flop intensity of the computation
+and its impact on the expected performance of the
+application. Relevant notations are given in Table~\ref{tab:not}.
 
-In this section, we introduce some variables that will prove useful to 
-describe our experiments and construct a working model to examine the pros and cons of various assumptions. While deceptively simple, the MIC architecture requires a careful consideration of the properties of cache, memory bandwidth, cores and their interaction, threads per core (1-4), parallelization and vectorization. We will also seek to perform experiments that measure the best possible performance of the SPMV with maximum and minimum cache thrashing \qes{same as cache misses?}, with and without floating point operations, and with and without memory transfer. At the onset, we expect the dominant cost to e the transfer of the vector $x$ from memory, because contiguous elements of $x$ are not accessed sequentially. 
+\begin{figure}
+  \begin{center}
+    \scalebox{.9}{
+      \begin{tabular}{|c|l|}
+        %\hline
+        %& & \\
+        \hline
+        $b_i$ & number of bytes per index \\
+        $b_x$ & number of bytes per value \\
+        $n_z$ & number of nonzeros per row $A$ \\
+        $n_r$ & number of column/rows of $A$ \\
+        $n_c$ & total number of non-zero\\
+        $n_v$ & number of {\tt x} vectors \\
+        $n_m$ & number of matrices \\
+        $s_M$ & size of the matrice(s)\\
+        $s_x$ & size of the {\tt x} vector(s)\\
+        $s_y$ & size of the {\tt y} vector(s)\\
+        \hline
+        $cl$    & size of a cache line \\
+        $b_{wT}$ & number of bytes written to memory  \\
+        $b_{rT}$ & minimum number of bytes read from memory  \\
+        $b_T$   & minimum number of bytes transferred  \\
+        $B_{rT}$ & maximum number of bytes read from memory \\
+        $B_T$   & maximum number of bytes transferred  \\
+        $O$     & number of floating point operations \\
+        $I_b$   & maximal computational intensity\\
+        $I_w$   & minimum computational intensity\\        
+        \hline
+      \end{tabular}
+    }
+  \end{center}
+  \caption{Notations}
+  \label{tab:not}
+\end{figure}
 
-Relevant notation is contained in Table~\ref{tab:not}. 
+Each vector in the problem is of dimension $n_r$ and each dimension
+tasks $b_x$ bytes. There are $n_v$ {\tt x} vectors and $n_v n_m$ {\tt
+  y} vectors, which lead to the size of the {\tt x} and {\tt y} vectors:
+$$s_x = n_v b_x n_r$$ $$s_y = n_v n_m b_x n_r$$
 
-\begin{center}
-\begin{tabular}{|c|l|}
-%\hline
-%& & \\
-\hline
-$b_i$ & number of bytes per int \\
-$b_x$ & number of bytes per float(4)/double(8) \\
-$n_z$ & number of nonzeros per row $A$ \\
-$n_r$ & number of rows of $A$ \\
-$n_c$ & total number of elements in $col_id$: $n_z n_r$ \\
-$b_w$ & matrix bandwidth \\
-$b_c$ & total L2 cache per core ($512k=2^{19}$ bytes) \\
-$b_T$ & theoretical minimum number of bytes transferred  \\
-$b_{wT}$ & theoretical minimum number of bytes written to memory  \\
-$b_{rT}$ & theoretical minimum number of bytes read from memory  \\
-$n_C$ & total number of cores used  \\
-$t_C$ & total number of threads used per core \\
-$\rho$ & average cache density  \\
-$n_v, n_m$ & number of vectors and matrices \\
-$n_F$ & total number of floating point operations  \\
-\hline
-\end{tabular}
-\end{center}
+The matrix is composed of $n_r$ rows and columns with $n_z$ non-zero
+per row leading to a total of $$n_c = n_r n_z$$ non-zero entries in
+the matrix. Each of these non-zero entry have one index of size $b_i$
+and $n_m$ values of size $b_x$. The matrices have a total size
+of $$s_M = n_c (b_i + b_x n_m) = n_r n_z (b_i + b_x n_m)$$
 
-- weights and vector elements are either all floats or all doubles. 
+If we assume an algorithm where the rows are processed the one after
+the one, the amount of memory that need to be written is exactly the
+size of the {\tt y} vector. (This assumption removes the possibility of
+cache partitioning techniques.) $$b_{wT} = s_y = n_v n_m b_x n_r$$
 
-Let us first estimate the memory (in a serial implementation) required to compute $y = Ax$ where $y$ has $n_r$ rows and $n_m$ columns, $A$ has
-$n_c=n_r n_z$ nonzero elements, and $x$ is a vector of $n_r$ rows and 
-$n_v$ columns. In this paper, we assume that the adjacency matrix for the
-$n_m$ matrices $A$ is constant, but the values stored in the various $A$ differ. We are therefore executing $n_v n_m$ spmv operations. The objective of course, is to minimize wall-clock time on the MIC.
+The amount of data read from memory depends highly on how the
+algorithm execute, how the matrix is structured. But in the best case
+the whole matrix is read a single time and the whole {\tt x} vector is
+read a single time from the main memory. (Assuming the whole vector
+{\tt x} is used is reasonnable since only oddly shaped matrix will
+left a dimension of the vector unused.) $$b_{rT} = s_M + s_x = n_r n_z
+(b_i + b_x n_m) + n_v b_x n_r$$
+ $$b_T = b_{rT} + b_{wT} =  n_r n_z (b_i + b_x n_m) + n_v b_x n_r (1 + n_m)$$
 
-The total number of bytes is 
-$$
-   b_T = n_r (n_z b_i + n_z b_x n_m + b_x n_v)
-$$
-The ratio of $b_T$ to the total cache  over all cores is given by
-$$
-   R = \frac{b_T}{b_c}
-$$
-Clearly, the memory $b_T$ is composed of the memory required by the vectors $x$, $y$, the nonzeros of $A$ and the elements of the matrix \ttt{col}, which stores the nonzero columns in each row, and is an integral component of the Ellpack compressed matrix format specification. While the Ellpack format is less general than CSR, it is the idea structure for the RBBF simulations we are intersted in, wherein the number of RBF nodes per stencil is constant throughout the 2D or 3D grid and in time. 
+Notice that there is no reason for a piece of the matrix to be read
+multiple times. But assuming that each element of the {\tt x} vector
+is read a single time is a strong assumption. If using a single core,
+it assumes that either the cache of the architecture can store all the
+{\tt x} vector or that the matrix is sufficiently well structured for
+causing no cache trashing. If using multiple core, this assumes that
+no element of the {\tt x} vectors will be used by multiple
+cores. \cite{Saule12} showed that there is very little cache trashing
+in practice, but it showed that having elements of the vectors used by
+multiple cores can have a significant impact on the performance
+(growing with $n_v$).
 
-Let us consider separately the number of bytes read from and written to memory.
-Both the matrix $n_m$ matrices $A$ \qes{need an index on $A$ since there are more than one?} and \ttt{col\_id} are read from memory, as is $x$, whereas, the vector$y$ are stored to memory. In a later sections, we will discuss the practical performance of these operations and estimate the dominant contributions. 
-\qes{We also wish to isolate the effects of read, write and compute operations as a function of the number of cores and threads to see how they influence the results and to estimate whether our results have the potential to scale similarly on systems with a higher number of cores. We "might" also compare are results against the best implementation using OpenCL, or do so in the paper.}
+On the other hand, in the worst case, every time the {\tt x} vector is
+accessed, the value needs to be transfered from memory again. So in
+total, there are as many transfers as the number of non zero in the
+matrix. Notice that most architectures do not allow to read the memory
+one byte at a time but always in a set of multiple bytes. On most
+cached architecture, that minimum size corresponds to the size $cl$ of
+a cacheline (typically 64 bytes). Notice that when there are multiple
+vectors, each non-zero element uses $n_v$ consecutive entries. The
+worst case number of bytes read and transfered are 
+$$B_{rT} = s_M + n_c cl \ceil{\frac{n_vb_x}{cl}} $$ 
+$$B_T = n_v n_m b_x n_r + n_r n_z \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)$$
 
-The total number of bytes read into memory is
-$$ 
-n_{rT} = n_r n_v b_x + n_r n_z b_i + n_r n_m n_z b_x
-$$
-while the total number of bytes written to memory is
-$$
-n_{wT} = n_r n_m n_v b_x
-$$
+In SpMV, each non-zero of the matrix requires two floating point
+operations: one for performing the multiplication and one for
+accumulating the result row-wise. Here we are dealing with $n_v n_m$
+simultaneous SpMVs and the number of floating point operations is
+$$O = 2 n_v n_m n_c = 2 n_v n_m n_z n_r$$
 
+The computation intensity is the amount of computations performed per
+byte transfered. In the worst case and in the best case, we have
+$$I_b = \frac{O}{b_T} = \frac{2 n_v n_m n_z}{n_z (b_i + b_x n_m) + n_v b_x (1 + n_m)}$$
+$$I_w = \frac{O}{B_T} = \frac{2 n_v n_m n_z}{n_v n_m b_x + n_z \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)}$$
 
+In the special case $n_v=n_m=1$ in single precision
+$$I_b = \frac{1}{4} \frac{ n_z }{ n_z + 1} \approx \frac{1}{4}$$
+$$I_w = \frac{n_z }{2  + 36  n_z} \approx \frac{1}{36}$$
 
-We compute the floating point operations of the SpMV with general $n_v$ and $n_m$. Calling the total number of floating point operations $N_F$, we find
-$$
-  N_F = 2 n_r n_z n_v m_m
-$$
-Two cases must be distinguished in regards to $x$. In the first, in a worst case scenario, each element 
-of $x$ is transferred $n_z$ times from memory. In the best case, the case of infinite cache, each element is transferred only once. Thus, we provide best and worst case scenarios and will compare against matrices $A$
-in each of these extreme situations to evaluate the degree we approach idea performance. 
-Thus the number of flops to bytes transferred is $N_F / (n_{rT} + n_{wT})$, which when written out, 
-\begin{eqnarray}
-N_{Fw} &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_z n_v  + n_r n_z b_i + n_r n_m n_z b_x + n_r n_m n_v b_x} \nonb \\
-    &=& \frac{2 n_v n_m}{b_x ( n_v + n_m + n_m n_v n_z^{-1}) + b_i}  \nonb \\
-%N_F &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_v (n_v+n_m) + n_r n_z b_i + n_r n_m n_z b_x} \nonb \\
-    %&=& \frac{2 n_z n_v n_m}{b_x (n_v+n_m) + n_z (b_i + n_m b_x)} \nonb 
-\end{eqnarray}
-while in the best case, 
-\begin{eqnarray}
-N_{Fb} &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_v  + n_r n_z b_i + n_r n_m n_z b_x + n_r n_m n_v b_x} \nonb \\
-    &=& \frac{2 n_v n_m}{b_x ( n_v n_z^{-1} + n_m  + n_m n_v n_z^{-1}) + b_i } 
-\end{eqnarray}
-In the special case $n_v=n_m=1$, 
-$$
-N_{Fw} = \frac{2}{b_x (2+n_z^{-1}) + b_i}
-$$
-and 
-$$
-N_{Fb} = \frac{2}{b_x (1 + 2 n_z^{-1}) + b_i}
-$$
-Neglecting $2$ compared to $n_z$, we find that $N_F = 2/(b_i+b_x)$, which leads to 
-$N_F = 2/8=1/4$ and  $N_F=2/12=1/6$ for single and double precision, respectively. 
-In the general case, in the condition of $n_z$ large compared to 2, 
-$$
-N_F =  \frac{2 n_v n_m}{n_m b_x + b_i}
-$$ 
-The case are interested in is $n_m=n_v=4$, so that
-$$
-N_F = \frac{8}{ b_x + 1}
-$$ which is 8/5 and 8/9 in single and double precision, respectively.
-In single and double precision, we get $N_F=32/36=8/5$ and
-$N_F=32/68=8/9$, respectively.  The third column of the following
-table (TABLE ???) is the maximum achievable Gflop rate, assuming a
-maximum memory transfer speed of $150 Gflops$ (see earlier benchmark
-in this paper).  (higher speeds can be achieved in practice, upwards
-of 190 Gflops (Saule \etal\cite{}), but we use a benchmark code
-similar to our current algorithm, without the indirect acessing
-required for $x$, but keeping the same use of vector registers used in
-our fastest implementation. (DO WE INCLUDE the CODE?)
+In the special case $n_v=n_m=4$ in single precision
+$$I_b = \frac{32 n_z }{ n_z 20 + 80} \approx \frac{32}{20} = \frac{8}{5} $$
+$$I_w = \frac{32 n_z }{64 + n_z 84} \approx \frac{32}{84} = \frac{8}{21} $$
 
-\begin{center}
-\begin{tabular}{|c|c|c|}
-\hline
-Precision & $n_m=n_v=1$ & $n_m=n_v=4$     \\
-\hline
-single    &  1/4  (37.5)     &   8/9 (133) \\
-double    &  1/6  (25.5)     &   8/17 (62) \\
-\hline
-\end{tabular}
-\end{center}
-(With a 190 Gflop peak memory rate, maximum performance is 47.5 and
-170 Mflops for the 1/1 case, while we calculate 32 and 90 Gflops in
-the 4/4/ case.
+\begin{table}
+  \centering
+  \begin{tabular}{|l|r|r|r|r|}
+    \hline
+                           & v1m1  & v1m4  & v4m1   & v4m4  \\
+    \hline
+    Best Single Precision  & 36.36 & 58.18 & 133.33 & 213.33\\
+    Worst Single Precision &  4.15 & 14.20 &  16.55 &  55.81\\
+    Best Double Precision  & 24.00 & 32.21 &  85.71 & 117.07\\
+    Worst Double Precision &  3.93 & 11.88 &  15.58 &  46.15\\
+    \hline
+  \end{tabular}
 
-Let us also calculate the flop to byte ratio for the case of 1/4 and
-4/1 ($n_v$/$n_m$). One notices the symmetry with respect to $n_v$ and
-$n_m$.  One gets $N_F = \frac{2*4}{5 b_x + 4}$ equal to 8/24 (=.33)
-and 8/44 (=.18), in single and double precision, respectively, which
-corresponds to 49 and 27 Gflops if a maximum of 150 Gflops is assumed.
-As $n_m$ and $n_v$ keep increasing, $N_F$ tends towards $2/b_x$, equal
-to $0.5$ and $0.25$ respectively for single and double precision,
-which leads to peak speed of 75 and 37.5 Gflops.
-
-In single precision, our best benchmarks achieve 20 Gflops for single
-precisions for on matrix/one vector, and 100 Glops for the 4/4
-matrix/vector case, or 53\% and 75\% of peak performance,
-respectivey. We conclude that we achieve a higher percentage of peak
-performance for this algorithm when calculating 16 output $y$
-vectors. The results are even more impressive when measured against
-the peak perforance of 2Tflops of the MIC in double precision.
+  \caption{Estimation of performance in GFlop/s at 150GB/s for a matrix of $n_z = 32$}
+\end{table}
 
 
 
@@ -533,24 +520,28 @@ operations in our code, which we'll explain in the text.
 \def\loadunpack{\ttt{\_mm512\_mask\_loadunpacklo\_epi32}}
 \def\castitops{\ttt{\_mm512\_castsi512\_ps}}
 \def\castpstoi{\ttt{\_mm512\_castps\_si512\_ps}}
-%
-\begin{center}
-\begin{tabular}{|l|l|}
-\hline
-\loadps &  load 16 consecutive floats to register\\
-\fmadps &  multiply/add of 16 floats\\
-\gatherps &  gather 16, possibly disconnected floats from memory\\
-\swizzleps &  reorder a channel, and duplicate across channels\\
-\storenrngops &  store 16 floats to memory without register rewrite or reordering\\
-\castpstoi & reinterpret 16 floats as integers\\
-\castitops & reinterpret 16 integers as floats\\
-\permute &  permute channels; do not change individual channels\\
-\intmask &  \\
-\loadunpack &  \\
-\hline
-\end{tabular}
-\end{center}
-%
+
+\begin{figure*}
+  %
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      \loadps &  load 16 consecutive floats to register\\
+      \fmadps &  multiply/add of 16 floats\\
+      \gatherps &  gather 16, possibly disconnected floats from memory\\
+      \swizzleps &  reorder a channel, and duplicate across channels\\
+      \storenrngops &  store 16 floats to memory without register rewrite or reordering\\
+      \castpstoi & reinterpret 16 floats as integers\\
+      \castitops & reinterpret 16 integers as floats\\
+      \permute &  permute channels; do not change individual channels\\
+      \intmask &  \\
+      \loadunpack &  \\
+      \hline
+    \end{tabular}
+  \end{center}
+  %
+  \caption{List of MIC vectorial instructions used}
+\end{figure*}
 In the vector instructions, \ttt{ps} refers to a float (4 bytes),
 while \ttt{epi32} refers to a 4-byte integer. Although we do not
 discuss double precision in this paper, \ttt{ds} refers to an 8 byte
