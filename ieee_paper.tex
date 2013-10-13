@@ -129,25 +129,25 @@ for sparse linear algebra compared to more classical CPU or GPU
 architecture~\cite{}.
 
 In Section~\ref{sec:rbf} we present the computation of RBFs and how it
-can be expressed 16 multiplication of 4 vectors by 4
-matrices. Section~\ref{sec:model} presents an estimation of the
-instruction intensity of various form of the computations and we show
-that a 5- to 6- fold improvement can be expected when computing the 16
-multiplications simultaneously and reach a total of about 200
-Gflop/s. This performance represents approximatively 10\% of the
-available flop/s of a Knight Corner coprocessor. Therefore, it is
-necessary to have implementations that perform the computation in as
-little amount of instructions as possible. We describe in
-Section~\ref{sec:imple} the details of the MIC architecture and how to
-use specialized load, store, swizzle and permutation instruction to
-efficiently bring the data in the vector registers to be
-processed. Section~\ref{sec:expe} gives some experimental result about
-the amount of bandwidth that can be achieved depending on how the spmv
-kernel is written and the actual performance of the various kernel on
-multiple classes of matrices some generated for analysis purpose and
-some extracted from and RBF application. A performance of xxx GFlop/s
-is achieved on real scenario. Concluding remarks and perspectives are
-provided in Section~\ref{sec:ccl}.
+can be expressed 16 multiplication of 4 vectors by 4 sparse matrices
+with a common sparsity pattern. Section~\ref{sec:model} presents an
+estimation of the instruction intensity of various form of the
+computations and we show that a 5- to 6- fold improvement can be
+expected when computing the 16 multiplications simultaneously and
+reach a total of about 200 Gflop/s. This performance represents
+approximatively 10\% of the available flop/s of a Knight Corner
+coprocessor. Therefore, it is necessary to have implementations that
+perform the computation in as little amount of instructions as
+possible. We describe in Section~\ref{sec:impl} the details of the MIC
+architecture and how to use specialized load, store, swizzle and
+permutation instruction to efficiently bring the data in the vector
+registers to be processed. Section~\ref{sec:expe} gives some
+experimental result about the amount of bandwidth that can be achieved
+depending on how the spmv kernel is written and the actual performance
+of the various kernel on multiple classes of matrices some generated
+for analysis purpose and some extracted from and RBF application. A
+performance of xxx GFlop/s is achieved on real scenario. Concluding
+remarks and perspectives are provided in Section~\ref{sec:ccl}.
 
 \section{Derivatives of Radial Basis Functions}
 \label{sec:rbf}
@@ -162,11 +162,11 @@ provided in Section~\ref{sec:ccl}.
 \section{Experimental Validation}
 \label{sec:expe}
 
-\input{problem_statement}
-\input{intel_phi}
-\input{tables_and_figures}
-\input{bandwidth}
-\input{notation}
+%\input{problem_statement}
+%\input{intel_phi}
+%\input{tables_and_figures}
+%\input{bandwidth}
+%\input{notation}
 
 \section{Conclusions and Perspectives}
 \label{sec:ccl}
