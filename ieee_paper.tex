@@ -12,6 +12,18 @@
 \def\ttt#1{{\tt #1}}
 \def\bold#1{{\bf #1}}
 
+\usepackage{soul}
+\usepackage{xspace}
+\usepackage{color} 
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\usepackage[colorlinks=true,% 
+  linkcolor=red,% 
+  citecolor=darkgreen,%
+  urlcolor=blue]{hyperref}
+
+
+\newcommand{\todo}[1]{\color{red}\textbf{\hl{#1}}\color{black}\xspace}
+
 \def\qes#1{}
 \def\es#1{}
 \def\ge#1{}
@@ -153,20 +165,438 @@ remarks and perspectives are provided in Section~\ref{sec:ccl}.
 \label{sec:rbf}
 
 
+
+%In the theory of Radial Basis Functions Finite-Difference (RBFFD),
+%derivatives of a function $f(\rvec)$ at node $i$ are expressed as a
+%linear combination of the function values at the stencil center and
+%the nodes connected to node $i$ (Figure~\ref{fig:rbf_stencils}). Thus
+%$y$ is a discrete derivative of the vector $x$.
+
+In this paper, we propose yet a new idea, that is applicable to the
+world of Finite-Difference Radial Basis functions (RBF-FD). A radial
+basis functions refers to a set of shifted radially symmetric
+functions $\phi_i(r) =\phi{||\xvec-\xvec_i||}$ centered at
+$\xvec_i$\cite{}. Any function $f(\xvec)$ defined in a domain $\Omega$
+can be expanded in this basis according to
+\begin{equation}
+f(\xvec) =  \sum_i w_i \phi_i(\xvec) \label{eq:rbf}
+\end{equation}
+% Wrong label eq:rbf in document 
+Given function values at a set of discrete points $x_i$, one inverts
+linear system (\ref{eq:rbf}) to obtain a set of weights $w_j$. Given a
+set of $N$ RBF nodes, the matrix to invert is dense. Derivatives of
+$f(\xvec)$ result from the differentiation of Eq. (\ref{eq:rbf}). For
+very large problems, this is an computationally expensive since the
+RBFs do not form an orthogonal basis, nor are they amenable to tensor
+decomposition in the three coordinate directions. Rather, their
+strength is the ability to randomly distribute nodes across complex
+physical domains, and have an implementation that is independent of
+dimensionality.
+
+To alleviate the cost of a global approach, researchers \cite{} expand
+$f(\xvec)$ in a local region of $x_i$. Thus,
+$$
+f(\xvec) =  \sum_{i=0}^{n_s} w_i \phi_i(\xvec) \label{eq:rbf}
+$$
+where one only considers a local set of $n_s$ neighbors of of point $x_j$. 
+Finite-difference RBF expresses the derivative of $f(\xvec)$ at $x_j$ as a linear
+combination of $f(\xvec)$ at the $n_s$ neighbors. Thus, 
+$$
+f = A w
+$$ where $f$ is the vector of function values at the $n_s$ stencil
+points (including the center point $x_j$. The matrix $A$ is a function
+of $\phi_{ij}(\xvec) =\phi(||x_i-x_j||)$. This leads to the $n_s$
+weight values $w = A^{-1} f$. The derivative of Eq. \ref{eq:rbf}
+evaluated at $x_j$ gives
+$$
+   f'_j = \sum_{i=0}^{n_s} w_i \phi'_{ij}
+$$
+Substituting the vector of weights $w$ leads to 
+$$
+  f'_j = \sum_{i=0}^{n_s} \alpha_i f_i
+$$
+The derivative evaluation at all points of the domain $\Omega$, notwithstanding boundary conditions, takes the form
+$$
+  y = A x
+$$ 
+where $x$ is the souce vector of function values, and $y$ is the
+vector of derivative values. The matrix $A$ is called a derivative
+matrix. In the current litterature, the number of stencil points is a
+fixed value, independent of the node under consideration\cite{}. The
+computation of a single derivative has been reduced to a SpMV, where
+each row has $n_s$ nonzeros. Because the sparsity of each row is
+constant, ELLPACK~\cite{} becoes the most appropriate matrix
+compression scheme\cite{}. In practice, $n_s=32$ in two-dimensional
+flows and 64 or 100 for three-dimensional flows. These numbers are
+similar to what is used in finite-element codes.
+
+Many problems in fluid dynamics and in the geosciences require the solution to
+transport equations of the form
+$$
+\pf{Q}{t} = f(Q,Q_x, Q_y, Q_z, \Laplacian{Q})
+$$ 
+where $Q$ is a vector of unknowns (3 components of velocity,
+pressure, temperature). Thus, it is often necessary to compute the $x$
+derivative of multiple functions, typically four for the Euler
+equations, or five for the Navier-Stokes equations. Multiple
+right-hand sides transform a SpMV into a SpMM (Sparse Matrix/dense
+Matrix multiplication), which improves register utilization and
+decreases cache misses by vectorizing over the multiple source
+vectors. Further improvements are possible by recognizing that
+different derivative matrices (x,y,z and Laplacian for example), have
+the same sparsity distribution; only the weight change.  Thus,
+alternative to computing a derivative of multiple functions, we can
+calculate multiple derivatives of a single functions. The increased
+memory bandwidth due to an increase in the number of derivaive
+matrices is offset by better cache utilization, leading to an overall
+benefit.
+
+
+**** PUT ELSEWHERE OR ELIMINATE? ****
+
+When solving a one dimensional system of PDEs, one might require an
+$x$ derivative of multiple functions. For example, the Euler equations
+require the $x$ derivative of the three components of velocity and
+pressure. In this case, there are $n_v=4$ vectors $x^k$,
+$k=0,\cdots,3$.
+
+Thus for each vector element $y_i$, we compute $y_i = \sum_j A_{ij}
+x_j$. If $A_i$ is row $i$ of $A$, $y_i$ is simply the dot product $A_i
+x$. The next level of generality is to consider $n_v$ vectors $x^k$,
+$k=0,\cdots,n_v-1$. Whatever the spmv implementation, one achieves
+improved performance if the matrix formed from the columns $x^k$ are
+stored in row major order. Thus, $x^0_0,x^1_0,\cdots,x^{n_v-1}_0$, are
+stored in consecutive memory location. The random access of the
+elements of $x$ is thus reduced. Maximum efficiency is achieved when
+$n_v=16$ floats or $8$ doubles, given that cache lines take 64
+bytes. We will benchmark this case, labeled $Svn$, where $n$ refers to
+the number of vectors (Iv4 uses four vectors). The $S$ refers to singe
+precision. A double precision run is labelled $Dvn$.
+
+Alternatively, when solving a PDE, one might require derivatives of a
+given scalar function with respect to coordinate directions $x$, $y$,
+$z$. Second order operators of often required, such as a second
+derivative with respect to $x$ or a Laplacian operator. In the RBFFD
+formulation, on can compute different derivatives using the same
+stencil, but with different weights. In other words, the adjacency
+matrix that corresponds to $A$ remains constant, but the matrix
+elements of $A$ change with the particular derivative.  In this case,
+label with a superscript $l$ the particular matrix $A^k$. Since the
+adjacency matrix is assumed invariant, there is only need for a single
+matrix \ttt{C{ij}}. In Ellpack format, each row is of constant size
+(the number of nonzeros per row of $A$. $C_{ij}$ is the column number
+that locates the $j^{th}$ nonzero in row $i$ of $A$.
+
+
+\todo{Must rewrite the above to make it more focused on the
+  application. Remove the architectural/implementation details such as
+  using ELLPACK. Let's focus on on why this computation is important
+  and how does the 16 multiplication appears in the equations.}
+
+\def\wide{2.5in}
+\newfig{figures/rbf_stencils.pdf}{\wide}{RBFFD Stencils. Each node of the mesh is connected to $n_z-1$ stencil nodes in addition to itself. In the figure, node $A$ is connected to $B$, but $B$ is {\em not\/} connected to $A$. Thus adjacency graph of $A$ is not-symmetric. This must be corrected when reducing the bandwidth of $A$ with a Cuthill\-McKee algorithm, which assumes symmetry.}{fig:rbf_stencils}
+
+\newfig{figures/matrix_structure.pdf}{\wide}{Matrix Structure.}{fig:mat_struct}
+
+
 \section{Modelization of the Potential Improvements}
 \label{sec:model}
+
+
+In this section, we introduce some variables that will prove useful to 
+describe our experiments and construct a working model to examine the pros and cons of various assumptions. While deceptively simple, the MIC architecture requires a careful consideration of the properties of cache, memory bandwidth, cores and their interaction, threads per core (1-4), parallelization and vectorization. We will also seek to perform experiments that measure the best possible performance of the SPMV with maximum and minimum cache thrashing \qes{same as cache misses?}, with and without floating point operations, and with and without memory transfer. At the onset, we expect the dominant cost to e the transfer of the vector $x$ from memory, because contiguous elements of $x$ are not accessed sequentially. 
+
+Relevant notation is contained in Table~\ref{tab:not}. 
+
+\begin{center}
+\begin{tabular}{|c|l|}
+%\hline
+%& & \\
+\hline
+$b_i$ & number of bytes per int \\
+$b_x$ & number of bytes per float(4)/double(8) \\
+$n_z$ & number of nonzeros per row $A$ \\
+$n_r$ & number of rows of $A$ \\
+$n_c$ & total number of elements in $col_id$: $n_z n_r$ \\
+$b_w$ & matrix bandwidth \\
+$b_c$ & total L2 cache per core ($512k=2^{19}$ bytes) \\
+$b_T$ & theoretical minimum number of bytes transferred  \\
+$b_{wT}$ & theoretical minimum number of bytes written to memory  \\
+$b_{rT}$ & theoretical minimum number of bytes read from memory  \\
+$n_C$ & total number of cores used  \\
+$t_C$ & total number of threads used per core \\
+$\rho$ & average cache density  \\
+$n_v, n_m$ & number of vectors and matrices \\
+$n_F$ & total number of floating point operations  \\
+\hline
+\end{tabular}
+\end{center}
+
+- weights and vector elements are either all floats or all doubles. 
+
+Let us first estimate the memory (in a serial implementation) required to compute $y = Ax$ where $y$ has $n_r$ rows and $n_m$ columns, $A$ has
+$n_c=n_r n_z$ nonzero elements, and $x$ is a vector of $n_r$ rows and 
+$n_v$ columns. In this paper, we assume that the adjacency matrix for the
+$n_m$ matrices $A$ is constant, but the values stored in the various $A$ differ. We are therefore executing $n_v n_m$ spmv operations. The objective of course, is to minimize wall-clock time on the MIC.
+
+The total number of bytes is 
+$$
+   b_T = n_r (n_z b_i + n_z b_x n_m + b_x n_v)
+$$
+The ratio of $b_T$ to the total cache  over all cores is given by
+$$
+   R = \frac{b_T}{b_c}
+$$
+Clearly, the memory $b_T$ is composed of the memory required by the vectors $x$, $y$, the nonzeros of $A$ and the elements of the matrix \ttt{col}, which stores the nonzero columns in each row, and is an integral component of the Ellpack compressed matrix format specification. While the Ellpack format is less general than CSR, it is the idea structure for the RBBF simulations we are intersted in, wherein the number of RBF nodes per stencil is constant throughout the 2D or 3D grid and in time. 
+
+Let us consider separately the number of bytes read from and written to memory.
+Both the matrix $n_m$ matrices $A$ \qes{need an index on $A$ since there are more than one?} and \ttt{col\_id} are read from memory, as is $x$, whereas, the vector$y$ are stored to memory. In a later sections, we will discuss the practical performance of these operations and estimate the dominant contributions. 
+\qes{We also wish to isolate the effects of read, write and compute operations as a function of the number of cores and threads to see how they influence the results and to estimate whether our results have the potential to scale similarly on systems with a higher number of cores. We "might" also compare are results against the best implementation using OpenCL, or do so in the paper.}
+
+The total number of bytes read into memory is
+$$ 
+n_{rT} = n_r n_v b_x + n_r n_z b_i + n_r n_m n_z b_x
+$$
+while the total number of bytes written to memory is
+$$
+n_{wT} = n_r n_m n_v b_x
+$$
+
+
+
+We compute the floating point operations of the SpMV with general $n_v$ and $n_m$. Calling the total number of floating point operations $N_F$, we find
+$$
+  N_F = 2 n_r n_z n_v m_m
+$$
+Two cases must be distinguished in regards to $x$. In the first, in a worst case scenario, each element 
+of $x$ is transferred $n_z$ times from memory. In the best case, the case of infinite cache, each element is transferred only once. Thus, we provide best and worst case scenarios and will compare against matrices $A$
+in each of these extreme situations to evaluate the degree we approach idea performance. 
+Thus the number of flops to bytes transferred is $N_F / (n_{rT} + n_{wT})$, which when written out, 
+\begin{eqnarray}
+N_{Fw} &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_z n_v  + n_r n_z b_i + n_r n_m n_z b_x + n_r n_m n_v b_x} \nonb \\
+    &=& \frac{2 n_v n_m}{b_x ( n_v + n_m + n_m n_v n_z^{-1}) + b_i}  \nonb \\
+%N_F &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_v (n_v+n_m) + n_r n_z b_i + n_r n_m n_z b_x} \nonb \\
+    %&=& \frac{2 n_z n_v n_m}{b_x (n_v+n_m) + n_z (b_i + n_m b_x)} \nonb 
+\end{eqnarray}
+while in the best case, 
+\begin{eqnarray}
+N_{Fb} &=& \frac{2 n_r n_z n_v n_m}{b_x n_r n_v  + n_r n_z b_i + n_r n_m n_z b_x + n_r n_m n_v b_x} \nonb \\
+    &=& \frac{2 n_v n_m}{b_x ( n_v n_z^{-1} + n_m  + n_m n_v n_z^{-1}) + b_i } 
+\end{eqnarray}
+In the special case $n_v=n_m=1$, 
+$$
+N_{Fw} = \frac{2}{b_x (2+n_z^{-1}) + b_i}
+$$
+and 
+$$
+N_{Fb} = \frac{2}{b_x (1 + 2 n_z^{-1}) + b_i}
+$$
+Neglecting $2$ compared to $n_z$, we find that $N_F = 2/(b_i+b_x)$, which leads to 
+$N_F = 2/8=1/4$ and  $N_F=2/12=1/6$ for single and double precision, respectively. 
+In the general case, in the condition of $n_z$ large compared to 2, 
+$$
+N_F =  \frac{2 n_v n_m}{n_m b_x + b_i}
+$$ 
+The case are interested in is $n_m=n_v=4$, so that
+$$
+N_F = \frac{8}{ b_x + 1}
+$$
+which is 8/5 and 8/9 in single and double precision, respectively. 
+In single and double precision, we get $N_F=32/36=8/5$ and $N_F=32/68=8/9$, respectively.
+The third column of the following table (TABLE ???) is the maximum achievable Gflop rate, assuming 
+a maximum memory transfer speed of $150 Gflops$ (see earlier benchmark in this paper). 
+(higher speeds can be achieved in practice,  upwards of 190 Gflops (Saule \etal\cite{}), but we use
+a benchmark code similar to our current algorithm, without the indirect acessing required for $x$, but keeping the same use of vector registers used in our fastest implementation. (DO WE INCLUDE the CODE?)
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Precision & $n_m=n_v=1$ & $n_m=n_v=4$     \\
+\hline
+single    &  1/4  (37.5)     &   8/9 (133) \\
+double    &  1/6  (25.5)     &   8/17 (62) \\
+\hline
+\end{tabular}
+\end{center}
+(With a 190 Gflop peak memory rate, maximum performance is 47.5 and 170 Mflops for the 1/1 case, while we calculate 32 and 90 Gflops in the 4/4/ case. 
+
+Let us also calculate the flop to byte ratio for the case of 1/4 and 4/1 ($n_v$/$n_m$). One notices the symmetry with respect to $n_v$ and $n_m$. 
+One gets $N_F = \frac{2*4}{5 b_x + 4}$ equal to 8/24 (=.33) and 8/44 (=.18), in single and double precision, respectively, which corresponds to 49 and 27 Gflops if a maximum of 150 Gflops is assumed.
+As $n_m$ and $n_v$ keep increasing, $N_F$ tends towards $2/b_x$, equal to $0.5$ and $0.25$ respectively for single and double precision, which leads to peak speed of 75 and 37.5 Gflops.
+
+In single precision, our best benchmarks achieve 20 Gflops for single precisions for on matrix/one vector, and 100 Glops for the 4/4 matrix/vector case, or 53\% and 75\% of peak performance, respectivey. We conclude that we achieve a higher percentage of peak performance for this algorithm when calculating 16 output $y$ vectors. The results are even more impressive when measured against the peak perforance of 2Tflops of the MIC in double precision.
+
+
+
+\newfig{figures/gflops_peak.png}{2.5in}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:gflops_peak_perf}
+
+\newfig{figures/speedup_wrt_base.png}{\wide}{Speedup relative to base case using one matrix and one vector.}{fig:speedup}
+
+
+
 
 \section{Efficient Implementation on the Intel Xeon Phi processor}
 \label{sec:impl}
 
+\subsection{Knights Corner}
+
+In this work, we use a pre-release KNC card SE10P. The card has 8
+memory controllers where each of them can execute 5.5 billion
+transactions per second and has two 32-bit channels. That is the
+architecture can achieve a total bandwidth of 352GB/s aggregated
+across all the memory controllers. There are 61 cores clocked at
+1.05GHz. The cores’ memory interface are 32-bit wide with two channels
+and the total bandwidth is 8.4GB/s per core. Thus, the cores should be
+able to consume 512.4GB/s at most. However, the bandwidth between
+the cores and the memory controllers is limited by the ring network
+which connects them and theoretically supports at most 220GB/s.
+
+Each core in the architecture has a 32kB L1 data cache, a 32kB L1
+instruction cache, and a 512kB L2 cache. The architecture of a core is
+based on the Pentium architecture: though its design has been updated
+to 64-bit. A core can hold 4 hardware contexts at any time. And at
+each clock cycle, instructions from a single thread are executed. Due
+to the hardware constraints and to overlap latency, a core never
+executes two instructions from the same hardware context
+consecutively. In other words, if a program only uses one thread, half
+of the clock cycles are wasted. Since there are 4 hardware contexts
+available, the instructions from a single thread are executed
+in-order. As in the Pentium architecture, a core has two di↵erent
+concur- rent instruction pipelines (called U-pipe and V-pipe) which
+allow the execution of two instructions per cycle. However, some
+instructions are not available on both pipelines: only one vector or
+floating point instruction can be executed at each cycle, but two ALU
+instructions can be executed in the same cycle.
+
+Most of the performance of the architecture comes from the vector
+processing unit. Each of Intel Xeon Phi’s cores has 32 512-bit SIMD
+registers which can be used for double or single precision, that is,
+either as a vector of 8 64-bit values or as a vector of 16 32-bit
+values, respectively. The vector processing unit can perform many
+basic instructions, such as addition or division, and mathematical
+operations, such as sine and sqrt, allowing to reach 8 double
+precision operations per cycle (16 single precision). The unit also
+sup- ports Fused Multiply-Add (FMA) operations which are typically
+counted as two operations for benchmarking purposes. Therefore, the
+peak performance of the SE10P card is 1.0248 Tflop/s in double
+precision (2.0496 Tflop/s in single precision) and half without FMA.
+
+\todo{rewrite that to make sure it fits the description of the card
+  used in the experiments. This text with copy/pasted from the PPAM
+  paper}
+
+\subsection{Bringing the data in vector register}
+
+
+Registers on the MIC are 512 bits wide, and can store 16 floats or 8
+doubles. It is through these registers that the \#SIMD pragma is able
+to achieve vectorization. (In comparison to OpenCL or CUDA, one can
+think of these registers as a warp.)  We use the following vector
+operations in our code, which we'll explain in the text.
+
+\def\loadps{\ttt{\_mm512\_load\_ps}}
+\def\loadds{\ttt{\_mm512\_load\_ds}}
+\def\fmadps{\ttt{\_mm512\_fmad\_ps}}
+\def\gatherps{\ttt{\_mm512\_i32gather\_ps}}
+\def\swizzleps{\ttt{\_mm512\_swizzle\_ps}}
+\def\storenrngops{\ttt{\_mm512\_storenrngo\_ps}}
+\def\castsi{\ttt{\_mm512\_castsi512\_ps}}
+\def\permute{\ttt{\_mm512\_permute4f128\_epi32}}
+\def\intmask{\ttt{\_mm512\_int2mask}}
+\def\loadunpack{\ttt{\_mm512\_mask\_loadunpacklo\_epi32}}
+\def\castitops{\ttt{\_mm512\_castsi512\_ps}}
+\def\castpstoi{\ttt{\_mm512\_castps\_si512\_ps}}
+%
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\loadps &  load 16 consecutive floats to register\\
+\fmadps &  multiply/add of 16 floats\\
+\gatherps &  gather 16, possibly disconnected floats from memory\\
+\swizzleps &  reorder a channel, and duplicate across channels\\
+\storenrngops &  store 16 floats to memory without register rewrite or reordering\\
+\castpstoi & reinterpret 16 floats as integers\\
+\castitops & reinterpret 16 integers as floats\\
+\permute &  permute channels; do not change individual channels\\
+\intmask &  \\
+\loadunpack &  \\
+\hline
+\end{tabular}
+\end{center}
+%
+In the vector instructions, \ttt{ps} refers to a float (4 bytes), while \ttt{epi32} refers to a 4-byte integer. Although we do not discuss double precision in this paper, \ttt{ds} refers to an 8 byte double precision real number (i.e., \loadds). 
+Each vector register is broken up into four channels of 128 bits each. It is possible to interchange these channels at a cost of a "few" \qes{exact numbers?} cycles, and it is also possible to execute swizzle operations within a channel. For example, if the 128 bytes of each channel are labelled as $ABCD$, the vector instruction 
+\ttt{\_mm512\_swizzle\_ps(v, \_MM\_SWIZ\_REG\_AAAA)}
+replaces each channel by $AAAA$. 
+
+Here is a function that reads in four floats (a,b,c,d) and creates the 16-float vector dddd,cccc,bbbb,aaaa: 
+\begin{verbatim}
+__m512 read_aaaa(float* a)                                                              
+{
+    int int_mask_lo = (1 << 0) + (1 << 4) + (1 << 8) + (1 << 12);
+    __mmask16 mask_lo = _mm512_int2mask(int_mask_lo);
+    __m512 v1_old;
+    v1_old = _mm512_setzero_ps();
+    v1_old = _mm512_mask_loadunpacklo_ps(v1_old, mask_lo, a);
+    v1_old = _mm512_mask_loadunpackhi_ps(v1_old, mask_lo, a);
+    v1_old = _mm512_swizzle_ps(v1_old, _MM_SWIZ_REG_AAAA);
+    return v1_old;
+}
+\end{verbatim}
+
+Here is a function that takes four floats from float register \ttt{v1}, and 
+places them in each of the four lanes. Because the permulation function only 
+operates on 4-byte integers, it is necessary to convert (in place) each float
+to an integer (the bit structure is not changed), permute the lanes and cast
+the integers back to floats (with no modification of the bit structure)
+\begin{verbatim}
+__m512 permute(__m512 v1, _MM_PERM_ENUM perm)                                           
+{
+    __m512i vi = _mm512_castps_si512(v1);
+    vi = _mm512_permute4f128_epi32(vi, perm);
+    v1 = _mm512_castsi512_ps(vi);
+    return v1;
+}
+\end{verbatim}
+
+
+\newfig{figures/swizzling.pdf}{\wide}{Duplication of the first four bytes of each channel across the entire channel.}{fig:swizzling}
+\newfig{figures/channel_permutation.pdf}{\wide}{Channel Permutations on the MIC}{fig:permutation}
+\newfig{figures/tensor_product.pdf}{\wide}{Tensor scalar product using channels and swizzling.}{fig:tensor_product}
+
+
+
 \section{Experimental Validation}
 \label{sec:expe}
 
-%\input{problem_statement}
-%\input{intel_phi}
-%\input{tables_and_figures}
-%\input{bandwidth}
-%\input{notation}
+\subsection{Instances}
+
+\todo{How were instances generated. Detail the different type of
+  instances and the rational for trying them. Detail how the realistic
+  instances were generated. Explain matrix ordering (Kutill McKee).}
+
+\subsection{Bandwidth}
+
+\newfig{figures/test1_readwrite.png}{\wide}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions.}{fig:band_rw}
+
+\newfig{figures/test1_gather.png}{\wide}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions.}{fig:band_gather}
+
+\newfig{figures/test3_gather.png}{\wide}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions. The greater speed of the cpp version is obtained throught the use of \ttt{\#Ivdep} {\em and\/} \ttt{\_\_assumed\_aligned}. All memory is aligned on 64 bytes.}{fig:band_gather_ivdep}
+
+\subsection{Computations}
+
+\newfig{figures/host_test1_readwrite_no_temporal_hint.png}{\wide}{Bandwidth performance on the host under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without AVX vector instructions. The speed on the CPU matches the speed with AVX instructions. All memory is aligned on 32 bytes.}{fig:read_write}
+
+\newfig{figures/mic_performance_nb_threads.png}{\wide}{Performance of $y=Ax$ on the MIC. Squares: base 1/1 case, solid circles: 4/4 case implemented in C++, solid triangles: 4/4 case implemented with MIC vector instructions. $-O3$ compilation options. Each group consists of four cases: grids of $64^3$ and $96^3$ with and without Reverse Cuthill McKee.}{fig:mic_performance}
+
+% NOTES: why is result the same at 32 processors. I should find out the distribution of threads. 16 threads means one thread on each of 16 cores (YES, I BELIEVE), or 2 threads on each of 8 cores.} Must run the experiment with different nodes orderings. 
+%export OMP_SCHEDULE=guided,64    (I should redo experiment with Dynamic or static and compact for KMP_AFFINITY
+%export KMP_AFFINITY=compact
+% MUST PRINT OUT OMP_SCHEDULE and KMP_AFFINITY inside the program. 
+% WHY the very high performance with very few nodes? STRANGE. 
+\newfig{figures/host_performance.png}{\wide}{Performance of $y=Ax$ on the Host. Squares: base 1/1 case, solid circles: 4/4 case implemented in C++, solid triangles: 4/4 case implemented with MIC vector instructions. $-O3$ compilation options. The four colors distinguish grid resolution and whether or not
+Reverse Cuthill McKee is applied.}{fig:host_performance}
+
 
 \section{Conclusions and Perspectives}
 \label{sec:ccl}
