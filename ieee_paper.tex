@@ -733,8 +733,9 @@ maximum possible performance. The maximum possible speed for the 1/1
 case is around 40 Gflop/s, of which we achieve 20 Gflop/s. On matrices
 that exceed the cache, a reverse Cuthill-McKee is applied to reduce the
 bandwidth, with an associated speedup of 30\% up to 135 Gflop/s. Our
-optimal implementation makes use of the AVX instruction set \todo{that's not AVX on MIC, not sure what the name is}, which
-makes use of swizzling and channel swapping operations for an
+optimal implementation makes use of the (as yet unreleased) IMCI MIC instruction set 
+%\todo{that's not AVX on MIC, not sure what the name is}, 
+which includes a number of swizzling and channel swapping operations, for an
 extremely efficient tensor product implementation. A straightforward
 implementation without vectorization runs at around 35 Gflops, or 16\% of peak
 performance. RCM has no effect because the number of floating point

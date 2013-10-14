@@ -357,6 +357,5 @@ Each node: 512 kbyte L2 cache = 128k floats (or 64k doubles).
 Cases: single vector: Nr rows, 32 nonzeros ==> 7.86 10^6 / nr  = 1 ==> nr = 7.86 rows. 
 If nv=4, nr = 1.92E6 rows fit in memory. (if we assume x is the dominant user of cache). 
 Beyond this, cache is no longer sufficient (across all nodes). 
-
-
 ----------------------------------------------------------------------
+Regarding worse and best performance. Let us just calculate flop to byte ratios. 
