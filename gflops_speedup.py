@@ -23,7 +23,8 @@ def ratio(nv, nm, bx, nz):
     if nv == 1:
         rworst = (2.*nv*nm)/(bx*(16.+nm+nm*nv/float(nz))+bi)
     elif nv == 4:
-        rworst = (2.*nv*nm)/(bx*(16.*nv+nm+nm*nv/float(nz))+bi)
+        rworst = (2.*nv*nm)/(bx*(16.+nm+nm*nv/float(nz))+bi)
+        #rworst = (2.*nv*nm)/(bx*(16.*nv+nm+nm*nv/float(nz))+bi) # error
     elif nv == 16:
         rworst= (2.*nv*nm)/(bx*(nv+nm+nm*nv/float(nz))+bi)
     else:
