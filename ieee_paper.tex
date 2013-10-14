@@ -326,11 +326,11 @@ application. Relevant notations are given in Table~\ref{tab:not}.
         $n_c$ & total number of non-zero\\
         $n_v$ & number of {\tt x} vectors \\
         $n_m$ & number of matrices \\
-        $s_M$ & size of the matrice(s)\\
-        $s_x$ & size of the {\tt x} vector(s)\\
-        $s_y$ & size of the {\tt y} vector(s)\\
+        $s_M$ & size of the matrice(s) in bytes\\
+        $s_x$ & size of the {\tt x} vector(s) in bytes\\
+        $s_y$ & size of the {\tt y} vector(s) in bytes\\
         \hline
-        $cl$    & size of a cache line \\
+        $cl$    & size of a cache line in bytes\\
         $b_{wT}$ & number of bytes written to memory  \\
         $b_{rT}$ & minimum number of bytes read from memory  \\
         $b_T$   & minimum number of bytes transferred  \\
@@ -352,31 +352,35 @@ tasks $b_x$ bytes. There are $n_v$ {\tt x} vectors and $n_v n_m$ {\tt
   y} vectors, which lead to the size of the {\tt x} and {\tt y} vectors:
 $$s_x = n_v b_x n_r$$ $$s_y = n_v n_m b_x n_r$$
 
-The matrix is composed of $n_r$ rows and columns with $n_z$ non-zero
+The matrix is composed of $n_r$ rows and columns with $n_z$ non-zeros
 per row leading to a total of $$n_c = n_r n_z$$ non-zero entries in
-the matrix. Each of these non-zero entry have one index of size $b_i$
+the matrix. Each of these non-zero entries has one index of size $b_i$
 and $n_m$ values of size $b_x$. The matrices have a total size
 of $$s_M = n_c (b_i + b_x n_m) = n_r n_z (b_i + b_x n_m)$$
 
-If we assume an algorithm where the rows are processed the one after
-the one, the amount of memory that need to be written is exactly the
+If we assume an algorithm where the rows are processed one after
+the other, the amount of memory written is precisely the
 size of the {\tt y} vector. (This assumption removes the possibility of
 cache partitioning techniques.) $$b_{wT} = s_y = n_v n_m b_x n_r$$
 
-The amount of data read from memory depends highly on how the
-algorithm execute, how the matrix is structured. But in the best case
-the whole matrix is read a single time and the whole {\tt x} vector is
-read a single time from the main memory. (Assuming the whole vector
-{\tt x} is used is reasonnable since only oddly shaped matrix will
-left a dimension of the vector unused.) $$b_{rT} = s_M + s_x = n_r n_z
+The amount of data read from memory depends highly on both the algorithm's
+execution path, and on %algorithm execute, 
+how the matrix is structured. But in the best case
+both the matrix $A$ %is read a single time 
+and the source vector {\tt x} are read once
+%read a single time 
+from the main memory. (We assume that all the elements of $\tt x$ are involved
+in the SpMV.)  %is used is reasonnable since only oddly shaped matrix will
+%left a dimension of the vector unused.) 
+Thus, $$b_{rT} = s_M + s_x = n_r n_z
 (b_i + b_x n_m) + n_v b_x n_r$$
  $$b_T = b_{rT} + b_{wT} =  n_r n_z (b_i + b_x n_m) + n_v b_x n_r (1 + n_m)$$
 
 Notice that there is no reason for a piece of the matrix to be read
 multiple times. But assuming that each element of the {\tt x} vector
 is read a single time is a strong assumption. If using a single core,
-it assumes that either the cache of the architecture can store all the
-{\tt x} vector or that the matrix is sufficiently well structured for
+it assumes that either the cache of the architecture can store the full
+{\tt x} vector or that the matrix is sufficiently well structured 
 causing no cache trashing. If using multiple core, this assumes that
 no element of the {\tt x} vectors will be used by multiple
 cores. \cite{Saule12} showed that there is very little cache trashing
@@ -386,11 +390,16 @@ multiple cores can have a significant impact on the performance
 
 On the other hand, in the worst case, every time the {\tt x} vector is
 accessed, the value needs to be transfered from memory again. So in
-total, there are as many transfers as the number of non zero in the
-matrix. Notice that most architectures do not allow to read the memory
-one byte at a time but always in a set of multiple bytes. On most
-cached architecture, that minimum size corresponds to the size $cl$ of
-a cacheline (typically 64 bytes). Notice that when there are multiple
+total, there are as many transfers as the number of non-zeros in the
+matrix. Note however that most architectures cannot read memory a single 
+byte at a time. Instead, a minimum number of bytes,equal to the size o a cacheline, 
+are transfered at once. 
+%multiple bytes, with each chunk equal to the data do not allow to read the memory
+%one byte at a time but always in a set of multiple bytes. On most
+%cached architecture, that 
+%the minimum size corresponds to the size $cl$ of
+%a cacheline (typically 64 bytes). 
+When there are multiple
 vectors, each non-zero element uses $n_v$ consecutive entries. The
 worst case number of bytes read and transfered are 
 $$B_{rT} = s_M + n_c cl \ceil{\frac{n_vb_x}{cl}} $$ 
@@ -409,11 +418,14 @@ $$I_w = \frac{O}{B_T} = \frac{2 n_v n_m n_z}{n_v n_m b_x + n_z \left ( b_i + b_x
 
 In the special case $n_v=n_m=1$ in single precision
 $$I_b = \frac{1}{4} \frac{ n_z }{ n_z + 1} \approx \frac{1}{4}$$
-$$I_w = \frac{n_z }{2  + 36  n_z} \approx \frac{1}{36}$$
+%$$I_w = \frac{n_z }{2  + 36  n_z} \approx \frac{1}{36}$$
+$$I_w = \frac{n_z }{2  + (4+cl/2)  n_z} \approx \frac{1}{4+cl/2}$$
 
 In the special case $n_v=n_m=4$ in single precision
 $$I_b = \frac{32 n_z }{ n_z 20 + 80} \approx \frac{32}{20} = \frac{8}{5} $$
-$$I_w = \frac{32 n_z }{64 + n_z 84} \approx \frac{32}{84} = \frac{8}{21} $$
+%$$I_w = \frac{32 n_z }{64 + n_z 84} \approx \frac{32}{84} = \frac{8}{21} $$
+$$I_w = \frac{32 n_z }{64 + (20+cl) n_z} \approx \frac{32}{84} = \frac{8}{21} $$
+The above formulas have been applied to MIC, which has a cache size $cl=64$ bytes.
 
 \begin{table}
   \centering
