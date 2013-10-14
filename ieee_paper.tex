@@ -427,27 +427,29 @@ $$I_w = \frac{32 n_z }{64 + n_z 84} \approx \frac{32}{84} = \frac{8}{21} $$
     Worst Double Precision &  3.93 & 11.88 &  15.58 &  46.15\\
     \hline
   \end{tabular}
-
-  \caption{Estimation of performance in GFlop/s at 150GB/s for a matrix of $n_z = 32$}
+  \caption{Estimation of performance in GFlop/s at 150GB/s for a
+    matrix of $n_z = 32$}
 \end{table}
 
 
 
 \begin{figure*}
-  
   \centering 
-  \subfigure[Peak performance of SpMV algorithm assuming either 1 or 4
-    matrices and/or vectors. We used a memory bandwidth of 150
-    Gbytes/sec (based on measurements in a code similar to the SpMV
-    kernel, with computations
-    removed).]{\includegraphics[width=.49\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops_peak_perf}}
+  \subfigure[Absolute performance ]{\includegraphics[width=.49\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops_peak_perf}}
 %
-  \subfigure[Speedup relative to base case using one matrix and one
+  \subfigure[Relative performance to base case using one matrix and one
     vector.]{\includegraphics[width=.49\linewidth]{figures/speedup_wrt_base.pdf}\label{fig:speedup}}
   
-  \caption{\todo{to write}}
-
+  \caption{Estimation of the reachable performance one can
+      achieve using a device with a memory to computational units of
+      150GB/s when varying the number of vectors and matrices}
+  \label{fig:perf_predict}
 \end{figure*}
+
+\todo{conclude on the evaluation using the figure/table. Note that we
+  base prediction on 150GB/s which is not the peak of saule12. Note
+  that if you are in best in v1m1 you might go to bad v4m4, but if you
+  are in bad v1m1, you will essentially stay there.}
 
 \section{Efficient Implementation on the Intel Xeon Phi processor}
 \label{sec:impl}
