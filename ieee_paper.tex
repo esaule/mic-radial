@@ -468,46 +468,44 @@ The above formulas have been applied to MIC, which has a cache size $cl=64$ byte
 
 \subsection{Knights Corner}
 
-In this work, we use a pre-release KNC card SE10P. The card has 8
-memory controllers where each of them can execute 5.5 billion
-transactions per second and has two 32-bit channels. That is the
-architecture can achieve a total bandwidth of 352GB/s aggregated
-across all the memory controllers. There are 61 cores clocked at
-1.05GHz. The cores’ memory interface are 32-bit wide with two channels
-and the total bandwidth is 8.4GB/s per core. Thus, the cores should be
-able to consume 512.4GB/s at most. However, the bandwidth between
-the cores and the memory controllers is limited by the ring network
-which connects them and theoretically supports at most 220GB/s.
+In this work, we use an Intel Xeon Phi 5110P coprocessor. This card
+has 8 memory controllers where each of them can execute 5 billion
+transactions per second and has two 32-bit channels, achieving a total
+bandwidth of 320GB/s aggregated across all the memory
+controllers. There are 60 cores clocked at 1.05GHz. Their memory
+interfaces are 32-bit wide with two channels and the total bandwidth
+is 8.4GB/s per core. Thus, the cores should be able to consume 504GB/s
+at most. However, the bandwidth between the cores and the memory
+controllers is limited by the ring network that connect the cores and
+the memory controller. Its precise bandwidth is unknown for this
+precise card, but it would be coehrent that it is between 200GB/s and
+250GB/s.
 
 Each core in the architecture has a 32kB L1 data cache, a 32kB L1
 instruction cache, and a 512kB L2 cache. The architecture of a core is
-based on the Pentium architecture: though its design has been updated
-to 64-bit. A core can hold 4 hardware contexts at any time. And at
-each clock cycle, instructions from a single thread are executed. Due
-to the hardware constraints and to overlap latency, a core never
-executes two instructions from the same hardware context
-consecutively. In other words, if a program only uses one thread, half
-of the clock cycles are wasted. Since there are 4 hardware contexts
-available, the instructions from a single thread are executed
-in-order. As in the Pentium architecture, a core has two di↵erent
-concur- rent instruction pipelines (called U-pipe and V-pipe) which
-allow the execution of two instructions per cycle. However, some
-instructions are not available on both pipelines: only one vector or
-floating point instruction can be executed at each cycle, but two ALU
-instructions can be executed in the same cycle.
+based the traditional Pentium architecture which have been extended to
+64-bit. A core can hold 4 hardware contexts at any time. And at each
+clock cycle, instructions from a single thread are executed. Due to
+some hardware constraints two hardware context must be used to reach
+the peak instruction throughput in that architecture. As in the
+Pentium architecture, a core has two different concurrent instruction
+pipelines which allow the execution of two instructions per
+cycle. However, only one vector or floating point instruction can be
+executed at each cycle.
 
 Most of the performance of the architecture comes from the vector
-processing unit. Each of Intel Xeon Phi’s cores has 32 512-bit SIMD
-registers which can be used for double or single precision, that is,
-either as a vector of 8 64-bit values or as a vector of 16 32-bit
-values, respectively. The vector processing unit can perform many
-basic instructions, such as addition or division, and mathematical
-operations, such as sine and sqrt, allowing to reach 8 double
-precision operations per cycle (16 single precision). The unit also
-sup- ports Fused Multiply-Add (FMA) operations which are typically
-counted as two operations for benchmarking purposes. Therefore, the
-peak performance of the SE10P card is 1.0248 Tflop/s in double
-precision (2.0496 Tflop/s in single precision) and half without FMA.
+processing unit. Each core has 32 512-bit SIMD registers which can be
+used for double or single precision, that is, either as a vector of 8
+64-bit values or as a vector of 16 32-bit values, respectively. The
+vector processing unit can perform many basic instructions, such as
+addition or division, and mathematical operations, such as sine and
+sqrt, allowing to reach 8 double precision operations per cycle (16
+single precision). The unit also supports Fused Multiply-Add (FMA)
+operations which are typically counted as two operations for
+benchmarking purposes. Therefore, the peak performance of the 5110P
+card is 1 Tflop/s in double precision and 2 Tflop/s in single
+precision. If FMA can not be used and half of these number can be
+achieved.
 
 \todo{rewrite that to make sure it fits the description of the card
   used in the experiments. This text with copy/pasted from the PPAM
