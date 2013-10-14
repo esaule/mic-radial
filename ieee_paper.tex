@@ -510,12 +510,21 @@ achieved.
 
 \subsection{Bringing the data in vector register}
 
+As explained in Section~XXX, we expect to achieve a performance of
+about 210Gflop/s in single precision in the best case. We will focus
+on the single precision case with 4 vectors and 4 matrices. But
+similar techniques apply for other combinations. This target
+performance represents 10\% of the peak performance of the
+architecture which is impossible without an efficient vectorization of
+the kernel. Indeed, that means a Fused Multiply-Add instruction on  
+fully loaded registers must be executed at most every 10 cycles.
 
 Registers on the MIC are 512 bits wide, and can store 16 floats or 8
 doubles. It is through these registers that the \#SIMD pragma is able
 to achieve vectorization. (In comparison to OpenCL or CUDA, one can
-think of these registers as a warp.)  We use the following vector
-operations in our code, which we'll explain in the text.
+think of these registers as a warp.)  We use the vector operations
+presented in Figure~\ref{fig:MIC-vect-instr} in our code, which we'll
+explain in the text.
 
 \def\loadps{\ttt{\_mm512\_load\_ps}}
 \def\loadds{\ttt{\_mm512\_load\_ds}}
@@ -549,7 +558,8 @@ operations in our code, which we'll explain in the text.
     \end{tabular}
   \end{center}
   %
-  \caption{List of MIC vectorial instructions used}
+  \caption{List of MIC vectorial instructions used.}
+\label{fig:MIC-vect-instr}
 \end{figure*}
 In the vector instructions, \ttt{ps} refers to a float (4 bytes),
 while \ttt{epi32} refers to a 4-byte integer. Although we do not
