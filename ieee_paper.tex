@@ -716,17 +716,27 @@ functions. With bandwidth reduction, we speed the calculation by a
 factor of 8, and achieve upwards of 140 Gflops.
 
 
-\section{Conclusions and Perspectives}
+\section{Conclusion}
 \label{sec:ccl}
+In the previous sections, we have explored in the practical implementation on a MIC architecture of multiple derivative operators acting on multiple vectors within the context of RBF-RD. Each derivative has an associated sparse matrix with a fixed number
+of non-zeros on each row. While computing a single derivative of multiple functions is rather common (vectorization occurs over the vectors), we accelerate the algorithm further by considering multiple derivatives with corresponding
+matrices with identical adjacency graphs. We specialize to four matrices and four derivatives, with 16 outputs, 
+computed as a sum of outer products. 
 
-The conclusion goes here. this is more of the conclusion
+Using a matrix with $64^3$ (or $96^3$ rows, we achieve a speedup of xxx relative to the base case of one derivative and one function (1/1/ case), releative to a potential speedup of 16. We have achieved a speed 100 Gflops on 60 nodes using 240 threads, or a speed of 61\% of maximum possible performance. The maximum possible speed for the 1/1 case is around 40 Gflops, of which we achieve 20 Gflops. On matrices that exceed cache, a reverse Cuthill-McKee is applied
+to reduce the bandwidth, with an associated speedup of 30\% up to 135 Gflops. Our optimal implementation makes 
+use of the AVX instruction set, which makes use of swizzling and channel swapping operations for an extremely 
+efficient tensor product implementation. A straightforward implementation without AVX run at around 35 Gflops, 
+or 16\% of peak performance. RCM has no effect because the number of floating point operations is excessive (the 
+algorithm does not fill the vector registers to capacity). 
 
-future works: gpu. more applications. more nnz/row.
+In a future work, we will examine the effect of larger stencil sizes, double precision, and the actual cost
+of computing the derivatives within a fluid simulation using RBF-FD. 
+
+
 
 \section*{Acknowledgment}
-
-The authors would like to thank...
-more thanks here
+The first and last authors acknowledge NSF funding under NSF grant DMS-\#0934331 (FSU). 
 
 
 \bibliographystyle{plain} %{IEEEabrv,paper.bib}
