@@ -34,11 +34,11 @@ without using vector notation, but using SIMD commands in addition to OPENPM com
 
 %\newfig{figures/theoretical_performance.png}{\wide}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 190 Gbytes/sec (based on best measurements with specialized code) and 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:peak_perf}
 
-\newfig{figures/gflops_peak.png}{2.5in}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:gflops_peak_perf}
+\newfig{figures/gflops_peak.pdf}{2.5in}{Peak performance of SpMV algorithm assuming either 1 or 4 matrices and/or vectors. We used a memory bandwidth of 150 Gbytes/sec (based on measurements in a code similar to the SpMV kernel, with computations removed.)}{fig:gflops_peak_perf}
 
-\newfig{figures/speedup_wrt_base.png}{\wide}{Speedup relative to base case using one matrix and one vector.}{fig:speedup}
+\newfig{figures/speedup_wrt_base.pdf}{\wide}{Speedup relative to base case using one matrix and one vector.}{fig:speedup}
 
-\newfig{figures/test1_readwrite.png}{\wide}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions.}{fig:band_rw}
+\newfig{figures/test1_readwrite.pdf}{\wide}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions.}{fig:band_rw}
 
 \newfig{figures/test1_gather.png}{\wide}{Bandwidth performance under idealized conditions as a function of matrix row size. Entries with "cpp" denote cases where coding was performed without MIC vector instructions.}{fig:band_gather}
 
