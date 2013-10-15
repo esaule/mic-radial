@@ -521,18 +521,20 @@ instruction on fully loaded registers must be executed at most every
 10 cycles.
 
 We discuss how the implementation of the v4m4 kernel works using
-vectorial instruction. (We will show that an implementation relying on
-compiler vectorization does not lead to desirable performance.) The
-registers in the MIC architecture are 512 bits wide and can store 16
-floats or integers. (In comparison to OpenCL or CUDA, one can think of
-these registers as a warp.) The end goal is to be able to load and
-format the non zero values $a,b,c,d$ and the vector entries $p,q,r,s$
-in two vectorial register to be able to apply Fused Multiply-Add on
-them, which is depicted in Figure~\ref{fig:tensor_product}. Bringing
-the data in the vector register as depicted in the figure is the
-difficult part that we now explain. A thread will perform the
-multiplications one row at a time, and parallelism is achieved by
-giving blocks of rows to each core usign an OpenMP construct.
+vectorial instruction. The code is given for reference in
+Figure~\ref{code:mat_mul}. (We will show that an implementation
+relying on compiler vectorization does not lead to desirable
+performance.) The registers in the MIC architecture are 512 bits wide
+and can store 16 floats or integers. (In comparison to OpenCL or CUDA,
+one can think of these registers as a warp.) The end goal is to be
+able to load and format the non zero values $a,b,c,d$ and the vector
+entries $p,q,r,s$ in two vectorial register to be able to apply Fused
+Multiply-Add on them, which is depicted in
+Figure~\ref{fig:tensor_product}. Bringing the data in the vector
+register as depicted in the figure is the difficult part that we now
+explain. A thread will perform the multiplications one row at a time,
+and parallelism is achieved by giving blocks of rows to each core
+usign an OpenMP construct.
 
 \begin{figure}
   \centering
@@ -550,7 +552,10 @@ which are made of 4 elements of 32 bits. A swizzling operation allows
 to reorder the elements within each lane. While a permutation allow to
 change the orders of the lanes. Figure~\ref{fig:swizzling_permutation}
 illustrates these two possibilities. Both permutation and swizzling
-support common reordering and broadcast.
+support common reordering and broadcast. In the code, the ``permute''
+function needs to use the {\tt \_mm512\_permute4f128\_epi32}
+instruction which is only defined on integers and therefore typecast
+are necessary to convert to a vector to/from the integer type.
 
 \begin{figure}
   \centering
@@ -581,10 +586,20 @@ vector. One can use a swizzle operation to broadcast the 4 elements of
 a single matrix to take the whole vector.
 
 Loading the entries from the {\tt x} vector is a little bit more
-complicated.
-
-
-
+complicated. First the columns pointers of 4 different non zeroes are
+loaded in a vector register and the values are distributed one per
+lane of the vector register using an {\tt unpack}
+operation\footnote{Notice that there are two calls to unpack for the
+  LSB and MSB. Both are mandatory even according the documentation of
+  the hardware}. They replicated so that each fill a vector lane using
+a swizzle operation. Then each value is multiplied by 4 (because there
+are 4 vectors) and the offsets $(3,2,1,0)$ is added each lane to
+obtain the correct index of the elements of the {\tt x} vector within
+each lane. Then a {\tt gather} operation is performed bring the 16
+entries of the {\tt x} vector into the SIMD register. At this point we
+have a SIMD register where each lane is the four vector entries for a
+non zero element. Using a broadcast permutation, one can replicate an
+entry of the four vectors accross each lane.
 
 \begin{figure*}
 \begin{verbatim}
@@ -619,68 +634,10 @@ for (int r=0; r < nb_rows; r++) {
   _mm512_storenrngo_ps(dom.result_vt+nb_mat*nb_vec*r, accu);  
 } 
 \end{verbatim}
-\caption{mat mul code}
+\caption{mat mul code.}
 \label{code:mat_mul}
 \end{figure*}
 
-
-
-Note that the ``permute'' function is using the {\tt
-  \_mm512\_permute4f128\_epi32} instruction and therefore typecast are
-necessary to convert to a vector of int type.
-
-============================================================
-
-
-We use the vector operations presented in
-Figure~\ref{fig:MIC-vect-instr} in our code, which we'll explain in
-the text.
-
-\def\loadps{\ttt{\_mm512\_load\_ps}}
-\def\loadds{\ttt{\_mm512\_load\_ds}}
-\def\fmadps{\ttt{\_mm512\_fmad\_ps}}
-\def\gatherps{\ttt{\_mm512\_i32gather\_ps}}
-\def\swizzleps{\ttt{\_mm512\_swizzle\_ps}}
-\def\storenrngops{\ttt{\_mm512\_storenrngo\_ps}}
-\def\castsi{\ttt{\_mm512\_castsi512\_ps}}
-\def\permute{\ttt{\_mm512\_permute4f128\_epi32}}
-\def\intmask{\ttt{\_mm512\_int2mask}}
-\def\loadunpack{\ttt{\_mm512\_mask\_loadunpacklo\_epi32}}
-\def\castitops{\ttt{\_mm512\_castsi512\_ps}}
-\def\castpstoi{\ttt{\_mm512\_castps\_si512\_ps}}
-
-\begin{figure*}
-  %
-  \begin{center}
-    \begin{tabular}{|l|l|}
-      \hline
-      \loadps &  load 16 consecutive floats to register\\
-      \fmadps &  multiply/add of 16 floats\\
-      \gatherps &  gather 16, possibly disconnected floats from memory\\
-      \swizzleps &  reorder a channel, and duplicate across channels\\
-      \storenrngops &  store 16 floats to memory without register rewrite or reordering\\
-      \castpstoi & reinterpret 16 floats as integers\\
-      \castitops & reinterpret 16 integers as floats\\
-      \permute &  permute channels; do not change individual channels\\
-      \intmask &  \\
-      \loadunpack &  \\
-      \hline
-    \end{tabular}
-  \end{center}
-  %
-  \caption{List of MIC vectorial instructions used.}
-\label{fig:MIC-vect-instr}
-\end{figure*}
-In the vector instructions, \ttt{ps} refers to a float (4 bytes),
-while \ttt{epi32} refers to a 4-byte integer. Although we do not
-discuss double precision in this paper, \ttt{ds} refers to an 8 byte
-double precision real number (i.e., \loadds).  Each vector register is
-broken up into four channels of 128 bits each. It is possible to
-interchange these channels at a cost of a "few" \qes{exact numbers?}
-cycles, and it is also possible to execute swizzle operations within a
-channel. For example, if the 128 bytes of each channel are labelled as
-$ABCD$, the vector instruction \ttt{\_mm512\_swizzle\_ps(v,
-  \_MM\_SWIZ\_REG\_AAAA)} replaces each channel by $AAAA$.
 
 
 
