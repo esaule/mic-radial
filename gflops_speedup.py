@@ -28,17 +28,21 @@ def ratio(nv, nm, bx, nz):
 # A : nm*nz*bx   loads
 # col_id : nz*bi loads
     bi = 4
+    cl = 64.
     #rworst = (2.*nv*nm)/(bx*(nv+nm+nm*nv/float(nz))+bi)
     # in worst case, every vector element brings in an entire cache line (256 bits = 32 floats),
     # so nv=4 vectors (1/8th cache line), requires a transfer of 32 bytes = 8 floats
     # 16 vectors = 2 cache lines (, so the formula becomes
     if nv == 1:
-        rworst = (2.*nv*nm)/(bx*(16.+nm+nm*nv/float(nz))+bi)
+        #rworst = (2.*nv*nm)/(bx*(16.+nm+nm*nv/float(nz))+bi)
+        rworst = (2.*nv*nm)/(cl*np.ceil((bx*nv)/cl)+bx*(nm+nm*nv/float(nz))+bi)
     elif nv == 4:
-        rworst = (2.*nv*nm)/(bx*(16.+nm+nm*nv/float(nz))+bi)
+        #rworst = (2.*nv*nm)/(bx*(16.+nm+nm*nv/float(nz))+bi)
+        rworst = (2.*nv*nm)/(cl*np.ceil((bx*nv)/cl)+bx*(nm+nm*nv/float(nz))+bi)
         #rworst = (2.*nv*nm)/(bx*(16.*nv+nm+nm*nv/float(nz))+bi) # error
     elif nv == 16:
-        rworst= (2.*nv*nm)/(bx*(nv+nm+nm*nv/float(nz))+bi)
+        #rworst= (2.*nv*nm)/(bx*(nv+nm+nm*nv/float(nz))+bi)
+        rworst = (2.*nv*nm)/(cl*np.ceil((bx*nv)/cl)+bx*(nm+nm*nv/float(nz))+bi)
     else:
         print "nv case not considered"
 
