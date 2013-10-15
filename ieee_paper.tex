@@ -516,15 +516,54 @@ on the single precision case with 4 vectors and 4 matrices. But
 similar techniques apply for other combinations. This target
 performance represents 10\% of the peak performance of the
 architecture which is impossible without an efficient vectorization of
-the kernel. Indeed, that means a Fused Multiply-Add instruction on  
-fully loaded registers must be executed at most every 10 cycles.
+the kernel. Indeed, to reach such a performance, a Fused Multiply-Add
+instruction on fully loaded registers must be executed at most every
+10 cycles.
 
-Registers on the MIC are 512 bits wide, and can store 16 floats or 8
-doubles. It is through these registers that the \#SIMD pragma is able
-to achieve vectorization. (In comparison to OpenCL or CUDA, one can
-think of these registers as a warp.)  We use the vector operations
-presented in Figure~\ref{fig:MIC-vect-instr} in our code, which we'll
-explain in the text.
+We discuss how the implementation of the v4m4 kernel works using
+vectorial instruction. (We will show that an implementation relying on
+compiler vectorization does not lead to desirable performance.) The
+registers in the MIC architecture are 512 bits wide and can store 16
+floats or integers. (In comparison to OpenCL or CUDA, one can think of
+these registers as a warp.) The end goal is to be able to load and
+format the non zero values $a,b,c,d$ and the vector entries $p,q,r,s$
+in two vectorial register to be able to apply Fused Multiply-Add on
+them, which is depicted in Figure~\ref{fig:tensor_product}. Bringing
+the data in the vector register as depicted in the figure is the
+difficult part that we now explain.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figures/tensor_product.pdf}
+  \caption{Structure of the vector registers to perform an efficient
+    tensor scalar product. See Figure~\ref{fig:mat_struct} for
+    reference.}
+  \label{fig:tensor_product}
+\end{figure}
+
+The core of the technique is the use of swizzling and permutation
+features of the vectors in the Intel MIC architecture. A vector of 512
+bits is composed of 4 lanes of 128 bits which are made of 4 elements
+of 32 bits. A swizzling operation allows to reorder the elements
+within each lane. While a permutation allow to change the orders of
+the lanes. Figure~\ref{fig:swizzling_permutation} illustrates these
+two possibilities. Both permutation and swizzling support common
+reordering and broadcast.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figures/swizzling.pdf}
+  \includegraphics[width=\linewidth]{figures/channel_permutation.pdf}
+
+  \caption{Swizzling enables to reorder or broadcast elements within
+    each 128 bit group. Permutation enables to reorder or broadcast
+    while 128 bit groups.}
+  \label{fig:swizzling_permutation}
+\end{figure}
+
+We use the vector operations presented in
+Figure~\ref{fig:MIC-vect-instr} in our code, which we'll explain in
+the text.
 
 \def\loadps{\ttt{\_mm512\_load\_ps}}
 \def\loadds{\ttt{\_mm512\_load\_ds}}
@@ -572,26 +611,36 @@ channel. For example, if the 128 bytes of each channel are labelled as
 $ABCD$, the vector instruction \ttt{\_mm512\_swizzle\_ps(v,
   \_MM\_SWIZ\_REG\_AAAA)} replaces each channel by $AAAA$.
 
-Here is a function that reads in four floats (a,b,c,d) and creates the 16-float vector dddd,cccc,bbbb,aaaa: 
+Figure~\ref{code:read_aaaa} is a function that reads in four floats
+(a,b,c,d) and creates the 16-float vector dddd,cccc,bbbb,aaaa:
+
+\begin{figure*}
 \begin{verbatim}
 __m512 read_aaaa(float* a)                                                              
 {
-    int int_mask_lo = (1 << 0) + (1 << 4) + (1 << 8) + (1 << 12);
-    __mmask16 mask_lo = _mm512_int2mask(int_mask_lo);
-    __m512 v1_old;
-    v1_old = _mm512_setzero_ps();
-    v1_old = _mm512_mask_loadunpacklo_ps(v1_old, mask_lo, a);
-    v1_old = _mm512_mask_loadunpackhi_ps(v1_old, mask_lo, a);
-    v1_old = _mm512_swizzle_ps(v1_old, _MM_SWIZ_REG_AAAA);
+    int int_mask = 0x1111;
+    __mmask16 mask = _mm512_int2mask(int_mask);
+    __m512 v1;
+    v1 = _mm512_setzero_ps();
+    v1 = _mm512_mask_loadunpacklo_ps(v1, mask, a);
+    v1 = _mm512_mask_loadunpackhi_ps(v1, mask, a);
+    v1 = _mm512_swizzle_ps(v1, _MM_SWIZ_REG_AAAA);
     return v1_old;
 }
 \end{verbatim}
+\caption{read\_aaaa code}
+\label{code:read_aaaa}
+\end{figure*}
 
-Here is a function that takes four floats from float register \ttt{v1}, and 
-places them in each of the four lanes. Because the permulation function only 
-operates on 4-byte integers, it is necessary to convert (in place) each float
-to an integer (the bit structure is not changed), permute the lanes and cast
-the integers back to floats (with no modification of the bit structure)
+Figure~\ref{code:permute} is a function that takes four floats from
+float register \ttt{v1}, and places them in each of the four
+lanes. Because the permulation function only operates on 4-byte
+integers, it is necessary to convert (in place) each float to an
+integer (the bit structure is not changed), permute the lanes and cast
+the integers back to floats (with no modification of the bit
+structure)
+
+\begin{figure*}
 \begin{verbatim}
 __m512 permute(__m512 v1, _MM_PERM_ENUM perm)                                           
 {
@@ -601,16 +650,12 @@ __m512 permute(__m512 v1, _MM_PERM_ENUM perm)
     return v1;
 }
 \end{verbatim}
+\caption{permute code}
+\label{code:permute}
+\end{figure*}
 
 
-\newfig{figures/swizzling.pdf}{\wide}{Duplication of the first four
-  bytes of each channel across the entire channel.}{fig:swizzling}
 
-\newfig{figures/channel_permutation.pdf}{\wide}{Channel Permutations
-  on the MIC}{fig:permutation}
-
-\newfig{figures/tensor_product.pdf}{\wide}{Tensor scalar product using
-  channels and swizzling.}{fig:tensor_product}
 
 
 
