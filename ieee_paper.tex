@@ -782,7 +782,39 @@ In a future work, we will examine the effect of larger stencil sizes,
 double precision, and the actual cost of computing the derivatives
 within a fluid simulation using RBF-FD.
 
-\input{additional_figures}
+\def\ww{.13\textwidth}
+\begin{figure*}
+  \begin{center}
+    \subfigure[Supercompact.]{%
+      \label{fig:supercompact}
+      \includegraphics[width=\ww]{figures/supercompact_matrix-crop.pdf}}%
+    \subfigure[Compact.]{%
+      \label{fig:compact}
+      \includegraphics[width=\ww]{figures/compact_matrix-crop.pdf}}%
+    \subfigure[Random.]{%
+      \label{fig:random}
+      \includegraphics[width=\ww]{figures/random_matrix-crop.pdf}}%
+    \subfigure[2D, no RCM.]{%
+      \label{fig:supercompact}
+      \includegraphics[width=\ww]{figures/kd-tree-2d-norcm-crop.pdf}}%
+    \subfigure[2D, RCM.]{%
+      \label{fig:compact}
+      \includegraphics[width=\ww]{figures/kd-tree-2d-rcm-crop.pdf}} 
+    \subfigure[3D, RCM.]{%
+      \label{fig:random} 
+      \includegraphics[width=\ww]{figures/kd-tree-3d-norcm-crop.pdf}}%
+    \subfigure[3D, RCM.]{%
+      \label{fig:random}
+      \includegraphics[width=\ww]{figures/kd-tree-3d-rcm-crop.pdf}}%
+  \end{center}
+  
+  \caption{Different sparsity distributions. In all cases, there are
+    32 nonzeros per line and 300 rows. The last four matrices
+    corresponds to derivative stencils in 2D (a-b) and 3D (c-d) RBF-FD
+    calculations.}
+  \label{fig:spy_plots}
+\end{figure*}
+
 
 \section*{Acknowledgment}
 The first and last authors acknowledge NSF funding under NSF grant DMS-\#0934331 (FSU). 
