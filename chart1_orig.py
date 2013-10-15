@@ -6,14 +6,15 @@ import matplotlib.pyplot as plt
 def byte_to_float_ratio(nv, nm, bx, nz):
 # no consideration of cache.
     bi = 4
-    #print nv,nm,nz
     #rworst = (2.*nv*nm)/(bx*(nv+nm+nm*nv/float(nz))+bi)
     # in worst case, every vector element brings in an entire cache line (256 bits = 32 floats),
     # so nv=4 vectors (1/8th cache line), requires a transfer of 32 bytes = 8 floats
     # 16 vectors = 2 cache lines (, so the formula becomes
-    ratio = (2.*nv*nm)/(bx*(nv+nm+nm*nv/float(nz))+bi)
-    return(ratio)
-#----------------------------------
+        rworst = (2.*nv*nm)/(bx*(nv+nm+nm*nv/float(nz))+bi)
+    else:
+        print "nv case not considered"
+
+    rbest = (2.*nv*nm)/(bx*(nm+(1+nm)*nv/float(nz))+bi)
 #----------------------------------
 def ratio(nv, nm, bx, nz):
 # per row:
@@ -36,7 +37,6 @@ def ratio(nv, nm, bx, nz):
         rworst = (2.*nv*nm)/(bx*(16.+nm+nm*nv/float(nz))+bi)
     elif nv == 4:
         rworst = (2.*nv*nm)/(bx*(16.+nm+nm*nv/float(nz))+bi)
-        #rworst = (2.*nv*nm)/(bx*(16.*nv+nm+nm*nv/float(nz))+bi) # error
     elif nv == 16:
         rworst= (2.*nv*nm)/(bx*(nv+nm+nm*nv/float(nz))+bi)
     else:
@@ -51,22 +51,19 @@ double = 8
 ulti_bandwidth = 190
 max_bandwidth = 150
 bandwidths = [150,190]
-nv = [1,4]
+nv = [1,4,16]
 nm = [1,4]
 labels = [(v+m) for v in ["v1","v4"] for m in ["m1","m4"]]
-labels.extend(["v16m1"])
-print labels
 # v loop is slowest
 # m loop is fastest
-ratios_s = np.array([ratio(v,m,single, nz) for v in nv for m in nm])
-ratios_s = np.reshape(np.append(ratios_s, ratio(16,1,single, nz)),[5,2])
+ratios_s =  np.array([ratio(v,m,single, nz) for v in nv for m in nm])
 ratios_s_ulti = ratios_s*ulti_bandwidth
 ratios_s_max  = ratios_s*max_bandwidth
 
 ratios_d =  np.array([ratio(v,m,double, nz) for v in nv for m in nm])
-ratios_d = np.reshape(np.append(ratios_d, ratio(16,1,double, nz)),[5,2])
 ratios_d_ulti = ratios_d*ulti_bandwidth
 ratios_d_max  = ratios_d*max_bandwidth
+
 
 ratios_s_worst = np.transpose(ratios_s_max)[0]
 ratios_s_best = np.transpose(ratios_s_max)[1]
@@ -74,24 +71,16 @@ ratios_s_best = np.transpose(ratios_s_max)[1]
 ratios_d_worst = np.transpose(ratios_d_max)[0]
 ratios_d_best = np.transpose(ratios_d_max)[1]
 
-print "ratio_d_worst shape: ", np.shape(ratios_d_worst)
-print "ratio_d_best shape: ",  np.shape(ratios_d_best)
-print "shape: ", np.shape(ratios_d_max)
-
 #### BEGINNING OF CHART
 
 ngroups = len(labels)
 
 fig, ax = plt.subplots()
 index = np.arange(ngroups)
-print "index= ", index
 bar_width = 0.35/2
-print np.shape(index), np.shape(ratios_d_worst), np.shape(ratios_d_best)
-print np.shape(index), np.shape(ratios_s_worst), np.shape(ratios_s_best)
 
 rects1 = plt.bar(index, ratios_s_worst, bar_width, alpha=1, color='b', label='single worst case')
 rects1 = plt.bar(index+bar_width, ratios_s_best, bar_width, alpha=.5, color='b', label='single best case')
-print ratios_s_best
 
 rects2 = plt.bar(index+2*bar_width, ratios_d_worst, bar_width, alpha=1, color='r', label='double worst case')
 rects2 = plt.bar(index+3*bar_width, ratios_d_best, bar_width, alpha=.5, color='r', label='double best case')
@@ -134,21 +123,3 @@ plt.grid(True)
 plt.tight_layout()
 plt.savefig.format = "pdf"
 plt.savefig("speedup_wrt_base.pdf")
-
-nv = [1,2,4,8,16]
-nm = [1,2,4,8,16]
-bx = 4  # single precision
-nz = [32, 64, 96]
-ratios_32 = [[v,m,byte_to_float_ratio(v, m, bx, 32)] for v in nv for m in nm ]
-ratios_64 = [[v,m,byte_to_float_ratio(v, m, bx, 64)] for v in nv for m in nm ]
-ratios_96 = [[v,m,byte_to_float_ratio(v, m, bx, 96)] for v in nv for m in nm ]
-
-ratios_32 = np.array(ratios_32)
-ratios_64 = np.array(ratios_64)
-ratios_96 = np.array(ratios_96)
-print ratios_32
-
-
-labels = [(v+m) for v in ["v1","v4"] for m in ["m1","m4"]]
-
-
