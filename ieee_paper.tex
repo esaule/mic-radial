@@ -530,7 +530,9 @@ format the non zero values $a,b,c,d$ and the vector entries $p,q,r,s$
 in two vectorial register to be able to apply Fused Multiply-Add on
 them, which is depicted in Figure~\ref{fig:tensor_product}. Bringing
 the data in the vector register as depicted in the figure is the
-difficult part that we now explain.
+difficult part that we now explain. A thread will perform the
+multiplications one row at a time, and parallelism is achieved by
+giving blocks of rows to each core usign an OpenMP construct.
 
 \begin{figure}
   \centering
@@ -543,12 +545,12 @@ difficult part that we now explain.
 
 The core of the technique is the use of swizzling and permutation
 features of the vectors in the Intel MIC architecture. A vector of 512
-bits is composed of 4 lanes of 128 bits which are made of 4 elements
-of 32 bits. A swizzling operation allows to reorder the elements
-within each lane. While a permutation allow to change the orders of
-the lanes. Figure~\ref{fig:swizzling_permutation} illustrates these
-two possibilities. Both permutation and swizzling support common
-reordering and broadcast.
+bits is composed of 4 lanes (sometimes called channels) of 128 bits
+which are made of 4 elements of 32 bits. A swizzling operation allows
+to reorder the elements within each lane. While a permutation allow to
+change the orders of the lanes. Figure~\ref{fig:swizzling_permutation}
+illustrates these two possibilities. Both permutation and swizzling
+support common reordering and broadcast.
 
 \begin{figure}
   \centering
@@ -560,6 +562,18 @@ reordering and broadcast.
     whole 128 bit groups.}
   \label{fig:swizzling_permutation}
 \end{figure}
+
+All the operations that loads data from the memory into a register
+allows to load 512 bits, so 16 floats at a time. A single non zero in
+the matrix will cause 16 operations to be performed, but it only uses
+4 floats from the matrix and 4 floats from the {\tt x} vector. So we
+need to load at once the data for 4 non zeroes in the matrix, so that
+we load 16 flaots from the matrix and 16 floats from the vectors at
+once. (The number of non zeroes on a row in our application is always
+a multiple of 4, if it was, we would need to add some explicit zeroes
+in the data structure to pad it.)
+
+
 
 We use the vector operations presented in
 Figure~\ref{fig:MIC-vect-instr} in our code, which we'll explain in
