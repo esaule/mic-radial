@@ -573,7 +573,13 @@ once. (The number of non zeroes on a row in our application is always
 a multiple of 4, if it was, we would need to add some explicit zeroes
 in the data structure to pad it.)
 
-
+The values from the non zero element in the matrix are the simplest to
+load. One can load the 16 floating point values for the 4 non zero of
+the matrix at once. The 4 floats coming from the four matrices for
+each non zero are naturally grouped within each lane of the SIMD
+vector. One can use lane permutation to broad a lane to take the whole
+vector. So one 1 permutations and a quarter load are necessary to put
+the data of the matrix in the required format.
 
 We use the vector operations presented in
 Figure~\ref{fig:MIC-vect-instr} in our code, which we'll explain in
