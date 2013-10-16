@@ -1,51 +1,3 @@
-
-%%% *[1] N. Bell and M. Garland. Implementing sparse matrix-vector multiplication on throughput-oriented processors. In Proc. High Performance Computing Networking, Storage and Analysis, SC ’09, pages 18:1–18:11, 2009.
-%%% *[2] A. Buluc ̧, J. T. Fineman, M. Frigo, J. R. Gilbert, and C. E. Leiserson. Parallel sparse matrix-vector and matrix- transpose-vector multiplication using compressed sparse blocks. In Proc. SPAA ’09, pages 233–244, 2009.
-%%% * [3] A. Bulu ̧c, S. Williams, L. Oliker, and J. Demmel. Reduced-bandwidth multithreaded algorithms for sparse matrix-vector multiplication. In Proc. IPDPS, 2011.
-%%% * [4] T. Cramer, D. Schmidl, M. Klemm, and D. an Mey. Openmp programming on intel xeon phi coprocessors: An early performance comparison. In Proceedings of the Many-core Applications Research Community (MARC) Symposium at RWTH Aachen University, Nov. 2012.
-%%% *[5] E. Cuthill and J. McKee. Reducing the bandwidth of sparse symmetric matrices. In Proc. ACM national conference, pages 157–172, 1969.
-%%% [6] J. Eisenlor, D. E. Hudak, K. Tomko, and T. C. Prince. Dense linear algebra factorization in OpenMP and Cilk Plus on Intel MIC: Development experiences and performance analysis. In TACC-Intel Highly Parallel Computing Symp., 2012.
-%%% *[7] E.-J. Im and K. A. Yelick. Optimizing sparse matrix computations for register reuse in sparsity. In Proc. of ICCS, pages 127–136, 2001.
-%%% [8] A. Jain. pOSKI: An extensible autotuning framework to perform optimized spmvs on multicore architecture. Master’s thesis, UC Berkeley, 2008.
-%%% [9] M. Krotkiewski and M. Dabrowski. Parallel symmetric sparse matrix-vector product on scalar multi-core CPUs. Parallel Comput., 36(4):181–198, Apr. 2010.
-%%% [10] O. Ku ̈c ̧u ̈ktunc ̧, K. Kaya, E. Saule, and U ̈. V. C ̧atalyu ̈rek. Fast recommendation on bibliographic networks. In Proc. ASONAM’12, Aug 2012.
-%%% *[11] J. Mellor-Crummey and J. Garvin. Optimizing sparse matrix-vector product computations using unroll and jam. Int. J. High Perform. Comput. Appl., 18(2), May 2004.
-%%% *[12] R. Nishtala, R. W. Vuduc, J. W. Demmel, and K. A. Yelick. When cache blocking of sparse matrix vector multiply works and why. Appl. Algebra Eng., Commun. Comput., 18(3):297–311, May 2007.
-%%% [13] S. Potluri, K. Tomko, D. Bureddy, and D. K. Panda. Intra-MIC MPI communication using MVAPICH2: Early experience. In TACC-Intel Highly Parallel Computing Symp., 2012.
-%%% *[14] Y. Saad. Sparskit: a basic tool kit for sparse matrix computations - version 2, 1994.
-%%% [15] E. Saule and U ̈. V. C ̧atalyu ̈rek. An early evaluation of the scalability of graph algorithms on the Intel MIC
-%%% architecture. In IPDPS Workshop MTAAP, 2012.
-%%% *[16] K. Stock, L.-N. Pouchet, and P. Sadayappan. Automatic transformations for e↵ective parallel execution on intel
-%%% many integrated core. In TACC-Intel Highly Parallel Computing Symp., 2012.
-%%% 14
-%%% *[17] R. Vuduc, J. Demmel, , and K. Yelic. OSKI: A library of automatically tuned sparse matrix kernels. In Proc. SciDAC 2005, J. of Physics: Conference Series, 2005.
-%%% *[18] S. Williams, L. Oliker, R. Vuduc, J. Shalf, K. Yelick, and J. Demmel. Optimization of sparse matrix-vector multiplication on emerging multicore platforms. In Proc. SC ’07, pages 38:1–38:12, 2007.
-%%% [19] Z. Zhou, E. Saule, H. M. Aktulga, C. Yang, E. G. Ng, P. Maris, J. P. Vary, and U ̈. V. C ̧atalyu ̈rek. An out-of-core eigensolver on SSD-equipped clusters. In Proc. of IEEE Cluster, Sep 2012.
-%%% ----------------------------------------------------------------------
-%%% *[1] N. Bell and M. Garland. Implementing sparse matrix-vector multiplication on throughput-oriented processors. In Proc. High Performance Computing Networking, Storage and Analysis, SC ’09, pages 18:1–18:11, 2009.
-%%% *[2] A. Buluc ̧, J. T. Fineman, M. Frigo, J. R. Gilbert, and C. E. Leiserson. Parallel sparse matrix-vector and matrix- transpose-vector multiplication using compressed sparse blocks. In Proc. SPAA ’09, pages 233–244, 2009.
-%%% * [3] A. Bulu ̧c, S. Williams, L. Oliker, and J. Demmel. Reduced-bandwidth multithreaded algorithms for sparse matrix-vector multiplication. In Proc. IPDPS, 2011.
-%%% * [4] T. Cramer, D. Schmidl, M. Klemm, and D. an Mey. Openmp programming on intel xeon phi coprocessors: An early performance comparison. In Proceedings of the Many-core Applications Research Community (MARC) Symposium at RWTH Aachen University, Nov. 2012.
-%%% *[5] E. Cuthill and J. McKee. Reducing the bandwidth of sparse symmetric matrices. In Proc. ACM national conference, pages 157–172, 1969.
-%%% [6] J. Eisenlor, D. E. Hudak, K. Tomko, and T. C. Prince. Dense linear algebra factorization in OpenMP and Cilk Plus on Intel MIC: Development experiences and performance analysis. In TACC-Intel Highly Parallel Computing Symp., 2012.
-%%% *[7] E.-J. Im and K. A. Yelick. Optimizing sparse matrix computations for register reuse in sparsity. In Proc. of ICCS, pages 127–136, 2001.
-%%% [8] A. Jain. pOSKI: An extensible autotuning framework to perform optimized spmvs on multicore architecture. Master’s thesis, UC Berkeley, 2008.
-%%% [9] M. Krotkiewski and M. Dabrowski. Parallel symmetric sparse matrix-vector product on scalar multi-core CPUs. Parallel Comput., 36(4):181–198, Apr. 2010.
-%%% [10] O. Ku ̈c ̧u ̈ktunc ̧, K. Kaya, E. Saule, and U ̈. V. C ̧atalyu ̈rek. Fast recommendation on bibliographic networks. In Proc. ASONAM’12, Aug 2012.
-%%% *[11] J. Mellor-Crummey and J. Garvin. Optimizing sparse matrix-vector product computations using unroll and jam. Int. J. High Perform. Comput. Appl., 18(2), May 2004.
-%%% *[12] R. Nishtala, R. W. Vuduc, J. W. Demmel, and K. A. Yelick. When cache blocking of sparse matrix vector multiply works and why. Appl. Algebra Eng., Commun. Comput., 18(3):297–311, May 2007.
-%%% [13] S. Potluri, K. Tomko, D. Bureddy, and D. K. Panda. Intra-MIC MPI communication using MVAPICH2: Early experience. In TACC-Intel Highly Parallel Computing Symp., 2012.
-%%% *[14] Y. Saad. Sparskit: a basic tool kit for sparse matrix computations - version 2, 1994.
-%%% [15] E. Saule and U ̈. V. C ̧atalyu ̈rek. An early evaluation of the scalability of graph algorithms on the Intel MIC
-%%% architecture. In IPDPS Workshop MTAAP, 2012.
-%%% *[16] K. Stock, L.-N. Pouchet, and P. Sadayappan. Automatic transformations for e↵ective parallel execution on intel
-%%% many integrated core. In TACC-Intel Highly Parallel Computing Symp., 2012.
-%%% 14
-%%% *[17] R. Vuduc, J. Demmel, , and K. Yelic. OSKI: A library of automatically tuned sparse matrix kernels. In Proc. SciDAC 2005, J. of Physics: Conference Series, 2005.
-%%% *[18] S. Williams, L. Oliker, R. Vuduc, J. Shalf, K. Yelick, and J. Demmel. Optimization of sparse matrix-vector multiplication on emerging multicore platforms. In Proc. SC ’07, pages 38:1–38:12, 2007.
-%%% [19] Z. Zhou, E. Saule, H. M. Aktulga, C. Yang, E. G. Ng, P. Maris, J. P. Vary, and U ̈. V. C ̧atalyu ̈rek. An out-of-core eigensolver on SSD-equipped clusters. In Proc. of IEEE Cluster, Sep 2012.
-%%% ----------------------------------------------------------------------
-
 @string{i3etc = "{IEEE} {T}ransactions on {C}omputers"}
 
 @inproceedings{Im01,
@@ -333,6 +285,8 @@ OPTisbn = {978-0-7695-4385-7},
 OPTpages = {721--733},
 } 
 
+
+
 @inproceedings{Belgin09,
 author = {Belgin, Mehmet and Back, Godmar and Ribbens, Calvin J.},
 title = {Pattern-based sparse matrix representation for memory-efficient SMVM kernels},
@@ -343,21 +297,21 @@ pages = {100--109},
 
 
 @inproceedings{Buluc2009SPAA,
-author =	 {Bulu\c{c}, Aydin and Fineman, Jeremy T. and Frigo,
-              Matteo and Gilbert, John R. and Leiserson, Charles
-              E.},
-title =	 {Parallel sparse matrix-vector and
-              matrix-transpose-vector multiplication using
-              compressed sparse blocks},
-booktitle =	 {Proc. SPAA '09},
-series =	 {},
-year =	 {2009},
-pages =	 {233--244},
-keywords =	 {compressed sparse blocks, compressed sparse columns,
-              compressed sparse rows, matrix transpose,
-              matrix-vector multiplication, multithreaded
-              algorithm, parallelism, span, sparse matrix, storage
-              format, work},
+  author =	 {Bulu\c{c}, Aydin and Fineman, Jeremy T. and Frigo,
+                  Matteo and Gilbert, John R. and Leiserson, Charles
+                  E.},
+  title =	 {Parallel sparse matrix-vector and
+                  matrix-transpose-vector multiplication using
+                  compressed sparse blocks},
+  booktitle =	 {Proc. SPAA '09},
+  series =	 {},
+  year =	 {2009},
+  pages =	 {233--244},
+  keywords =	 {compressed sparse blocks, compressed sparse columns,
+                  compressed sparse rows, matrix transpose,
+                  matrix-vector multiplication, multithreaded
+                  algorithm, parallelism, span, sparse matrix, storage
+                  format, work},
 } 
 
 @InProceedings{Kucuktunc12-ASONAM,
@@ -707,24 +661,6 @@ bibsource = {DBLP, http://dblp.uni-trier.de}
 }
 
 
-@inproceedings{conf/ipps/BulucWOD11,
-added-at = {2011-09-09T00:00:00.000+0200},
-author = {Buluç, Aydin and Williams, Samuel and Oliker, Leonid and Demmel, James},
-biburl = {http://www.bibsonomy.org/bibtex/2f581d2f36aa4eb80fbf303149d159bb0/dblp},
-booktitle = {IPDPS},
-crossref = {conf/ipps/2011},
-ee = {http://doi.ieeecomputersociety.org/10.1109/IPDPS.2011.73},
-interhash = {e251fa46efdf3635d84d8cb799629e53},
-intrahash = {f581d2f36aa4eb80fbf303149d159bb0},
-isbn = {978-1-61284-372-8},
-keywords = {dblp},
-pages = {721-733},
-publisher = {IEEE},
-timestamp = {2011-09-09T00:00:00.000+0200},
-title = {Reduced-Bandwidth Multithreaded Algorithms for Sparse Matrix-Vector Multiplication.},
-url = {http://dblp.uni-trier.de/db/conf/ipps/ipdps2011.html#BulucWOD11},
-year = 2011
-}
 
 @inproceedings{conf/ipps/KreutzerHWFBB12,
 added-at = {2012-09-11T00:00:00.000+0200},
@@ -828,6 +764,61 @@ year = {2006},
   volume = {212},
 },
 
+@TechReport{Saule13-ARXIV,
+  author        = {Erik Saule and Kamer Kaya and {\"{U}}mit V.
+                  {\c{C}}ataly{\"{u}}rek},
+  title         = {Performance Evaluation of Sparse Matrix Multiplication
+                  Kernels on Intel Xeon Phi},
+  institution   = {ArXiv},
+  year          = {2013},
+  number        = {arXiv:1302.1078},
+  month         = feb,
+  url           = {http://arxiv.org/abs/1302.1078},
+  pdf           = baseurl:esaule:publis # {arxiv13-SKC.pdf}
+}
+
+@Article{Koren05,
+  author =	 {Y. Koren},
+  title =	 {Drawing Graphs by Eigenvectors: Theory and Practice},
+  journal =	 {Computers and Mathematics with Applications},
+  year =	 {2005},
+  volume =	 {49},
+  pages =	 {1867--1888},
+  OPTmonth =	 {},
+  OPTnote =	 {},
+  keywords =	 {graph drawing, graph layout, spectral layout,
+                  eigenvectors},
+  where =	 {graph_drawing/Koren05.pdf},
+  annote =	 {This paper present spectral methods to draw
+                  graphs. It basically rely on eigen vector extraction
+                  to draw graphs. They show a model which minimizes
+                  the pair wise distance of the vertices which shares
+                  an edge while trying to maximize the drawing
+                  area. The drawing is normalized by enforcing
+                  constraint on the variance of each dimension and
+                  their covariance. This has a lot of good property
+                  like dimensional scale invariance and orthogonalite
+                  of the vectors position in each dimension. In other
+                  words, a project of a 3d plot is the optimal 2d
+                  plot.\\They show that this model is equivalent to
+                  the extraction of the eigen vector of the laplacian
+                  of the adjacency matrix of the graph.\\They also
+                  show the same formulation is equivalent to placing
+                  each vertex at the centroid of its neighboors.\\This
+                  paper is heavy on linear algebra but quite
+                  enlightful. }
+}
+
+@inproceedings{Brin98,
+  author =	 {Brin, Sergey and Page, Lawrence},
+  title =	 {The anatomy of a large-scale hypertextual Web search
+                  engine},
+  OPTbooktitle = {Proc. of World Wide Web},
+  booktitle =	 {Proc. of WWW},
+  year =	 {1998},
+  keywords =	 {graph, page rank, eigensolving, recommender},
+  OPTpages =	 {107--117},
+} 
 
 
 

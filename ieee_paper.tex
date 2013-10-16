@@ -93,34 +93,43 @@ OpenMP; MIC; spmv; sparse matrix; Radial Basis Function;
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-\cite{Bell08, Vuduc05, Nishtala07, Stock12-TACC, Cuthill69, cramer2012openmp, Buluc2009_SPAA, Buluc11, Im01, Mellor-Crummey04, Nishtala07, Saad94sparskit, Williams07}
-\cite{Temam:1992:CBS:147877.148091}
-\cite{DBLP:journals/ijhpca/ShantharamCR11,
-conf/ppsc/Toledo97, Liu:2013:ESM:2464996.2465013, Molka:2009:MPC:1636712.1637764,%
-DBLP:journals/corr/abs-1101-0091, conf/ipps/BulucWOD11, conf/ipps/KreutzerHWFBB12,%
-kumar2012accelerating, journals/concurrency/VazquezFG11}
+\cite{Stock12-TACC} is all dense. \cite{
+  Molka:2009:MPC:1636712.1637764} is about memory modeling not
+directly spmv.
 
-SpMV is an important kernel for lots of stuff. So improving the
-performance of SpMV has caputred the interest of many researcher.
+\cite{Im01, Saad94sparskit} \cite{DBLP:journals/ijhpca/ShantharamCR11,
+  DBLP:journals/corr/abs-1101-0091 }
 
-The main challenge that is faced to improve good performance for SpMV
-is that the operation are conducted using memory location that are
-irregular and often unpredictible. That make that the kernels are
-mostly memory bound and there is a significant instruction overhead
-per flop.
+The multiplication of sparse matrix by a dense vector (SpMV) is an
+important kernel in many fields from scientific computing~\cite{} to
+graph analysis (recommender systems~\cite{Brin98}, graph
+drawing~\cite{Koren05}). So improving the performance of SpMV has
+captured the interest of many researcher; including the development of
+various implemetation for multi-core
+CPUs~\cite{Buluc2009SPAA,Williams07} and
+GPUs~\cite{Bell08, conf/ipps/KreutzerHWFBB12,
+  journals/concurrency/VazquezFG11,kumar2012accelerating}. The main
+challenge that is faced to obtain good performance for SpMV is that
+the operation are conducted using memory location that are irregular
+and often unpredictible. That make that the kernels are mostly memory
+bound and there is a significant instruction overhead per flop.
 
-Common improvement techniques such as register blocking, bandiwdth
-reduction (matrix reordering), partitioning to fit in cache or TLB
-have impacts which are very dependent on the matrix and overall do not
-lead to dramatic improvement. Assuming register blocking does not
-apply well to the matrix at hand (which is true for most matrices),
-there is about 8 bytes of the matrix to move in per non zero (assuming
-single precision); each nonzero requires two floating point operations
-leading to a flop-to-byte ratio of at most $\frac{1}{4}$. This limits
-the obtained performance to at most a quarter of the bandwidth of the
-architecture wasting a lot of potentially useful cycles. The commonly
-used techniques are mostly designed to reach that bound rather than
-overcome it.
+Common improvement techniques such as register blocking, bandwidth
+reduction (matrix reordering~\cite{Cuthill69}), partitioning to fit in
+cache or TLB~\cite{Nishtala07,Temam:1992:CBS:147877.148091,conf/ppsc/Toledo97},
+unrolling~\cite{Mellor-Crummey04} have impacts which are very
+dependent on the matrix and overall do not lead to dramatic
+improvement. (The state-of-the-art techniques in OSKI~\cite{Vuduc05}
+provide some useful yet limited improvements). Register blocking~\cite{conf/ppsc/Toledo97} does
+not apply well to most the matrix at hand (despite it can be applied
+with virtually no overhead in all cases thanks to compressed
+representation~\cite{Buluc11}). there is about 8 bytes of the matrix to move
+in per non zero (assuming single precision); each nonzero requires two
+floating point operations leading to a flop-to-byte ratio of at most
+$\frac{1}{4}$. This limits the obtained performance to at most a
+quarter of the bandwidth of the architecture wasting a lot of
+potentially useful cycles. The commonly used techniques are mostly
+designed to reach that bound rather than overcome it.
 
 Fortunately that fate is not inevitable. One solution would be to pair
 multiple component of an application to schedule a more instruction
@@ -147,7 +156,7 @@ Many Integrated Core (MIC) architecture, which has a significant
 memory bandwidth and peak flop throughput thanks to its 512-bit large
 SIMD registers. The Xeon Phi processor has been shown to be promising
 for sparse linear algebra compared to more classical CPU or GPU
-architecture~\cite{}.
+architecture~\cite{Saule13-ARXIV, Liu:2013:ESM:2464996.2465013, cramer2012openmp}.
 
 In Section~\ref{sec:rbf} we present the computation of RBFs and how it
 can be expressed 16 multiplication of 4 vectors by 4 sparse matrices
@@ -179,7 +188,19 @@ remarks and perspectives are provided in Section~\ref{sec:ccl}.
 %the nodes connected to node $i$ (Figure~\ref{fig:rbf_stencils}). Thus
 %$y$ is a discrete derivative of the vector $x$.
 
-In this paper, we propose yet a new idea that is applicable to radial basis functions (RBFs). Their strength is the ability to randomly distribute points across complex physical domains, and have an implementation that is independent of dimensionality. RBFs approximate a function $f(\xvec)\subset \mathbb{R}^d$ sampled at a set of $N$ distinct point locations, $x_j$, by linearly combining translates of a single radially symmetric function $\phi(r)$, where  $r = \|\xvec-\xvec_{j}\|$ denotes the Euclidean distance (e.g., in 2-D $\sqrt{(x-x_j)^2+(y-y_j)^2}$) between where the function is evaluated $\xvec$ and where the RBF is centered $\xvec_{j}$. That is, the interpolant is $s(\xvec) =  \sum_{j=1}^{N} w_j \phi_i(\|\xvec-\xvec_{j}\|)$. The weights $w_j$ are obtained by inverting the system
+In this paper, we propose a new idea that is applicable to radial
+basis functions (RBFs). Their strength is the ability to randomly
+distribute points across complex physical domains, and have an
+implementation that is independent of dimensionality. RBFs approximate
+a function $f(\xvec)\subset \mathbb{R}^d$ sampled at a set of $N$
+distinct point locations, $x_j$, by linearly combining translates of a
+single radially symmetric function $\phi(r)$, where $r =
+\|\xvec-\xvec_{j}\|$ denotes the Euclidean distance (e.g., in 2-D
+$\sqrt{(x-x_j)^2+(y-y_j)^2}$) between where the function is evaluated
+$\xvec$ and where the RBF is centered $\xvec_{j}$. That is, the
+interpolant is $s(\xvec) = \sum_{j=1}^{N} w_j
+\phi_i(\|\xvec-\xvec_{j}\|)$. The weights $w_j$ are obtained by
+inverting the system
 \begin{equation}
 \parray{lccr}{
 \phi_{11} & \phi_{12} & \cdots & \phi_{1N} \\
@@ -200,33 +221,77 @@ where $\phi_{ij} = \phi(\|\xvec_i-\xvec_j\|)$.
 %\phi (\|\xvec_{n}-\xvec_{1}\|) & \phi(\|\xvec_{n}-\xvec_{2}\|) & \cdots & \phi(\|\xvec_{N}-\xvec_{N}\|)
 %\end{bmatrix}
 
-The RBF differentiation matrix, $D_N$, is derived by applying the desired analytic derivative operator $L$ to the RBF interpolant $s(\xvec)$ above and evaluating it at the point locations. For very large problems, this is a computationally expensive since the matrix in (\ref{eq:rbf}) is full and inversion requires O$(N^3)$ operations. To alleviate the cost of this global approach (i.e. using every node in the domain to calculate the derivative at a given node $\xvec_i$), RBF-generated finite differences (RBF-FD) have been derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBF-FD use only a local set of the $n_z-1$ nearest neighbors to the point $\xvec_i$ to approximate the derivative. In other words, $Lf(\xvec_i)=\sum_{j=1}^{n_z}a_jf(\xvec_j)$. The differentiation weights, $a_j$, are calculated by enforcing that this linear combination should be exact for RBFs, $\{\phi(\|\xvec-\xvec_{j}\|)\}_{j=1}^{n_z}$, centered at each of the node locations $\{\xvec_j\}_{j=1}^{n_z}$ (classical finite differences (FD) would enforce that it be exact for polynomials instead). Similar to FD, as the stencil size $n_z$ increases so does the order of the method.
+The RBF differentiation matrix, $D_N$, is derived by applying the
+desired analytic derivative operator $L$ to the RBF interpolant
+$s(\xvec)$ above and evaluating it at the point locations. For very
+large problems, this is a computationally expensive since the matrix
+in (\ref{eq:rbf}) is full and inversion requires O$(N^3)$
+operations. To alleviate the cost of this global approach (i.e. using
+every node in the domain to calculate the derivative at a given node
+$\xvec_i$), RBF-generated finite differences (RBF-FD) have been
+derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBF-FD uses only
+a local set of the $n_z-1$ nearest neighbors to the point $\xvec_i$ to
+approximate the derivative. In other words,
+$Lf(\xvec_i)=\sum_{j=1}^{n_z}a_jf(\xvec_j)$. The differentiation
+weights, $a_j$, are calculated by enforcing that this linear
+combination should be exact for RBFs,
+$\{\phi(\|\xvec-\xvec_{j}\|)\}_{j=1}^{n_z}$, centered at each of the
+node locations $\{\xvec_j\}_{j=1}^{n_z}$ (classical finite differences
+(FD) would enforce that it be exact for polynomials instead). Similar
+to FD, as the stencil size $n_z$ increases so does the order of the
+method.
 
-For a total of $N$ points, there will be $N$ linear systems to solve, each of size $n_z \times n_z$. Each linear solve produces a row of the RBF-FD differentiation matrix $D_{n_z}$, resulting in a $N \ times N$ matrix with $n_zN$ nonzero entries. To evaluate the derivative at all points in the domain, takes the form
+For a total of $N$ points, there will be $N$ linear systems to solve,
+each of size $n_z \times n_z$. Each linear solve produces a row of the
+RBF-FD differentiation matrix $D_{n_z}$, resulting in a $N \times N$
+matrix with $n_zN$ nonzero entries. To evaluate the derivative at all
+points in the domain, takes the form
 $$
   \mathbf{g} = D_{n_z} \mathbf{f}
 $$
-where $f$ is the source vector of function values and $g$ is the resulting vector of derivative values. The computation of a single derivative has been reduced to a SpMV, where each row has $n_z$ nonzeros. Since the sparsity of each row is constant, ELLPACK~\cite{} becomes the most appropriate matrix compression scheme\cite{}. In practice, $n_z=32$ in two-dimensional flows and 64 or 100 for three-dimensional flows. These numbers are similar to what is used in finite-element codes.
 
-Many problems in fluid dynamics and in the geosciences require the solution to transport equations of the form
+where $f$ is the source vector of function values and $g$ is the
+resulting vector of derivative values. The computation of a single
+derivative has been reduced to a SpMV, where each row has $n_z$
+nonzeros. Since the sparsity of each row is constant, ELLPACK~\cite{}
+becomes the most appropriate matrix compression scheme\cite{}. In
+practice, $n_z=32$ in two-dimensional flows and 64 or 100 for
+three-dimensional flows. These numbers are similar to what is used in
+finite-element codes. Notice that the non zero elements of the matrix
+correspond to a relation of nearest neighbor. This relationship is not
+necessarily symmetric as shown in Figure~\ref{fig:rbf_stencils} which
+means that the matrix sparsity pattern might not be symmetric either.
+
+\begin{figure}[tbh]
+  \centering
+  \includegraphics[width=\linewidth]{figures/rbf_stencils.pdf}
+  \caption{RBFFD Stencils. Each node of the stencil is connected to
+    $n_z-1$ stencil nodes in addition to itself. In the figure, node
+    $A$ is connected to $B$, but $B$ is {\em not\/} connected to
+    $A$. Thus adjacency graph of $A$ is not-symmetric.}
+  \label{fig:rbf_stencils}
+\end{figure}
+
+Many problems in fluid dynamics and in the geosciences require the
+solution to transport equations of the form
 $$
 \pf{Q}{t} = f(Q,Q_x, Q_y, Q_z, \Laplacian{Q})
 $$
-where $Q$ is a vector of unknowns (3 components of velocity,
-pressure, temperature). For example, in solving a system of equations, it is often necessary to compute the $x$
-derivative of multiple functions, typically four for the Euler
-equations, or five for the Navier-Stokes equations. Multiple
-right-hand sides transform a SpMV into a SpMM (Sparse Matrix/dense
-Matrix multiplication), which improves register utilization and
-decreases cache misses by vectorizing over the multiple source
-vectors. Further improvements are possible by recognizing that
-different derivative matrices (x,y,z and Laplacian for example), have
-the same sparsity distribution; only the weight change.  Thus,
-alternative to computing a derivative of multiple functions, we can
-calculate multiple derivatives of a single functions. The increased
-memory bandwidth due to an increase in the number of derivative
-matrices is offset by better cache utilization, leading to an overall
-benefit.
+where $Q$ is a vector of unknowns (3 components of velocity, pressure,
+temperature). For example, in solving a system of equations, it is
+often necessary to compute the $x$ derivative of multiple functions,
+typically four for the Euler equations, or five for the Navier-Stokes
+equations. Multiple right-hand sides transform a SpMV into a SpMM
+(Sparse Matrix/dense Matrix multiplication), which improves register
+utilization and decreases cache misses by vectorizing over the
+multiple source vectors. Further improvements are possible by
+recognizing that different derivative matrices (x,y,z and Laplacian
+for example), have the same sparsity distribution; only the weight
+change.  Thus, alternative to computing a derivative of multiple
+functions, we can calculate multiple derivatives of a single
+functions. The increased memory bandwidth due to an increase in the
+number of derivative matrices is offset by better cache utilization,
+leading to an overall benefit.
 
 % GORDON I WOULD ELIMINATE BELOW AND END HERE.
 
@@ -271,10 +336,9 @@ benefit.
 %  using ELLPACK. Let's focus on on why this computation is important
 %  and how does the 16 multiplication appears in the equations.}
 
-\def\wide{2.5in}
-\newfig{figures/rbf_stencils.pdf}{\wide}{RBFFD Stencils. Each node of the stencil is connected to $n_z-1$ stencil nodes in addition to itself. In the figure, node $A$ is connected to $B$, but $B$ is {\em not\/} connected to $A$. Thus adjacency graph of $A$ is not-symmetric. This must be corrected when reducing the bandwidth of $A$ with a Cuthill\-McKee algorithm, which assumes symmetry.}{fig:rbf_stencils}
 
-\newfig{figures/matrix_structure.pdf}{\wide}{Matrix Structure.}{fig:mat_struct}
+
+\newfig{figures/matrix_structure.pdf}{\linewidth}{Matrix Structure.}{fig:mat_struct}
 
 
 
@@ -678,25 +742,25 @@ entry of the four vectors accross each lane.
   \begin{center}
     \subfigure[Supercompact.]{%
       \label{fig:supercompact}
-      \includegraphics[width=\ww]{figures/supercompact_matrix-crop.pdf}}%
+      \includegraphics[width=\ww]{figures/supercompact_matrix-crop.png}}%
     \subfigure[Compact.]{%
       \label{fig:compact}
-      \includegraphics[width=\ww]{figures/compact_matrix-crop.pdf}}%
+      \includegraphics[width=\ww]{figures/compact_matrix-crop.png}}%
     \subfigure[Random.]{%
       \label{fig:random}
-      \includegraphics[width=\ww]{figures/random_matrix-crop.pdf}}%
+      \includegraphics[width=\ww]{figures/random_matrix-crop.png}}%
     \subfigure[2D, no RCM.]{%
       \label{fig:rbf2dnorcm}
-      \includegraphics[width=\ww]{figures/kd-tree-2d-norcm-crop.pdf}}%
+      \includegraphics[width=\ww]{figures/kd-tree-2d-norcm-crop.png}}%
     \subfigure[2D, RCM.]{%
       \label{fig:rbf2drcm}
-      \includegraphics[width=\ww]{figures/kd-tree-2d-rcm-crop.pdf}} 
+      \includegraphics[width=\ww]{figures/kd-tree-2d-rcm-crop.png}} 
     \subfigure[3D, RCM.]{%
       \label{fig:rbf3dnorcm} 
-      \includegraphics[width=\ww]{figures/kd-tree-3d-norcm-crop.pdf}}%
+      \includegraphics[width=\ww]{figures/kd-tree-3d-norcm-crop.png}}%
     \subfigure[3D, RCM.]{%
       \label{fig:rbf3drcm}
-      \includegraphics[width=\ww]{figures/kd-tree-3d-rcm-crop.pdf}}%
+      \includegraphics[width=\ww]{figures/kd-tree-3d-rcm-crop.png}}%
   \end{center}
   
   \caption{Different sparsity distributions. In all cases, there are
