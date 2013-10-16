@@ -249,8 +249,7 @@ $$
 where $f$ is the source vector of function values and $g$ is the
 resulting vector of derivative values. The computation of a single
 derivative has been reduced to a SpMV, where each row has $n_z$
-nonzeros. Since the sparsity of each row is constant, ELLPACK~\cite{}
-becomes the most appropriate matrix compression scheme\cite{}. In
+nonzeros. In
 practice, $n_z=32$ in two-dimensional flows and 64 or 100 for
 three-dimensional flows. These numbers are similar to what is used in
 finite-element codes. Notice that the non zero elements of the matrix
@@ -333,6 +332,10 @@ leading to an overall benefit.
 %  and how does the 16 multiplication appears in the equations.}
 
 
+
+\todo{describe the data structure} Since the sparsity of each row is
+constant, ELLPACK becomes the most appropriate matrix
+compression scheme.
 
 \newfig{figures/matrix_structure.pdf}{\linewidth}{Matrix Structure.}{fig:mat_struct}
 
