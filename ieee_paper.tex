@@ -21,6 +21,8 @@
   citecolor=darkgreen,%
   urlcolor=blue]{hyperref}
 
+\usepackage{listings}
+
 
 \newcommand{\todo}[1]{{\color{red}\textbf{\hl{#1}}\xspace}}
 
@@ -30,6 +32,9 @@
 %\usepackage{morefloats}
 
 \newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 
 \usepackage[pdftex]{graphicx}
@@ -168,79 +173,47 @@ remarks and perspectives are provided in Section~\ref{sec:ccl}.
 \section{Derivatives of Radial Basis Functions}
 \label{sec:rbf}
 
-
-
 %In the theory of Radial Basis Functions Finite-Difference (RBFFD),
 %derivatives of a function $f(\rvec)$ at node $i$ are expressed as a
 %linear combination of the function values at the stencil center and
 %the nodes connected to node $i$ (Figure~\ref{fig:rbf_stencils}). Thus
 %$y$ is a discrete derivative of the vector $x$.
 
-In this paper, we propose yet a new idea, that is applicable to the
-world of Finite-Difference Radial Basis functions (RBF-FD). A radial
-basis functions refers to a set of shifted radially symmetric
-functions $\phi_i(r) =\phi{||\xvec-\xvec_i||}$ centered at
-$\xvec_i$\cite{}. Any function $f(\xvec)$ defined in a domain $\Omega$
-can be expanded in this basis according to
+In this paper, we propose yet a new idea that is applicable to radial basis functions (RBFs). Their strength is the ability to randomly distribute points across complex physical domains, and have an implementation that is independent of dimensionality. RBFs approximate a function $f(\xvec)\subset \mathbb{R}^d$ sampled at a set of $N$ distinct point locations, $x_j$, by linearly combining translates of a single radially symmetric function $\phi(r)$, where  $r = \|\xvec-\xvec_{j}\|$ denotes the Euclidean distance (e.g., in 2-D $\sqrt{(x-x_j)^2+(y-y_j)^2}$) between where the function is evaluated $\xvec$ and where the RBF is centered $\xvec_{j}$. That is, the interpolant is $s(\xvec) =  \sum_{j=1}^{N} w_j \phi_i(\|\xvec-\xvec_{j}\|)$. The weights $w_j$ are obtained by inverting the system
 \begin{equation}
-f(\xvec) =  \sum_i w_i \phi_i(\xvec) \label{eq:rbf}
+\parray{lccr}{
+\phi_{11} & \phi_{12} & \cdots & \phi_{1N} \\
+\vdots & \ddots & \vdots & \vdots \\
+\phi_{n1} & \phi_{n2} & \cdots & \phi_{NN} 
+}
+\parray{c}{ w_{1} \\ \vdots \\ w_{N} }
+=
+\parray{c}{ f(\xvec_1) \\ \vdots\\ f(\xvec_N) }. 
+\label{eq:rbf}
 \end{equation}
-% Wrong label eq:rbf in document 
-Given function values at a set of discrete points $x_i$, one inverts
-linear system (\ref{eq:rbf}) to obtain a set of weights $w_j$. Given a
-set of $N$ RBF nodes, the matrix to invert is dense. Derivatives of
-$f(\xvec)$ result from the differentiation of Eq. (\ref{eq:rbf}). For
-very large problems, this is an computationally expensive since the
-RBFs do not form an orthogonal basis, nor are they amenable to tensor
-decomposition in the three coordinate directions. Rather, their
-strength is the ability to randomly distribute nodes across complex
-physical domains, and have an implementation that is independent of
-dimensionality.
+where $\phi_{ij} = \phi(\|\xvec_i-\xvec_j\|)$. 
+%\end{equation}
+%\begin{equation}
+%\begin{bmatrix}
+%\phi(\|\xvec_{1}-\xvec_{1}\|) & \phi(\|\xvec_{1}-\xvec_{2}\|) & \cdots & \phi(\|\xvec_{1}-\xvec_{N}\|) \\
+%\vdots & \ddots & \vdots  \\
+%\phi (\|\xvec_{n}-\xvec_{1}\|) & \phi(\|\xvec_{n}-\xvec_{2}\|) & \cdots & \phi(\|\xvec_{N}-\xvec_{N}\|)
+%\end{bmatrix}
 
-To alleviate the cost of a global approach, researchers \cite{} expand
-$f(\xvec)$ in a local region of $x_i$. Thus,
-$$
-f(\xvec) =  \sum_{i=0}^{n_s} w_i \phi_i(\xvec) \label{eq:rbf}
-$$
-where one only considers a local set of $n_s$ neighbors of of point $x_j$. 
-Finite-difference RBF expresses the derivative of $f(\xvec)$ at $x_j$ as a linear
-combination of $f(\xvec)$ at the $n_s$ neighbors. Thus, 
-$$
-f = A w
-$$ where $f$ is the vector of function values at the $n_s$ stencil
-points (including the center point $x_j$. The matrix $A$ is a function
-of $\phi_{ij}(\xvec) =\phi(||x_i-x_j||)$. This leads to the $n_s$
-weight values $w = A^{-1} f$. The derivative of Eq. \ref{eq:rbf}
-evaluated at $x_j$ gives
-$$
-   f'_j = \sum_{i=0}^{n_s} w_i \phi'_{ij}
-$$
-Substituting the vector of weights $w$ leads to 
-$$
-  f'_j = \sum_{i=0}^{n_s} \alpha_i f_i
-$$
-The derivative evaluation at all points of the domain $\Omega$, notwithstanding boundary conditions, takes the form
-$$
-  y = A x
-$$ 
-where $x$ is the souce vector of function values, and $y$ is the
-vector of derivative values. The matrix $A$ is called a derivative
-matrix. In the current litterature, the number of stencil points is a
-fixed value, independent of the node under consideration\cite{}. The
-computation of a single derivative has been reduced to a SpMV, where
-each row has $n_s$ nonzeros. Because the sparsity of each row is
-constant, ELLPACK~\cite{} becoes the most appropriate matrix
-compression scheme\cite{}. In practice, $n_s=32$ in two-dimensional
-flows and 64 or 100 for three-dimensional flows. These numbers are
-similar to what is used in finite-element codes.
+The RBF differentiation matrix, $D_N$, is derived by applying the desired analytic derivative operator $L$ to the RBF interpolant $s(\xvec)$ above and evaluating it at the point locations. For very large problems, this is a computationally expensive since the matrix in (\ref{eq:rbf}) is full and inversion requires O$(N^3)$ operations. To alleviate the cost of this global approach (i.e. using every node in the domain to calculate the derivative at a given node $\xvec_i$), RBF-generated finite differences (RBF-FD) have been derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBF-FD use only a local set of the $n_z-1$ nearest neighbors to the point $\xvec_i$ to approximate the derivative. In other words, $Lf(\xvec_i)=\sum_{j=1}^{n_z}a_jf(\xvec_j)$. The differentiation weights, $a_j$, are calculated by enforcing that this linear combination should be exact for RBFs, $\{\phi(\|\xvec-\xvec_{j}\|)\}_{j=1}^n_z$, centered at each of the node locations $\{\xvec_j\}_{j=1}^{n_z}$ (classical finite differences (FD) would enforce that it be exact for polynomials instead). Similar to FD, as the stencil size $n_z$ increases so does the order of the method.
 
-Many problems in fluid dynamics and in the geosciences require the solution to
-transport equations of the form
+For a total of $N$ points, there will be $N$ linear systems to solve, each of size $n_z \times n_z$. Each linear solve produces a row of the RBF-FD differentiation matrix $D_{n_z}$, resulting in a $N \ times N$ matrix with $n_zN$ nonzero entries. To evaluate the derivative at all points in the domain, takes the form
+$$
+  \mathbf{g} = D_{n_z} \mathbf{f}
+$$
+where $f$ is the source vector of function values and $g$ is the resulting vector of derivative values. The computation of a single derivative has been reduced to a SpMV, where each row has $n_z$ nonzeros. Since the sparsity of each row is constant, ELLPACK~\cite{} becomes the most appropriate matrix compression scheme\cite{}. In practice, $n_z=32$ in two-dimensional flows and 64 or 100 for three-dimensional flows. These numbers are similar to what is used in finite-element codes.
+
+Many problems in fluid dynamics and in the geosciences require the solution to transport equations of the form
 $$
 \pf{Q}{t} = f(Q,Q_x, Q_y, Q_z, \Laplacian{Q})
-$$ 
+$$
 where $Q$ is a vector of unknowns (3 components of velocity,
-pressure, temperature). Thus, it is often necessary to compute the $x$
+pressure, temperature). For example, in solving a system of equations, it is often necessary to compute the $x$
 derivative of multiple functions, typically four for the Euler
 equations, or five for the Navier-Stokes equations. Multiple
 right-hand sides transform a SpMV into a SpMM (Sparse Matrix/dense
@@ -251,10 +224,11 @@ different derivative matrices (x,y,z and Laplacian for example), have
 the same sparsity distribution; only the weight change.  Thus,
 alternative to computing a derivative of multiple functions, we can
 calculate multiple derivatives of a single functions. The increased
-memory bandwidth due to an increase in the number of derivaive
+memory bandwidth due to an increase in the number of derivative
 matrices is offset by better cache utilization, leading to an overall
 benefit.
 
+% GORDON I WOULD ELIMINATE BELOW AND END HERE.
 
 **** PUT ELSEWHERE OR ELIMINATE? ****
 
@@ -298,9 +272,11 @@ that locates the $j^{th}$ nonzero in row $i$ of $A$.
   and how does the 16 multiplication appears in the equations.}
 
 \def\wide{2.5in}
-\newfig{figures/rbf_stencils.pdf}{\wide}{RBFFD Stencils. Each node of the mesh is connected to $n_z-1$ stencil nodes in addition to itself. In the figure, node $A$ is connected to $B$, but $B$ is {\em not\/} connected to $A$. Thus adjacency graph of $A$ is not-symmetric. This must be corrected when reducing the bandwidth of $A$ with a Cuthill\-McKee algorithm, which assumes symmetry.}{fig:rbf_stencils}
+\newfig{figures/rbf_stencils.pdf}{\wide}{RBFFD Stencils. Each node of the stencil is connected to $n_z-1$ stencil nodes in addition to itself. In the figure, node $A$ is connected to $B$, but $B$ is {\em not\/} connected to $A$. Thus adjacency graph of $A$ is not-symmetric. This must be corrected when reducing the bandwidth of $A$ with a Cuthill\-McKee algorithm, which assumes symmetry.}{fig:rbf_stencils}
 
 \newfig{figures/matrix_structure.pdf}{\wide}{Matrix Structure.}{fig:mat_struct}
+
+
 
 
 \section{Modelization of the Potential Improvements}
@@ -599,8 +575,10 @@ have a SIMD register where each lane is the four vector entries for a
 non zero element. Using a broadcast permutation, one can replicate an
 entry of the four vectors accross each lane.
 
-\begin{figure*}
-\begin{verbatim}
+\begin{figure}[h]
+\begin{center}
+\lstset{language=c++,basicstyle=\scriptsize,numbers=left,numbersep=5pt}
+\begin{lstlisting}{float=h, Caption}
 const __m512i offsets = _mm512_set4_epi32(3,2,1,0);
 const __m512i four = _mm512_set4_epi32(4,4,4,4); 
 int int_mask = 0x1111;
@@ -630,11 +608,50 @@ for (int r=0; r < nb_rows; r++) {
     //three more times with BBBB, CCCC, and DDDD
   }
   _mm512_storenrngo_ps(dom.result_vt+nb_mat*nb_vec*r, accu);  
-} 
-\end{verbatim}
-\caption{mat mul code.}
-\label{code:mat_mul}
-\end{figure*}
+\end{lstlisting}
+\end{center}
+\end{figure}
+
+
+
+
+
+%\begin{figure*}
+%\begin{verbatim}
+%const __m512i offsets = _mm512_set4_epi32(3,2,1,0);
+%const __m512i four = _mm512_set4_epi32(4,4,4,4); 
+%int int_mask = 0x1111;
+%__mmask16 mask = _mm512_int2mask(int_mask);
+%
+%#pragma omp parallel for
+%for (int r=0; r < nb_rows; r++) {
+%  __m512 accu = _mm512_setzero_ps();
+%
+%  for (int n=0; n < nz; n+=4) {
+%    float* a = &dom.col_id_t[0]+n+nz*r;
+%    __m512i vect_i = _mm512_setzero_ps();
+%    vect_i = _mm512_mask_loadunpacklo_ps(vect_i, mask, a);
+%    vect_i = _mm512_mask_loadunpackhi_ps(vect_i, mask, a);
+%    vect_i = _mm512_swizzle_ps(vect_i, _MM_SWIZ_REG_AAAA);
+%    vect_i = _mm512_fmadd_epi32(vect_i, four, offsets);
+%
+%    all_vect = _mm512_i32gather_ps(vect_i, dom.vec_vt, scale);
+%
+%    mat_ent = _mm512_load_ps(dom.data_t + nb_mat*(n + r*nz));
+%
+%    //perform first tensor multiplication
+%    correct_vect = permute(all_vect, _MM_PERM_AAAA);
+%    correct_mat = _mm512_swizzle_ps(mat_ent, _MM_SWIZ_REG_AAAA);
+%    accu = _mm512_fmadd_ps(correct_vect, correct_mat, accu);
+%
+%    //three more times with BBBB, CCCC, and DDDD
+%  }
+%  _mm512_storenrngo_ps(dom.result_vt+nb_mat*nb_vec*r, accu);  
+%} 
+%\end{verbatim}
+%\caption{mat mul code.}
+%\label{code:mat_mul}
+%\end{figure*}
 
 
 
@@ -695,14 +712,13 @@ for (int r=0; r < nb_rows; r++) {
   \subfigure[Performance of $y=Ax$ on the MIC. Squares: base 1/1 case,
     solid circles: 4/4 case implemented in C++, solid triangles: 4/4
     case implemented with MIC vector instructions. $-O3$ compilation
-    options. Each group consists of four cases: grids of $64^3$ and
-    $96^3$ with and without Reverse Cuthill
-    McKee.\todo{I don't think this is supercompact but RBF 3D.}]{\includegraphics[width=.49\linewidth]{figures/mic_performance_nb_threads.pdf}\label{}}
+    options. Each symbol has two cases: with (red) and without blue) 
+    with and without Reverse Cuthill-McKee. The grid is $96^3$.}
+    {\includegraphics[width=.49\linewidth]{figures/mic_performance_nb_threads.pdf}\label{}}
 %
-  \subfigure[performance on the host on a 64x64x64 matrix. Manual
+  \subfigure[performance on the host on a sparse matrix with $64^3$ rows. Manual
     vectoization brings significant improvement there as
     well.]{\includegraphics[width=.49\linewidth]{figures/64x64x64.pdf}\label{}}
-
   \caption{Vectorization matters in practice. Differences in BW
     translate in different performance.\todo{this two plots should ``correlate'' }}
 \end{figure*}
@@ -818,6 +834,8 @@ within a fluid simulation using RBF-FD.
 
 \section*{Acknowledgment}
 The first and last authors acknowledge NSF funding under NSF grant DMS-\#0934331 (FSU). 
+NCAR is sponsored by the National Science Foundation. N. Flyer      
+acknowledges support of NSF grant DMS-0934317.
 
 
 \bibliographystyle{plain} %{IEEEabrv,paper.bib}
