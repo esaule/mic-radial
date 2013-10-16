@@ -544,9 +544,8 @@ interfaces are 32-bit wide with two channels and the total bandwidth
 is 8.4GB/s per core. Thus, the cores should be able to consume 504GB/s
 at most. However, the bandwidth between the cores and the memory
 controllers is limited by the ring network that connect the cores and
-the memory controller. Its precise bandwidth is unknown for this
-precise card, but it would be coehrent that it is between 200GB/s and
-250GB/s.
+the memory controller. Its precise bandwidth is unknown but it is
+believed to be between 200GB/s and 250GB/s.
 
 Each core in the architecture has a 32kB L1 data cache, a 32kB L1
 instruction cache, and a 512kB L2 cache. The architecture of a core is
@@ -589,19 +588,19 @@ instruction on fully loaded registers must be executed at most every
 
 We discuss how the implementation of the v4m4 kernel works using
 vectorial instruction. The code is given for reference in
-Figure~\ref{code:mat_mul}. (We will show that an implementation
+Figure~\ref{code:mat_mul}. (We will show in Section~\ref{sec:expe} that an implementation
 relying on compiler vectorization does not lead to desirable
-performance.) The registers in the MIC architecture are 512 bits wide
+performance, which confirms the results of~\cite{Saule13-ARXIV}.) The registers in the MIC architecture are 512 bits wide
 and can store 16 floats or integers. (In comparison to OpenCL or CUDA,
 one can think of these registers as a warp.) The end goal is to be
 able to load and format the non zero values $a,b,c,d$ and the vector
-entries $p,q,r,s$ in two vectorial register to be able to apply Fused
+entries $p,q,r,s$ in two vector registers to be able to apply Fused
 Multiply-Add on them, which is depicted in
 Figure~\ref{fig:tensor_product}. Bringing the data in the vector
 register as depicted in the figure is the difficult part that we now
 explain. A thread will perform the multiplications one row at a time,
 and parallelism is achieved by giving blocks of rows to each core
-usign an OpenMP construct.
+using an OpenMP construct.
 
 \begin{figure}
   \centering
@@ -616,7 +615,7 @@ The core of the technique is the use of swizzling and permutation
 features of the vectors in the Intel MIC architecture. A vector of 512
 bits is composed of 4 lanes (sometimes called channels) of 128 bits
 which are made of 4 elements of 32 bits. A swizzling operation allows
-to reorder the elements within each lane. While a permutation allow to
+to reorder the elements within each lane. While a permutation allows to
 change the orders of the lanes. Figure~\ref{fig:swizzling_permutation}
 illustrates these two possibilities. Both permutation and swizzling
 support common reordering and broadcast. In the code, the ``permute''
@@ -634,14 +633,14 @@ are necessary to convert to a vector to/from the integer type.
 \end{figure}
 
 All the operations that loads data from the memory into a register
-allows to load 512 bits, so 16 floats at a time. A single non zero in
-the matrix will cause 16 operations to be performed, but it only uses
-4 floats from the matrix and 4 floats from the {\tt x} vector. So we
-need to load at once the data for 4 non zeroes in the matrix, so that
-we load 16 flaots from the matrix and 16 floats from the vectors at
-once. (The number of non zeroes on a row in our application is always
-a multiple of 4, if it was, we would need to add some explicit zeroes
-in the data structure to pad it.)
+allows to transfer 512 bits, so 16 floats at a time. A single non zero
+in the matrix will cause 16 operations to be performed, but it only
+uses 4 floats from the matrix and 4 floats from the {\tt x} vector. So
+we need to load at once the data for 4 non zeroes in the matrix,
+representing 16 floats from the matrix and 16 floats from the vectors
+at once. (The number of non zeroes on a row in our application is
+always a multiple of 4, if it was, we would need to add some explicit
+zeroes in the data structure to pad it.)
 
 The values from the non zero element in the matrix are the simplest to
 load. One can load the 16 floating point values for the 4 non zero of
