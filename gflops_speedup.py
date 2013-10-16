@@ -28,6 +28,28 @@ def ratio(nv, nm, bx, nz):
 # A : nm*nz*bx   loads
 # col_id : nz*bi loads
     bi = 4
+
+
+    cl = 64  # size of most caches
+
+    # for each row of A
+
+    flops = 2.*nv*nm*nz
+
+    a_read = bx*nm*nz
+    icol_read = bi*nz
+    y_write = bx*nm*nv
+
+    x_read = nz *  cl*np.ceil((bx*nv)/float(cl))  # assumes small cache, x must be reread
+    rworst = flops/(x_read+a_read+icol_read+y_write)
+
+    x_read = bx*nv   # each element of x is read once
+    rbest = flops/(x_read+a_read+icol_read+y_write)
+    #print "yy: ", [nv,nm,rworst,rbest]
+    return([rworst,rbest])
+
+
+"""
     cl = 64.
     #rworst = (2.*nv*nm)/(bx*(nv+nm+nm*nv/float(nz))+bi)
     # in worst case, every vector element brings in an entire cache line (256 bits = 32 floats),
@@ -47,7 +69,7 @@ def ratio(nv, nm, bx, nz):
         print "nv case not considered"
 
     rbest = (2.*nv*nm)/(bx*(nm+(1+nm)*nv/float(nz))+bi)
-    return([rworst,rbest])
+"""
 #----------------------------------
 nz = 32
 single = 4
