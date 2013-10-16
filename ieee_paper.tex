@@ -179,7 +179,19 @@ remarks and perspectives are provided in Section~\ref{sec:ccl}.
 %the nodes connected to node $i$ (Figure~\ref{fig:rbf_stencils}). Thus
 %$y$ is a discrete derivative of the vector $x$.
 
-In this paper, we propose yet a new idea that is applicable to radial basis functions (RBFs). Their strength is the ability to randomly distribute points across complex physical domains, and have an implementation that is independent of dimensionality. RBFs approximate a function $f(\xvec)\subset \mathbb{R}^d$ sampled at a set of $N$ distinct point locations, $x_j$, by linearly combining translates of a single radially symmetric function $\phi(r)$, where  $r = \|\xvec-\xvec_{j}\|$ denotes the Euclidean distance (e.g., in 2-D $\sqrt{(x-x_j)^2+(y-y_j)^2}$) between where the function is evaluated $\xvec$ and where the RBF is centered $\xvec_{j}$. That is, the interpolant is $s(\xvec) =  \sum_{j=1}^{N} w_j \phi_i(\|\xvec-\xvec_{j}\|)$. The weights $w_j$ are obtained by inverting the system
+In this paper, we propose yet a new idea that is applicable to radial
+basis functions (RBFs). Their strength is the ability to randomly
+distribute points across complex physical domains, and have an
+implementation that is independent of dimensionality. RBFs approximate
+a function $f(\xvec)\subset \mathbb{R}^d$ sampled at a set of $N$
+distinct point locations, $x_j$, by linearly combining translates of a
+single radially symmetric function $\phi(r)$, where $r =
+\|\xvec-\xvec_{j}\|$ denotes the Euclidean distance (e.g., in 2-D
+$\sqrt{(x-x_j)^2+(y-y_j)^2}$) between where the function is evaluated
+$\xvec$ and where the RBF is centered $\xvec_{j}$. That is, the
+interpolant is $s(\xvec) = \sum_{j=1}^{N} w_j
+\phi_i(\|\xvec-\xvec_{j}\|)$. The weights $w_j$ are obtained by
+inverting the system
 \begin{equation}
 \parray{lccr}{
 \phi_{11} & \phi_{12} & \cdots & \phi_{1N} \\
@@ -200,33 +212,63 @@ where $\phi_{ij} = \phi(\|\xvec_i-\xvec_j\|)$.
 %\phi (\|\xvec_{n}-\xvec_{1}\|) & \phi(\|\xvec_{n}-\xvec_{2}\|) & \cdots & \phi(\|\xvec_{N}-\xvec_{N}\|)
 %\end{bmatrix}
 
-The RBF differentiation matrix, $D_N$, is derived by applying the desired analytic derivative operator $L$ to the RBF interpolant $s(\xvec)$ above and evaluating it at the point locations. For very large problems, this is a computationally expensive since the matrix in (\ref{eq:rbf}) is full and inversion requires O$(N^3)$ operations. To alleviate the cost of this global approach (i.e. using every node in the domain to calculate the derivative at a given node $\xvec_i$), RBF-generated finite differences (RBF-FD) have been derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBF-FD use only a local set of the $n_z-1$ nearest neighbors to the point $\xvec_i$ to approximate the derivative. In other words, $Lf(\xvec_i)=\sum_{j=1}^{n_z}a_jf(\xvec_j)$. The differentiation weights, $a_j$, are calculated by enforcing that this linear combination should be exact for RBFs, $\{\phi(\|\xvec-\xvec_{j}\|)\}_{j=1}^{n_z}$, centered at each of the node locations $\{\xvec_j\}_{j=1}^{n_z}$ (classical finite differences (FD) would enforce that it be exact for polynomials instead). Similar to FD, as the stencil size $n_z$ increases so does the order of the method.
+The RBF differentiation matrix, $D_N$, is derived by applying the
+desired analytic derivative operator $L$ to the RBF interpolant
+$s(\xvec)$ above and evaluating it at the point locations. For very
+large problems, this is a computationally expensive since the matrix
+in (\ref{eq:rbf}) is full and inversion requires O$(N^3)$
+operations. To alleviate the cost of this global approach (i.e. using
+every node in the domain to calculate the derivative at a given node
+$\xvec_i$), RBF-generated finite differences (RBF-FD) have been
+derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBF-FD use only
+a local set of the $n_z-1$ nearest neighbors to the point $\xvec_i$ to
+approximate the derivative. In other words,
+$Lf(\xvec_i)=\sum_{j=1}^{n_z}a_jf(\xvec_j)$. The differentiation
+weights, $a_j$, are calculated by enforcing that this linear
+combination should be exact for RBFs,
+$\{\phi(\|\xvec-\xvec_{j}\|)\}_{j=1}^{n_z}$, centered at each of the
+node locations $\{\xvec_j\}_{j=1}^{n_z}$ (classical finite differences
+(FD) would enforce that it be exact for polynomials instead). Similar
+to FD, as the stencil size $n_z$ increases so does the order of the
+method.
 
-For a total of $N$ points, there will be $N$ linear systems to solve, each of size $n_z \times n_z$. Each linear solve produces a row of the RBF-FD differentiation matrix $D_{n_z}$, resulting in a $N \ times N$ matrix with $n_zN$ nonzero entries. To evaluate the derivative at all points in the domain, takes the form
+For a total of $N$ points, there will be $N$ linear systems to solve,
+each of size $n_z \times n_z$. Each linear solve produces a row of the
+RBF-FD differentiation matrix $D_{n_z}$, resulting in a $N \ times N$
+matrix with $n_zN$ nonzero entries. To evaluate the derivative at all
+points in the domain, takes the form
 $$
   \mathbf{g} = D_{n_z} \mathbf{f}
 $$
-where $f$ is the source vector of function values and $g$ is the resulting vector of derivative values. The computation of a single derivative has been reduced to a SpMV, where each row has $n_z$ nonzeros. Since the sparsity of each row is constant, ELLPACK~\cite{} becomes the most appropriate matrix compression scheme\cite{}. In practice, $n_z=32$ in two-dimensional flows and 64 or 100 for three-dimensional flows. These numbers are similar to what is used in finite-element codes.
+where $f$ is the source vector of function values and $g$ is the
+resulting vector of derivative values. The computation of a single
+derivative has been reduced to a SpMV, where each row has $n_z$
+nonzeros. Since the sparsity of each row is constant, ELLPACK~\cite{}
+becomes the most appropriate matrix compression scheme\cite{}. In
+practice, $n_z=32$ in two-dimensional flows and 64 or 100 for
+three-dimensional flows. These numbers are similar to what is used in
+finite-element codes.
 
-Many problems in fluid dynamics and in the geosciences require the solution to transport equations of the form
+Many problems in fluid dynamics and in the geosciences require the
+solution to transport equations of the form
 $$
 \pf{Q}{t} = f(Q,Q_x, Q_y, Q_z, \Laplacian{Q})
 $$
-where $Q$ is a vector of unknowns (3 components of velocity,
-pressure, temperature). For example, in solving a system of equations, it is often necessary to compute the $x$
-derivative of multiple functions, typically four for the Euler
-equations, or five for the Navier-Stokes equations. Multiple
-right-hand sides transform a SpMV into a SpMM (Sparse Matrix/dense
-Matrix multiplication), which improves register utilization and
-decreases cache misses by vectorizing over the multiple source
-vectors. Further improvements are possible by recognizing that
-different derivative matrices (x,y,z and Laplacian for example), have
-the same sparsity distribution; only the weight change.  Thus,
-alternative to computing a derivative of multiple functions, we can
-calculate multiple derivatives of a single functions. The increased
-memory bandwidth due to an increase in the number of derivative
-matrices is offset by better cache utilization, leading to an overall
-benefit.
+where $Q$ is a vector of unknowns (3 components of velocity, pressure,
+temperature). For example, in solving a system of equations, it is
+often necessary to compute the $x$ derivative of multiple functions,
+typically four for the Euler equations, or five for the Navier-Stokes
+equations. Multiple right-hand sides transform a SpMV into a SpMM
+(Sparse Matrix/dense Matrix multiplication), which improves register
+utilization and decreases cache misses by vectorizing over the
+multiple source vectors. Further improvements are possible by
+recognizing that different derivative matrices (x,y,z and Laplacian
+for example), have the same sparsity distribution; only the weight
+change.  Thus, alternative to computing a derivative of multiple
+functions, we can calculate multiple derivatives of a single
+functions. The increased memory bandwidth due to an increase in the
+number of derivative matrices is offset by better cache utilization,
+leading to an overall benefit.
 
 % GORDON I WOULD ELIMINATE BELOW AND END HERE.
 
