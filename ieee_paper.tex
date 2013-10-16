@@ -389,8 +389,9 @@ $$O = 2 n_v n_m n_c = 2 n_v n_m n_z n_r$$
 
 The computation intensity is the amount of computations performed per
 byte transfered. In the worst case and in the best case, we have
-$$I_b = \frac{O}{b_T} = \frac{2 n_v n_m n_z}{n_z (b_i + b_x n_m) + n_v b_x (1 + n_m)}$$
-$$I_w = \frac{O}{B_T} = \frac{2 n_v n_m n_z}{n_v n_m b_x + n_z \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)}$$
+$$I_b = \frac{O}{b_T} = \frac{2 n_v n_m}{ (b_i + b_x n_m) + n_v n_m b_x n_z^{-1} + n_v b_x n_z^{-1} }$$
+%$$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{n_v n_m b_x n_z^{-1} + \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)}$$
+$$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{(b_i+b_x n_m) + n_v n_m b_x n_z^{-1} + cl \ceil{\frac{n_vb_x}{cl}} }$$
 
 In the special case $n_v=n_m=1$ in single precision
 $$I_b = \frac{1}{4} \frac{ n_z }{ n_z + 1} \approx \frac{1}{4}$$
