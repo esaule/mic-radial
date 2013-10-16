@@ -93,34 +93,43 @@ OpenMP; MIC; spmv; sparse matrix; Radial Basis Function;
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-\cite{Bell08, Vuduc05, Nishtala07, Stock12-TACC, Cuthill69, cramer2012openmp, Buluc2009_SPAA, Buluc11, Im01, Mellor-Crummey04, Nishtala07, Saad94sparskit, Williams07}
-\cite{Temam:1992:CBS:147877.148091}
-\cite{DBLP:journals/ijhpca/ShantharamCR11,
-conf/ppsc/Toledo97, Liu:2013:ESM:2464996.2465013, Molka:2009:MPC:1636712.1637764,%
-DBLP:journals/corr/abs-1101-0091, conf/ipps/BulucWOD11, conf/ipps/KreutzerHWFBB12,%
-kumar2012accelerating, journals/concurrency/VazquezFG11}
+\cite{Stock12-TACC} is all dense. \cite{
+  Molka:2009:MPC:1636712.1637764} is about memory modeling not
+directly spmv.
 
-SpMV is an important kernel for lots of stuff. So improving the
-performance of SpMV has caputred the interest of many researcher.
+\cite{Im01, Saad94sparskit} \cite{DBLP:journals/ijhpca/ShantharamCR11,
+  DBLP:journals/corr/abs-1101-0091 }
 
-The main challenge that is faced to improve good performance for SpMV
-is that the operation are conducted using memory location that are
-irregular and often unpredictible. That make that the kernels are
-mostly memory bound and there is a significant instruction overhead
-per flop.
+The multiplication of sparse matrix by a dense vector (SpMV) is an
+important kernel in many fields from scientific computing~\cite{} to
+graph analysis (recommender systems~\cite{Brin98}, graph
+drawing~\cite{Koren05}). So improving the performance of SpMV has
+captured the interest of many researcher; including the development of
+various implemetation for multi-core
+CPUs~\cite{Buluc2009SPAA,Williams07} and
+GPUs~\cite{Bell08, conf/ipps/KreutzerHWFBB12,
+  journals/concurrency/VazquezFG11,kumar2012accelerating}. The main
+challenge that is faced to obtain good performance for SpMV is that
+the operation are conducted using memory location that are irregular
+and often unpredictible. That make that the kernels are mostly memory
+bound and there is a significant instruction overhead per flop.
 
-Common improvement techniques such as register blocking, bandiwdth
-reduction (matrix reordering), partitioning to fit in cache or TLB
-have impacts which are very dependent on the matrix and overall do not
-lead to dramatic improvement. Assuming register blocking does not
-apply well to the matrix at hand (which is true for most matrices),
-there is about 8 bytes of the matrix to move in per non zero (assuming
-single precision); each nonzero requires two floating point operations
-leading to a flop-to-byte ratio of at most $\frac{1}{4}$. This limits
-the obtained performance to at most a quarter of the bandwidth of the
-architecture wasting a lot of potentially useful cycles. The commonly
-used techniques are mostly designed to reach that bound rather than
-overcome it.
+Common improvement techniques such as register blocking, bandwidth
+reduction (matrix reordering~\cite{Cuthill69}), partitioning to fit in
+cache or TLB~\cite{Nishtala07,Temam:1992:CBS:147877.148091,conf/ppsc/Toledo97},
+unrolling~\cite{Mellor-Crummey04} have impacts which are very
+dependent on the matrix and overall do not lead to dramatic
+improvement. (The state-of-the-art techniques in OSKI~\cite{Vuduc05}
+provide some useful yet limited improvements). Register blocking~\cite{conf/ppsc/Toledo97} does
+not apply well to most the matrix at hand (despite it can be applied
+with virtually no overhead in all cases thanks to compressed
+representation~\cite{Buluc11}). there is about 8 bytes of the matrix to move
+in per non zero (assuming single precision); each nonzero requires two
+floating point operations leading to a flop-to-byte ratio of at most
+$\frac{1}{4}$. This limits the obtained performance to at most a
+quarter of the bandwidth of the architecture wasting a lot of
+potentially useful cycles. The commonly used techniques are mostly
+designed to reach that bound rather than overcome it.
 
 Fortunately that fate is not inevitable. One solution would be to pair
 multiple component of an application to schedule a more instruction
@@ -147,7 +156,7 @@ Many Integrated Core (MIC) architecture, which has a significant
 memory bandwidth and peak flop throughput thanks to its 512-bit large
 SIMD registers. The Xeon Phi processor has been shown to be promising
 for sparse linear algebra compared to more classical CPU or GPU
-architecture~\cite{}.
+architecture~\cite{Saule13-ARXIV, Liu:2013:ESM:2464996.2465013, cramer2012openmp}.
 
 In Section~\ref{sec:rbf} we present the computation of RBFs and how it
 can be expressed 16 multiplication of 4 vectors by 4 sparse matrices
@@ -240,6 +249,7 @@ points in the domain, takes the form
 $$
   \mathbf{g} = D_{n_z} \mathbf{f}
 $$
+
 where $f$ is the source vector of function values and $g$ is the
 resulting vector of derivative values. The computation of a single
 derivative has been reduced to a SpMV, where each row has $n_z$
@@ -247,7 +257,20 @@ nonzeros. Since the sparsity of each row is constant, ELLPACK~\cite{}
 becomes the most appropriate matrix compression scheme\cite{}. In
 practice, $n_z=32$ in two-dimensional flows and 64 or 100 for
 three-dimensional flows. These numbers are similar to what is used in
-finite-element codes.
+finite-element codes. Notice that the non zero elements of the matrix
+correspond to a relation of nearest neighbor. This relationship is not
+necessarily symmetric as shown in Figure~\ref{fig:rbf_stencils} which
+means that the matrix sparsity pattern might not be symmetric either.
+
+\begin{figure}[tbh]
+  \centering
+  \includegraphics[width=\linewidth]{figures/rbf_stencils.pdf}
+  \caption{RBFFD Stencils. Each node of the stencil is connected to
+    $n_z-1$ stencil nodes in addition to itself. In the figure, node
+    $A$ is connected to $B$, but $B$ is {\em not\/} connected to
+    $A$. Thus adjacency graph of $A$ is not-symmetric.}
+  \label{fig:rbf_stencils}
+\end{figure}
 
 Many problems in fluid dynamics and in the geosciences require the
 solution to transport equations of the form
@@ -313,10 +336,9 @@ leading to an overall benefit.
 %  using ELLPACK. Let's focus on on why this computation is important
 %  and how does the 16 multiplication appears in the equations.}
 
-\def\wide{2.5in}
-\newfig{figures/rbf_stencils.pdf}{\wide}{RBFFD Stencils. Each node of the stencil is connected to $n_z-1$ stencil nodes in addition to itself. In the figure, node $A$ is connected to $B$, but $B$ is {\em not\/} connected to $A$. Thus adjacency graph of $A$ is not-symmetric. This must be corrected when reducing the bandwidth of $A$ with a Cuthill\-McKee algorithm, which assumes symmetry.}{fig:rbf_stencils}
 
-\newfig{figures/matrix_structure.pdf}{\wide}{Matrix Structure.}{fig:mat_struct}
+
+\newfig{figures/matrix_structure.pdf}{\linewidth}{Matrix Structure.}{fig:mat_struct}
 
 
 
