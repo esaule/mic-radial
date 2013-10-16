@@ -104,7 +104,7 @@ CPUs~\cite{Buluc2009SPAA,Williams07} and GPUs~\cite{Bell08,
   journals/concurrency/VazquezFG11,kumar2012accelerating}. The main
 challenge that is faced to obtain good performance for SpMV is that
 the operation are conducted using memory location that are irregular
-and often unpredictible. That make that the kernels are mostly memory
+and often unpredictible. That makes the kernels mostly memory
 bound and there is a significant instruction overhead per flop.
 
 Common improvement techniques such as register blocking, bandwidth
@@ -116,7 +116,7 @@ improvement. (The state-of-the-art techniques in OSKI~\cite{Vuduc05}
 provide some useful yet limited improvements). Register blocking~\cite{conf/ppsc/Toledo97} does
 not apply well to most the matrix at hand (despite it can be applied
 with virtually no overhead in all cases thanks to compressed
-representation~\cite{Buluc11}). there is about 8 bytes of the matrix to move
+representation~\cite{Buluc11}). There is about 8 bytes of the matrix to move
 in per non zero (assuming single precision); each nonzero requires two
 floating point operations leading to a flop-to-byte ratio of at most
 $\frac{1}{4}$. This limits the obtained performance to at most a
@@ -124,12 +124,12 @@ quarter of the bandwidth of the architecture wasting a lot of
 potentially useful cycles. The commonly used techniques are mostly
 designed to reach that bound rather than overcome it.
 
-Fortunately that fate is not inevitable. One solution would be to pair
-multiple component of an application to schedule a more instruction
-intensive kernel simultaneously with SpMV, relying on some hardware
-threading capabilities, such as HyperThreading, to reduce the cycle
-wastage. However most ot the applications that use SpMV do not
-typically have an instruction intensive kernel to run simultaneously.
+Fortunately that fate is not inevitable. One solution would be to
+schedule a more instruction intensive kernel simultaneously with the
+execution of SpMV, relying on some hardware threading capabilities,
+such as HyperThreading, to reduce the cycle wastage. However, most ot
+the applications that use SpMV do not typically have an instruction
+intensive kernel to run simultaneously.
 
 An other solution, and the one we pursue in this paper, is to compute
 multiple SpMV at once on matrices that have the same sparsity
@@ -139,7 +139,7 @@ recommendation~\cite{Kucuktunc13-SNAM}, eigensolving~\cite{LOBPCG} and the compu
 derivative of Radial Basis Functions(RBF)~\cite{} \todo{a good citation?} can use multiple
 SpMVs simultaneously. In this paper in particular, we investigate the
 case of the derivative of RBFs where four derivatives of four
-different function is expressed as the multiplication of four vectors
+different functions is expressed as the multiplication of four vectors
 by four matrices with identical sparsity patterns leading to the
 simultaneous execution of 16 SpMVs at a time. Using multiple vectors
 at a time has been investigated before to densify the
@@ -158,7 +158,7 @@ In Section~\ref{sec:rbf} we present the computation of RBFs and how it
 can be expressed 16 multiplication of 4 vectors by 4 sparse matrices
 with a common sparsity pattern. Section~\ref{sec:model} presents an
 estimation of the instruction intensity of various form of the
-computations and we show that a 5- to 6- fold improvement can be
+computations and we show that a 6- fold improvement can be
 expected when computing the 16 multiplications simultaneously and
 reach a total of about 200 Gflop/s. This performance represents
 approximatively 10\% of the available flop/s of a Knight Corner
@@ -169,10 +169,10 @@ architecture and how to use specialized load, store, swizzle and
 permutation instruction to efficiently bring the data in the vector
 registers to be processed. Section~\ref{sec:expe} gives some
 experimental result about the amount of bandwidth that can be achieved
-depending on how the spmv kernel is written and the actual performance
+depending on how the SpMV kernel is written and the actual performance
 of the various kernel on multiple classes of matrices some generated
 for analysis purpose and some extracted from and RBF application. A
-performance of xxx GFlop/s is achieved on real scenario. Concluding
+performance of 135 Gflop/s is achieved on real scenario. Concluding
 remarks and perspectives are provided in Section~\ref{sec:ccl}.
 
 \section{Derivatives of Radial Basis Functions}
