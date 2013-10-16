@@ -871,9 +871,9 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
 
 \begin{figure*}
 \centering
-\subfigure[No cache effects.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}}%\label{fig:ratio_nocache}}
 \subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}} %\label{fig:ratio_best}}
-\subfigure[worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}}%\label{fig:ratio_worst}}
+\subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}}%\label{fig:ratio_worst}}
+\subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}}%\label{fig:ratio_nocache}}
 \caption{Ratio of flops to bytes; (a) simple count of flops and bytes that require transfer from memory;(b) best and (c) worst
 case taking into account that bringing one element of $x$ into memory brings along the remainder of the cache line.}
 \label{fig:ratio_bytes_flops}
