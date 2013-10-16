@@ -97,7 +97,7 @@ OpenMP; MIC; spmv; sparse matrix; Radial Basis Function;
   Molka:2009:MPC:1636712.1637764} is about memory modeling not
 directly spmv.
 
-\cite{Im01, Saad94sparskit} \cite{DBLP:journals/ijhpca/ShantharamCR11,
+\cite{DBLP:journals/ijhpca/ShantharamCR11,
   DBLP:journals/corr/abs-1101-0091 }
 
 The multiplication of sparse matrix by a dense vector (SpMV) is an
@@ -105,7 +105,7 @@ important kernel in many fields from scientific computing~\cite{} to
 graph analysis (recommender systems~\cite{Brin98}, graph
 drawing~\cite{Koren05}). So improving the performance of SpMV has
 captured the interest of many researcher; including the development of
-various implemetation for multi-core
+various implementations for multi-core
 CPUs~\cite{Buluc2009SPAA,Williams07} and
 GPUs~\cite{Bell08, conf/ipps/KreutzerHWFBB12,
   journals/concurrency/VazquezFG11,kumar2012accelerating}. The main
@@ -148,7 +148,10 @@ SpMVs simultaneously. In this paper in particular, we investigate the
 case of the derivative of RBFs where four derivatives of four
 different function is expressed as the multiplication of four vectors
 by four matrices with identical sparsity patterns leading to the
-simultaneous execution of 16 SpMVs at a time.
+simultaneous execution of 16 SpMVs at a time. Using multiple vectors
+at a time has been investigated before to densify the
+computations~\cite{Im01} but this is the first time that the
+densification comes from adding both vectors and matrices.
 
 To perform our analysis, we focus our attention on the improvement
 that we can achieve on the Intel Xeon Phi processor. It follow the
@@ -868,9 +871,9 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
 
 \begin{figure*}
 \centering
-\subfigure[No cache effects.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}}%\label{fig:ratio_nocache}}
 \subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}} %\label{fig:ratio_best}}
-\subfigure[worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}}%\label{fig:ratio_worst}}
+\subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}}%\label{fig:ratio_worst}}
+\subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}}%\label{fig:ratio_nocache}}
 \caption{Ratio of flops to bytes; (a) simple count of flops and bytes that require transfer from memory;(b) best and (c) worst
 case taking into account that bringing one element of $x$ into memory brings along the remainder of the cache line.}
 \label{fig:ratio_bytes_flops}
