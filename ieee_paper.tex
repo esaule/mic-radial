@@ -179,7 +179,7 @@ remarks and perspectives are provided in Section~\ref{sec:ccl}.
 %the nodes connected to node $i$ (Figure~\ref{fig:rbf_stencils}). Thus
 %$y$ is a discrete derivative of the vector $x$.
 
-In this paper, we propose yet a new idea that is applicable to radial
+In this paper, we propose a new idea that is applicable to radial
 basis functions (RBFs). Their strength is the ability to randomly
 distribute points across complex physical domains, and have an
 implementation that is independent of dimensionality. RBFs approximate
@@ -220,7 +220,7 @@ in (\ref{eq:rbf}) is full and inversion requires O$(N^3)$
 operations. To alleviate the cost of this global approach (i.e. using
 every node in the domain to calculate the derivative at a given node
 $\xvec_i$), RBF-generated finite differences (RBF-FD) have been
-derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBF-FD use only
+derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBF-FD uses only
 a local set of the $n_z-1$ nearest neighbors to the point $\xvec_i$ to
 approximate the derivative. In other words,
 $Lf(\xvec_i)=\sum_{j=1}^{n_z}a_jf(\xvec_j)$. The differentiation
@@ -234,7 +234,7 @@ method.
 
 For a total of $N$ points, there will be $N$ linear systems to solve,
 each of size $n_z \times n_z$. Each linear solve produces a row of the
-RBF-FD differentiation matrix $D_{n_z}$, resulting in a $N \ times N$
+RBF-FD differentiation matrix $D_{n_z}$, resulting in a $N \times N$
 matrix with $n_zN$ nonzero entries. To evaluate the derivative at all
 points in the domain, takes the form
 $$
