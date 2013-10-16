@@ -575,7 +575,14 @@ have a SIMD register where each lane is the four vector entries for a
 non zero element. Using a broadcast permutation, one can replicate an
 entry of the four vectors accross each lane.
 
-\newfig{figures/source_code.pdf}{6in}{Source code}{fig:source}
+\begin{figure*}
+  \centering
+  %\subfigure[Source code}
+  \includegraphics[width=0.8\textwidth]{figures/source_code.pdf}%
+  \label{fig:source}
+  \caption{Source Code}
+\end{figure*}
+%\newfig{figures/source_code.pdf}{6in}{Source code}{fig:source}
 
 %\begin{figure}[h]
 %\begin{center}
@@ -727,78 +734,65 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
 \subsection{Bandwidth}
 
 \begin{figure*}
-
-  \subfigure[Bandwidth performance under idealized conditions as a
-    function of matrix row size. Entries with "cpp" denote cases where
+\centering
+  \subfigure[
+    Entries with "cpp" denote cases where
     coding was performed without MIC vector
-    instructions.]{\includegraphics[width=.49\linewidth]{figures/test1_readwrite.pdf}\label{fig:band_rw}}
+    instructions.]{\includegraphics[width=.40\linewidth]{figures/test1_readwrite.pdf}\label{fig:band_rw}}
 %
-  \subfigure[Bandwidth performance under
-  idealized conditions as a function of matrix row size. Entries with
-  "cpp" denote cases where coding was performed without MIC vector
-  instructions.]{\includegraphics[width=.49\linewidth]{figures/test1_gather.pdf}\label{fig:band_gather}}
+  \subfigure[ xxx ] 
+  {\includegraphics[width=.40\linewidth]{figures/test1_gather.pdf}\label{fig:band_gather}} \\
 
-  \subfigure[Bandwidth performance under idealized conditions as a
-    function of matrix row size. Entries with "cpp" denote cases where
-    coding was performed without MIC vector instructions. The greater
+  \subfigure[The greater
     speed of the cpp version is obtained throught the use of
     \ttt{\#Ivdep} {\em and\/} \ttt{\_\_assumed\_aligned}. All memory
     is aligned on 64
-    bytes.]{\includegraphics[width=.49\linewidth]{figures/test3_gather.pdf}\label{fig:band_gather_ivdep}}
+    bytes.]{\includegraphics[width=.40\linewidth]{figures/test3_gather.pdf}\label{fig:band_gather_ivdep}}
 %
-  \subfigure[Bandwidth performance on the host under idealized
-    conditions as a function of matrix row size. Entries with "cpp"
-    denote cases where coding was performed without AVX vector
-    instructions. The speed on the CPU matches the speed with AVX
-    instructions. All memory is aligned on 32
-    bytes.]{\includegraphics[width=.49\linewidth]{figures/host_test1_readwrite_no_temporal_hint.pdf}\label{fig:read_write}}
+  \subfigure[
+    The speed on the CPU matches the speed with vector instructions.
+    All memory is aligned on 32
+    bytes.]{\includegraphics[width=.40\linewidth]{figures/host_test1_readwrite_no_temporal_hint.pdf}\label{fig:read_write}}
 
-\caption{Bandwidth Analysis.\todo{not 100\% sure what this plots are.}
-  \todo{can we harmozie y-axis?} \todo{ylabel should read "Bandwidth (GB/s)".}
-  \todo{remove title.}}
-
+\caption{Bandwidth performance on the host under idealized conditions as a function of matrix row size.
+  Entries with "cpp" denote cases where coding was performed without MIC vector intructions. 
+\todo{not 100\% sure what this plots are.}}
 \end{figure*}
 
 \subsection{Computations}
 
-
-
 \begin{figure*}
   \centering
-  \subfigure[Performance of $y=Ax$ on the MIC. Squares: base 1/1 case],
+  \subfigure[Performance of $y=Ax$ on the MIC. Squares: base 1/1 case,
     solid circles: 4/4 case implemented in C++, solid triangles: 4/4
     case implemented with MIC vector instructions. $-O3$ compilation
     options. Each symbol has two cases: with (red) and without blue) 
-    with and without Reverse Cuthill-McKee. The grid is $96^3$.}
-    {\includegraphics[width=.49\linewidth]{figures/mic_performance_nb_threads.pdf}\label{fig:perf_mic}}
+    with and without Reverse Cuthill-McKee. The grid is $96^3$.]
+    {\includegraphics[width=.40\linewidth]{figures/mic_performance_nb_threads.pdf}\label{fig:perf_mic}}
 %
-  \subfigure[performance on the host on a sparse matrix with $64^3$ rows. Manual
+  \subfigure[Performance on the host on a sparse matrix with $64^3$ rows. Manual
     vectorization brings significant improvement there as
-    well.]{\includegraphics[width=.49\linewidth]{figures/64x64x64.pdf}\label{fig:perf_host}}
+    well.]{\includegraphics[width=.40\linewidth]{figures/64x64x64.pdf}\label{fig:perf_host}}
   \caption{Vectorization matters in practice. Differences in BW
     translate in different performance.\todo{this two plots should ``correlate'' }}
 \end{figure*}
 
 
-
-
-
-\begin{figure*}[t]
+\begin{figure}[t]
   \centering
-  \subfigure[Supercompact\todo{is the title? this looks like super compact.}]{\includegraphics[width=.49\linewidth]{figures/supercompact_max_perf.pdf}}
-  \subfigure[Compact]{\includegraphics[width=.49\linewidth]{figures/compact_max_perf.pdf}}
-
-  \subfigure[Random]{\includegraphics[width=.49\linewidth]{figures/random_max_perf.pdf}}
-  \subfigure[RBF 3D]{\includegraphics[width=.49\linewidth]{figures/rbf_max_perf_run1.pdf}}
+  \subfigure[Supercompact]{\includegraphics[width=.48\linewidth]{figures/supercompact_max_perf.pdf}}
+  \subfigure[Compact]{\includegraphics[width=.48\linewidth]{figures/compact_max_perf.pdf}} \\
+  \subfigure[Random]{\includegraphics[width=.48\linewidth]{figures/random_max_perf.pdf}}
+  \subfigure[RBF 3D]{\includegraphics[width=.48\linewidth]{figures/rbf_max_perf_run1.pdf}}
   \caption{Performance of "best code" accross instance types. \todo{Why stop at 1.6M
       rows. Is that because of memory limitation? I guess that's what
-      it is}\todo{can we remove the title?}\todo{can we harmonize y-axis?}}
-\end{figure*}
+      it is}}
+\end{figure}
 
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{figures/plot_for_natasha_ncar_end_of_year.pdf}
+  \includegraphics[width=.45\textwidth]{figures/plot_for_natasha_ncar_end_of_year.pdf}
 
   \caption{Performance on a MIC of derivative computation for RBFFD
     with 884,736 nodes distributed quasi-randomly in a cube. Single
@@ -806,6 +800,16 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
     derivatives of four functions (multi case, circles). No bandwidth
     reduction (blue) and Reverse Cuthill-McKee (red).\todo{should we have a similar one for the host?}}
 \end{figure}
+
+\begin{figure*}
+\centering
+\subfigure[No cache effects.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}}%\label{fig:ratio_nocache}}
+\subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}} %\label{fig:ratio_best}}
+\subfigure[worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}}%\label{fig:ratio_worst}}
+\caption{Ratio of flops to bytes; (a) simple count of flops and bytes that require transfer from memory;(b) best and (c) worst
+case taking into account that bringing one element of $x$ into memory brings along the remainder of the cache line.}
+\label{fig:ratio_bytes_flops}
+\end{figure*}
 
 Derivatives in an RBFFD formulation are expressed as a sparse
 matrix/vector multiplication (SpMV). Using the full 61 nodes of a MIC
@@ -853,7 +857,6 @@ registers to capacity).
 In a future work, we will examine the effect of larger stencil sizes,
 double precision, and the actual cost of computing the derivatives
 within a fluid simulation using RBF-FD.
-
 
 \section*{Acknowledgment}
 The first and last authors acknowledge NSF funding under NSF grant DMS-\#0934331 (FSU). 
