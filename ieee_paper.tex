@@ -445,16 +445,16 @@ $$I_b = \frac{O}{b_T} = \frac{2 n_v n_m}{ (b_i + b_x n_m) + n_v n_m b_x n_z^{-1}
 %$$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{n_v n_m b_x n_z^{-1} + \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)}$$
 $$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{(b_i+b_x n_m) + n_v n_m b_x n_z^{-1} + cl \ceil{\frac{n_vb_x}{cl}} }$$
 
-In the special case $n_v=n_m=1$ in single precision
-$$I_b = \frac{1}{4} \frac{ n_z }{ n_z + 1} \approx \frac{1}{4}$$
-%$$I_w = \frac{n_z }{2  + 36  n_z} \approx \frac{1}{36}$$
-$$I_w = \frac{n_z }{2  + (4+cl/2)  n_z} \approx \frac{1}{4+cl/2}$$
+%% In the special case $n_v=n_m=1$ in single precision
+%% $$I_b = \frac{1}{4} \frac{ n_z }{ n_z + 1} \approx \frac{1}{4}$$
+%% %$$I_w = \frac{n_z }{2  + 36  n_z} \approx \frac{1}{36}$$
+%% $$I_w = \frac{n_z }{2  + (4+cl/2)  n_z} \approx \frac{1}{4+cl/2}$$
 
-In the special case $n_v=n_m=4$ in single precision
-$$I_b = \frac{32 n_z }{ n_z 20 + 80} \approx \frac{32}{20} = \frac{8}{5} $$
-%$$I_w = \frac{32 n_z }{64 + n_z 84} \approx \frac{32}{84} = \frac{8}{21} $$
-$$I_w = \frac{32 n_z }{64 + (20+cl) n_z} \approx \frac{32}{84} = \frac{8}{21} $$
-The above formulas have been applied to MIC, which has a cache size $cl=64$ bytes.
+%% In the special case $n_v=n_m=4$ in single precision
+%% $$I_b = \frac{32 n_z }{ n_z 20 + 80} \approx \frac{32}{20} = \frac{8}{5} $$
+%% %$$I_w = \frac{32 n_z }{64 + n_z 84} \approx \frac{32}{84} = \frac{8}{21} $$
+%% $$I_w = \frac{32 n_z }{64 + (20+cl) n_z} \approx \frac{32}{84} = \frac{8}{21} $$
+%% The above formulas have been applied to MIC, which has a cache size $cl=64$ bytes.
 
 %% \begin{table}
 %%   \centering
@@ -472,14 +472,21 @@ The above formulas have been applied to MIC, which has a cache size $cl=64$ byte
 %%     matrix of $n_z = 32$}
 %% \end{table}
 
+Figure~\ref{fig:ratio_bytes_flops} presents the flop to byte ratios in
+the best and the worst case.
+
 \begin{figure*}
-\centering
-\subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}} %\label{fig:ratio_best}}
-\subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}}%\label{fig:ratio_worst}}
-\subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}}%\label{fig:ratio_nocache}}
-\caption{Ratio of flops to bytes; (a) simple count of flops and bytes that require transfer from memory;(b) best and (c) worst
-case taking into account that bringing one element of $x$ into memory brings along the remainder of the cache line.}
-\label{fig:ratio_bytes_flops}
+  \centering
+  \subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}\label{fig:ratio_best}}%
+  \subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
+  \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
+  
+  \caption{Ratio of flops to bytes: in the best case in
+    \ref{fig:ratio_best} best; in the worst case when $cl=64$ in
+    \ref{fig:ratio_worst}; and in the worst case neglecting that the
+    memory transfers are by batch of size $cl$ in
+    \ref{fig:ratio_worst_nocache}}
+  \label{fig:ratio_bytes_flops}
 \end{figure*}
 
 
