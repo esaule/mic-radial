@@ -645,12 +645,67 @@ for (int r=0; r < nb_rows; r++) {
 
 \subsection{Instances}
 
-\todo{How were instances generated. Detail the different type of
-  instances and the rational for trying them. Detail how the realistic
-  instances were generated. Explain matrix ordering (Kutill McKee).}
+
+\def\ww{.13\textwidth}
+\begin{figure*}
+  \begin{center}
+    \subfigure[Supercompact.]{%
+      \label{fig:supercompact}
+      \includegraphics[width=\ww]{figures/supercompact_matrix-crop.pdf}}%
+    \subfigure[Compact.]{%
+      \label{fig:compact}
+      \includegraphics[width=\ww]{figures/compact_matrix-crop.pdf}}%
+    \subfigure[Random.]{%
+      \label{fig:random}
+      \includegraphics[width=\ww]{figures/random_matrix-crop.pdf}}%
+    \subfigure[2D, no RCM.]{%
+      \label{fig:rbf2dnorcm}
+      \includegraphics[width=\ww]{figures/kd-tree-2d-norcm-crop.pdf}}%
+    \subfigure[2D, RCM.]{%
+      \label{fig:rbf2drcm}
+      \includegraphics[width=\ww]{figures/kd-tree-2d-rcm-crop.pdf}} 
+    \subfigure[3D, RCM.]{%
+      \label{fig:rbf3dnorcm} 
+      \includegraphics[width=\ww]{figures/kd-tree-3d-norcm-crop.pdf}}%
+    \subfigure[3D, RCM.]{%
+      \label{fig:rbf3drcm}
+      \includegraphics[width=\ww]{figures/kd-tree-3d-rcm-crop.pdf}}%
+  \end{center}
+  
+  \caption{Different sparsity distributions. In all cases, there are
+    32 nonzeros per line and 300 rows. The last four matrices
+    corresponds to derivative stencils in 2D and 3D RBF-FD
+    calculations.}
+  \label{fig:spy_plots}
+\end{figure*}
+
+To perform our experiments and analysis, we use multiple kinds of
+matrices which are presented in Figure~\ref{fig:spy_plots}. The
+Supercompact matrices (Figure~\ref{fig:supercompact}) have been
+generated to only have non zero elements in the first 32 columns of
+the matrix. That way we ensure the simplest form of multiplication,
+the amount of elements from the {\tt x} vector data transfered from
+the memory will be minimum. The Compact matrices
+(Figure~\ref{fig:compact}) are generated to have 32 non zeroes per row
+centered around the diagonal and it represents the ideal case for most
+application relying on sparse matrix vector multiplication. The Random
+matrices (Figure~\ref{fig:compact}) see their non zero element
+randomly (uniformly) distributed in the matrix, they represent the
+worst case scenario for cache based architecture where the cache
+reutilisation is the lowest from one row to the next.
+
+The other two types of matrices are used in derivative stencils in 2D
+and 3D RBF-FD calculations (Figure~\ref{fig:rbf2dnorcm} pictures a
+$32$-points stencil of a $23^2$ 2D grid and
+Figure~\ref{fig:rbf2dnorcm} shows a $32$-points stencil of a $8^3$
+grid). We also apply Cuthill-Mckee reordering to all the matrices This
+ordering technique is designed to reduce the distance between the non
+zeroes and the diagonal, hopefully allowing a better cache
+reutilisation. The reordered version of these two matrices can be seen
+in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
+
 
 \subsection{Bandwidth}
-
 
 \begin{figure*}
 
@@ -781,39 +836,6 @@ registers to capacity).
 In a future work, we will examine the effect of larger stencil sizes,
 double precision, and the actual cost of computing the derivatives
 within a fluid simulation using RBF-FD.
-
-\def\ww{.13\textwidth}
-\begin{figure*}
-  \begin{center}
-    \subfigure[Supercompact.]{%
-      \label{fig:supercompact}
-      \includegraphics[width=\ww]{figures/supercompact_matrix-crop.pdf}}%
-    \subfigure[Compact.]{%
-      \label{fig:compact}
-      \includegraphics[width=\ww]{figures/compact_matrix-crop.pdf}}%
-    \subfigure[Random.]{%
-      \label{fig:random}
-      \includegraphics[width=\ww]{figures/random_matrix-crop.pdf}}%
-    \subfigure[2D, no RCM.]{%
-      \label{fig:supercompact}
-      \includegraphics[width=\ww]{figures/kd-tree-2d-norcm-crop.pdf}}%
-    \subfigure[2D, RCM.]{%
-      \label{fig:compact}
-      \includegraphics[width=\ww]{figures/kd-tree-2d-rcm-crop.pdf}} 
-    \subfigure[3D, RCM.]{%
-      \label{fig:random} 
-      \includegraphics[width=\ww]{figures/kd-tree-3d-norcm-crop.pdf}}%
-    \subfigure[3D, RCM.]{%
-      \label{fig:random}
-      \includegraphics[width=\ww]{figures/kd-tree-3d-rcm-crop.pdf}}%
-  \end{center}
-  
-  \caption{Different sparsity distributions. In all cases, there are
-    32 nonzeros per line and 300 rows. The last four matrices
-    corresponds to derivative stencils in 2D (a-b) and 3D (c-d) RBF-FD
-    calculations.}
-  \label{fig:spy_plots}
-\end{figure*}
 
 
 \section*{Acknowledgment}
