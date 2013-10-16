@@ -93,21 +93,14 @@ OpenMP; MIC; spmv; sparse matrix; Radial Basis Function;
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-\cite{Stock12-TACC} is all dense. \cite{
-  Molka:2009:MPC:1636712.1637764} is about memory modeling not
-directly spmv.
-
-\cite{DBLP:journals/ijhpca/ShantharamCR11,
-  DBLP:journals/corr/abs-1101-0091 }
-
 The multiplication of sparse matrix by a dense vector (SpMV) is an
-important kernel in many fields from scientific computing~\cite{} to
-graph analysis (recommender systems~\cite{Brin98}, graph
+important kernel in many fields from scientific computing~\cite{} \todo{Do you have a good citation for that?}
+to graph analysis (recommender systems~\cite{Brin98}, graph
 drawing~\cite{Koren05}). So improving the performance of SpMV has
 captured the interest of many researcher; including the development of
 various implementations for multi-core
-CPUs~\cite{Buluc2009SPAA,Williams07} and
-GPUs~\cite{Bell08, conf/ipps/KreutzerHWFBB12,
+CPUs~\cite{Buluc2009SPAA,Williams07} and GPUs~\cite{Bell08,
+  conf/ipps/KreutzerHWFBB12,
   journals/concurrency/VazquezFG11,kumar2012accelerating}. The main
 challenge that is faced to obtain good performance for SpMV is that
 the operation are conducted using memory location that are irregular
@@ -142,8 +135,8 @@ An other solution, and the one we pursue in this paper, is to compute
 multiple SpMV at once on matrices that have the same sparsity
 patterns. Obviously not all the applications have such a property. But
 important classes of applications such as graph
-recommendation~\cite{}, eigensolving~\cite{} and the computation of
-derivative of Radial Basis Functions(RBF)~\cite{} can use multiple
+recommendation~\cite{Kucuktunc13-SNAM}, eigensolving~\cite{LOBPCG} and the computation of
+derivative of Radial Basis Functions(RBF)~\cite{} \todo{a good citation?} can use multiple
 SpMVs simultaneously. In this paper in particular, we investigate the
 case of the derivative of RBFs where four derivatives of four
 different function is expressed as the multiplication of four vectors
