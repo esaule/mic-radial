@@ -808,14 +808,7 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
     coding was performed without MIC vector
     instructions.]{\includegraphics[width=.40\linewidth]{figures/test1_readwrite.pdf}\label{fig:band_rw}}
 %
-  \subfigure[ xxx ] 
-  {\includegraphics[width=.40\linewidth]{figures/test1_gather.pdf}\label{fig:band_gather}} \\
-
-  \subfigure[The greater
-    speed of the cpp version is obtained throught the use of
-    \ttt{\#Ivdep} {\em and\/} \ttt{\_\_assumed\_aligned}. All memory
-    is aligned on 64
-    bytes.]{\includegraphics[width=.40\linewidth]{figures/test3_gather.pdf}\label{fig:band_gather_ivdep}}
+  \hspace{.3in}
 %
   \subfigure[
     The speed on the CPU matches the speed with vector instructions.
@@ -827,6 +820,19 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
 \todo{not 100\% sure what this plots are.}}
 \end{figure*}
 
+\begin{figure*}
+\centering
+  \subfigure[ xxx ] 
+  {\includegraphics[width=.20\linewidth]{figures/test1_gather.pdf}\label{fig:band_gather}} \\
+
+  \subfigure[The greater
+    speed of the cpp version is obtained throught the use of
+    \ttt{\#Ivdep} {\em and\/} \ttt{\_\_assumed\_aligned}. All memory
+    is aligned on 64
+    bytes.]{\includegraphics[width=.20\linewidth]{figures/test3_gather.pdf}\label{fig:band_gather_ivdep}}
+\end{figure*}
+%
+
 \subsection{Computations}
 
 \begin{figure*}
@@ -837,6 +843,8 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
     options. Each symbol has two cases: with (red) and without blue) 
     with and without Reverse Cuthill-McKee. The grid is $96^3$.]
     {\includegraphics[width=.40\linewidth]{figures/mic_performance_nb_threads.pdf}\label{fig:perf_mic}}
+%
+\hspace{.4in}
 %
   \subfigure[Performance on the host on a sparse matrix with $64^3$ rows. Manual
     vectorization brings significant improvement there as
@@ -858,17 +866,17 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
 \end{figure}
 
 
-\begin{figure}
-  \centering
-  \includegraphics[width=.45\textwidth]{figures/plot_for_natasha_ncar_end_of_year.pdf}
-
-  \caption{Performance on a MIC of derivative computation for RBFFD
-    with 884,736 nodes distributed quasi-randomly in a cube. Single
-    derivative of a single function (base case, triangle) and four
-    derivatives of four functions (multi case, circles). No bandwidth
-    reduction (blue) and Reverse Cuthill-McKee (red).\todo{should we have a similar one for the host?}}
-\end{figure}
-
+%\begin{figure}
+%  \centering
+%  \includegraphics[width=.45\textwidth]{figures/plot_for_natasha_ncar_end_of_year.pdf}
+%
+%  \caption{Performance on a MIC of derivative computation for RBFFD
+%    with 884,736 nodes distributed quasi-randomly in a cube. Single
+%    derivative of a single function (base case, triangle) and four
+%    derivatives of four functions (multi case, circles). No bandwidth
+%    reduction (blue) and Reverse Cuthill-McKee (red).\todo{should we have a similar one for the host?}}
+%\end{figure}
+%
 \begin{figure*}
 \centering
 \subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}} %\label{fig:ratio_best}}
