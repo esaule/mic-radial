@@ -332,13 +332,27 @@ leading to an overall benefit.
 %  and how does the 16 multiplication appears in the equations.}
 
 
+In term of memory layout, we choose a format similar to the ELLPACK
+format to store the matrix since the number of non zero per row is
+constant throughout the matrix. The matrix is given in two arrays. The
+first one is the classical {\tt col\_id} array that describes the
+sparsity structure of the matrix. For each row it consists of $n_z$
+consecutive entries which give in which column is the non zero. The
+other array is the {\tt data} array which gives the values of the non
+zero in the four matrices. The values of the matrices are interleaved
+so that the value $A^l_{col\_id[k]}$ of the $k$th non zero of the
+$l$th matrix is at index $(k-1)*4+l-1$. The vectors {\tt x} are also
+similarly interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
+consecutive in memory. The vector {\tt y} is similarly
+interleaved. This is schematically shown in Figure~\ref{fig:mat_struct}.
 
-\todo{describe the data structure} Since the sparsity of each row is
-constant, ELLPACK becomes the most appropriate matrix
-compression scheme.
 
-\newfig{figures/matrix_structure.pdf}{\linewidth}{Matrix Structure.}{fig:mat_struct}
-
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figures/matrix_not.pdf}
+  \caption{Matrix Structure.}
+  \label{fig:mat_struct}
+\end{figure}
 
 
 
