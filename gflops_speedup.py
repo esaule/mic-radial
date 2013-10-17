@@ -146,11 +146,11 @@ speedup_d_best  = ratios_d_best  / ratios_d_best[0]
 fig, ax = plt.subplots()
 index = np.arange(ngroups)
 
-rects1 = plt.bar(index, speedup_s_worst, bar_width, alpha=1, color='b', label='speedup worst single case')
-rects1 = plt.bar(index+bar_width, speedup_s_best, bar_width, alpha=.5, color='b', label='speedup best single case')
+rects1 = plt.bar(index, speedup_s_worst, bar_width, alpha=1, color='b', label='single precision worst case')
+rects1 = plt.bar(index+bar_width, speedup_s_best, bar_width, alpha=.5, color='b', label='single precision best case')
 
-rects2 = plt.bar(index+2*bar_width, speedup_d_worst, bar_width, alpha=1, color='r', label='double worst double case')
-rects2 = plt.bar(index+3*bar_width, speedup_d_best, bar_width, alpha=.5, color='r', label='double best double case')
+rects2 = plt.bar(index+2*bar_width, speedup_d_worst, bar_width, alpha=1, color='r', label='double precision worst case')
+rects2 = plt.bar(index+3*bar_width, speedup_d_best, bar_width, alpha=.5, color='r', label='double precision best case')
 
 plt.xlabel('Vector/Matrix sizes', fontsize=14)
 plt.ylabel('Speedup', fontsize=14)
