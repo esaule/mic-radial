@@ -115,19 +115,21 @@ bar_width = 0.35/2
 print np.shape(index), np.shape(ratios_d_worst), np.shape(ratios_d_best)
 print np.shape(index), np.shape(ratios_s_worst), np.shape(ratios_s_best)
 
-rects1 = plt.bar(index, ratios_s_worst, bar_width, alpha=1, color='b', label='single worst case')
-rects1 = plt.bar(index+bar_width, ratios_s_best, bar_width, alpha=.5, color='b', label='single best case')
+rects1 = plt.bar(index, ratios_s_worst, bar_width, alpha=1, color='b', label='single precision worst case')
+rects1 = plt.bar(index+bar_width, ratios_s_best, bar_width, alpha=.5, color='b', label='single precision best case')
 print ratios_s_best
 
-rects2 = plt.bar(index+2*bar_width, ratios_d_worst, bar_width, alpha=1, color='r', label='double worst case')
-rects2 = plt.bar(index+3*bar_width, ratios_d_best, bar_width, alpha=.5, color='r', label='double best case')
+rects2 = plt.bar(index+2*bar_width, ratios_d_worst, bar_width, alpha=1, color='r', label='double precision worst case')
+rects2 = plt.bar(index+3*bar_width, ratios_d_best, bar_width, alpha=.5, color='r', label='double precision best case')
 
-plt.xlabel('Vector/Matrix sizes')
-plt.ylabel('Peak Gflops')
-plt.title('Best possible performance (max application bandwidth: 150 Gbytes/sec')
+plt.xlabel('Vector/Matrix sizes', fontsize=14)
+plt.ylabel('Peak Gflops', fontsize=14)
+#plt.title('Best possible performance (max application bandwidth: 150 Gbytes/sec')
 plt.xticks(index + bar_width, labels)
 plt.legend(loc=2)  # upper left
 plt.grid(True)
+plt.rc('xtick', labelsize=16)
+plt.rc('ytick', labelsize=16)
 
 plt.tight_layout()
 plt.savefig.format = "pdf"
@@ -150,10 +152,12 @@ rects1 = plt.bar(index+bar_width, speedup_s_best, bar_width, alpha=.5, color='b'
 rects2 = plt.bar(index+2*bar_width, speedup_d_worst, bar_width, alpha=1, color='r', label='double worst double case')
 rects2 = plt.bar(index+3*bar_width, speedup_d_best, bar_width, alpha=.5, color='r', label='double best double case')
 
-plt.xlabel('Vector/Matrix sizes')
-plt.ylabel('Speedup')
-plt.title('Speedup with respect to 1/1 case')
+plt.xlabel('Vector/Matrix sizes', fontsize=14)
+plt.ylabel('Speedup', fontsize=14)
+#plt.title('Speedup with respect to 1/1 case')
 plt.xticks(index + bar_width, labels)
+plt.rc('xtick', labelsize=16)
+plt.rc('ytick', labelsize=16)
 plt.legend(loc=2)  # upper left
 plt.grid(True)
 
