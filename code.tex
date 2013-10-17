@@ -43,9 +43,9 @@ for (int r=0; r < nb_rows; r++) {
    mat_ent = _mm512_load_ps(dom.data_t + nb_mat*(n + r*nz));
 
    //perform first tensor multiplication
-   correct_vect = permute(all_vect, _MM_PERM_AAAA);
-   correct_mat = _mm512_swizzle_ps(mat_ent, _MM_SWIZ_REG_AAAA);
-   accu = _mm512_fmadd_ps(correct_vect, correct_mat, accu);
+   vect = permute(all_vect, _MM_PERM_AAAA);
+   mat = _mm512_swizzle_ps(mat_ent, _MM_SWIZ_REG_AAAA);
+   accu = _mm512_fmadd_ps(vect, mat, accu);
 
    //three more times with BBBB, CCCC, and DDDD
  }
