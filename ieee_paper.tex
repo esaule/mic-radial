@@ -876,16 +876,19 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
 \end{figure*}
 
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
-  \subfigure[Supercompact]{\includegraphics[width=.48\linewidth]{figures/supercompact_max_perf.pdf}}
-  \subfigure[Compact]{\includegraphics[width=.48\linewidth]{figures/compact_max_perf.pdf}} \\
-  \subfigure[Random]{\includegraphics[width=.48\linewidth]{figures/random_max_perf.pdf}}
-  \subfigure[RBF 3D]{\includegraphics[width=.48\linewidth]{figures/rbf_max_perf_run1.pdf}}
+  \subfigure[Supercompact and random.]{\includegraphics[width=.48\linewidth]{figures/random_supercompact.pdf}}
+  \subfigure[Compact and RBF-FD]{\includegraphics[width=.48\linewidth]{figures/rbf_compact.pdf}}
+
+  %\subfigure[Supercompact]{\includegraphics[width=.48\linewidth]{figures/supercompact_max_perf.pdf}}
+  %\subfigure[Compact]{\includegraphics[width=.48\linewidth]{figures/compact_max_perf.pdf}} \\
+  %\subfigure[Random]{\includegraphics[width=.48\linewidth]{figures/random_max_perf.pdf}}
+  %\subfigure[RBF 3D]{\includegraphics[width=.48\linewidth]{figures/rbf_max_perf_run1.pdf}}
   \caption{Performance of "best code" accross instance types. \todo{Why stop at 1.6M
       rows. Is that because of memory limitation? I guess that's what
       it is}}
-\end{figure}
+\end{figure*}
 
 
 %<<<<<<< HEAD
