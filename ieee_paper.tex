@@ -183,14 +183,15 @@ In this paper, we propose a new idea that is applicable to radial
 basis functions (RBFs). Their strength is the ability to randomly
 distribute points across complex physical domains, and have an
 implementation that is independent of dimensionality. RBFs approximate
-a function $f(\xvec)\subset \mathbb{R}^d$ sampled at a set of $N$
+a function $f(\rvec)\subset \mathbb{R}^d$ sampled at a set of $N$
 distinct point locations, $x_j$, by linearly combining translates of a
 single radially symmetric function $\phi(r)$, where $r =
-\|\xvec-\xvec_{j}\|$ denotes the Euclidean distance (e.g., in 2-D
-$\sqrt{(x-x_j)^2+(y-y_j)^2}$) between where the function is evaluated
-$\xvec$ and where the RBF is centered $\xvec_{j}$. That is, the
-interpolant is $s(\xvec) = \sum_{j=1}^{N} w_j
-\phi_i(\|\xvec-\xvec_{j}\|)$. The weights $w_j$ are obtained by
+\|\rvec-\rvec_{j}\|$ denotes the Euclidean distance %(e.g., in 2-D
+%$\sqrt{(x-x_j)^2+(y-y_j)^2}$) 
+between where the function is evaluated
+$\rvec$ and where the RBF is centered $\rvec_{j}$. That is, the
+interpolant is $s(\rvec) = \sum_{j=1}^{N} w_j
+\phi_i(\|\rvec-\rvec_{j}\|)$. The weights $w_j$ are obtained by
 inverting the system
 \begin{equation}
 \parray{lccr}{
@@ -200,10 +201,10 @@ inverting the system
 }
 \parray{c}{ w_{1} \\ \vdots \\ w_{N} }
 =
-\parray{c}{ f(\xvec_1) \\ \vdots\\ f(\xvec_N) }. 
+\parray{c}{ f(\rvec_1) \\ \vdots\\ f(\rvec_N) }. 
 \label{eq:rbf}
 \end{equation}
-where $\phi_{ij} = \phi(\|\xvec_i-\xvec_j\|)$. 
+where $\phi_{ij} = \phi(\|\rvec_i-\rvec_j\|)$. 
 %\end{equation}
 %\begin{equation}
 %\begin{bmatrix}
@@ -214,20 +215,20 @@ where $\phi_{ij} = \phi(\|\xvec_i-\xvec_j\|)$.
 
 The RBF differentiation matrix, $D_N$, is derived by applying the
 desired analytic derivative operator $L$ to the RBF interpolant
-$s(\xvec)$ above and evaluating it at the point locations. For very
+$s(\rvec)$ above and evaluating it at the point locations. For very
 large problems, this is a computationally expensive since the matrix
 in (\ref{eq:rbf}) is full and inversion requires O$(N^3)$
 operations. To alleviate the cost of this global approach (i.e. using
 every node in the domain to calculate the derivative at a given node
-$\xvec_i$), RBF-generated finite differences (RBF-FD) have been
+$\rvec_i$), RBF-generated finite differences (RBF-FD) have been
 derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBF-FD uses only
-a local set of the $n_z-1$ nearest neighbors to the point $\xvec_i$ to
+a local set of the $n_z-1$ nearest neighbors to the point $\rvec_i$ to
 approximate the derivative. In other words,
-$Lf(\xvec_i)=\sum_{j=1}^{n_z}a_jf(\xvec_j)$. The differentiation
+$Lf(\rvec_i)=\sum_{j=1}^{n_z}a_jf(\rvec_j)$. The differentiation
 weights, $a_j$, are calculated by enforcing that this linear
 combination should be exact for RBFs,
-$\{\phi(\|\xvec-\xvec_{j}\|)\}_{j=1}^{n_z}$, centered at each of the
-node locations $\{\xvec_j\}_{j=1}^{n_z}$ (classical finite differences
+$\{\phi(\|\rvec-\rvec_{j}\|)\}_{j=1}^{n_z}$, centered at each of the
+node locations $\{\rvec_j\}_{j=1}^{n_z}$ (classical finite differences
 (FD) would enforce that it be exact for polynomials instead). Similar
 to FD, as the stencil size $n_z$ increases so does the order of the
 method.
@@ -292,9 +293,9 @@ of different derivatives in a particular computation is limited. It is
 for this reason that we seek to combine the benefits of multiple
 vectors and multiple matrices simultaneously. We limit this initial 
 study to four vectors and four matrices. 
-\todo{I have remove reference to $x$, $y$, ... to avoid confusion with what follows.}
+%\todo{I have remove reference to $x$, $y$, ... to avoid confusion with what follows.}
 
-\todo{Add few sentence with discretization. Check Erik}
+5\todo{Add few sentence with discretization. Check Erik}
 In discrete form, Equation (\ref{eq:Q}) takes the form
 $$
   y^{i,j} = A^i x^j 
@@ -498,9 +499,10 @@ difference in the four4matrices and four vectors (4/4) case and 1.6 fold in the
 The ratios computed with $cl = 1$ are mostly
 similar to the one with $cl=64$ when the number of vectors is
 large. But the differences are important when the number of vectors is
-low: this highlights that accessing the memory per batch \todo{what do you mean by 
-accessing the memory per batch} is the main
-problem faced when performing a standard SpMV computation.
+low: this highlights that accessing the memory with a granularity of one cache
+line %a cache line basis batch \todo{what do you mean by 
+%accessing the memory per batch} 
+is the main problem faced when performing a standard SpMV computation.
 
 \begin{figure*}
   \centering
