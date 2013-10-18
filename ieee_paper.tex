@@ -653,30 +653,21 @@ using an OpenMP construct.
 
 The core of the technique is the use of swizzling and permutation
 features of the vectors in the Intel MIC architecture. A vector of 512
-bits is composed of four lanes (sometimes called channels) of 128 bits, 
-which are made of four segments of 32 bits. A swizzling operation allows
-the reorder of the elements within each lane, while a permutation reorders
-entire lanes, without changing their contents. 
-Figure~\ref{fig:swizzling_permutation}
-illustrates these two possibilities. Both permutation and swizzling
-support common reordering and broadcast. In the code, the ``permute''
-function needs to use the {\tt \_mm512\_permute4f128\_epi32}
-instruction which is only defined on integers and therefore in place typecasts
-are necessary to convert to a vector to/from the integer type.
-\todo{I added a comment stating we preferred swizzling.}
-(Note that we prefer swizzling to permutation if possible because we believe 
-it is cheaper. Many instructions have swizzling capability, while permuation
-is its own instruction. \todo{do we need a reference to my note?})
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{figures/swizzling_lanes.pdf}
-  \caption{Swizzling enables the reorder or broadcast of elements within
-    each 128 bit group. Permutation enables to reorder or broadcast
-    whole 128 bit groups. All lanes must be sizzeled identically.
-    \todo{I added to the caption.}}
-  \label{fig:swizzling_permutation}
-\end{figure}
+bits is composed of four lanes (sometimes called channels) of 128
+bits, which are made of four segments of 32 bits. A swizzling
+operation allows the reorder of the elements within each lane (see how
+{\tt mat} is extracted from {\tt mat\_ent} in
+Figure~\ref{code:mat_mul}). While a permutation reorders entire lanes,
+without changing their contents (see for instance how {\tt vect} is
+generated from {\tt all\_vect} in Figure~\ref{code:mat_mul}).  Both
+permutation and swizzling support common reordering and broadcast. In
+the code, the ``permute'' function needs to use the {\tt
+  \_mm512\_permute4f128\_epi32} instruction which is only defined on
+integers and therefore in place typecasts are necessary to convert to
+a vector to/from the integer type.  (Note that we prefer swizzling to
+permutation if possible because we believe it is cheaper. Many
+instructions have swizzling capability, while permuation is its own
+instruction. \todo{do we need a reference to intel Xeon phi instruction set?})
 
 Every operation that loads data from memory into a register
 transfers 512 bits, or 16 floats at a time. A single nonzero
