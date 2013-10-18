@@ -714,34 +714,29 @@ Order hint to optimize write traffic on the memory bus.
 In this section, we describe a series of numerical experiments to
 confirm the performance predictions of Section~\ref{sec:model}. To
 better understand our results, we first perform some bandwidth
-measurements, followed by the actual SpMV computations.
-
-In this experimental section, as a point of reference we also provide
-some results on a typical CPU architecture. This system is
-...\todo{include a short description of the host.}  All the codes are
-compiled with icc xxx and -O3 optimization. The MIC codes use the IMCI
-instructions while the CPU codes use AVX instructions.
+measurements, followed by the actual SpMV computations. All the codes
+are compiled with the Intel C Compiler version xxx\todo{gordon?} and
+-O3 optimization. The MIC codes use the IMCI instructions exposed by
+the compiler through intrinsics.
 
 \subsection{Bandwidth}
 
 
-\begin{figure*}[bth]
+\begin{figure}[bth]
   \centering
-  \subfigure[On MIC with 240 threads, 64-byte memory
-    alignment.]{\includegraphics[width=.40\linewidth]{figures/bandwidth_read_write.pdf}\label{fig:band_rw_MIC}}
-  %
-  \subfigure[On CPU with 32 threads, 32-byte memory
-    alignment.]{\includegraphics[width=.40\linewidth]{figures/host_test1_readwrite_no_temporal_hint.pdf}\label{fig:band_rw_CPU}}
+  \includegraphics[width=.9\linewidth]{figures/bandwidth_read_write.pdf}
   
-  \caption{Bandwidth performance on the host under idealized
+  \caption{On MIC with 240 threads, 64-byte memory
+    alignment. Bandwidth performance under idealized
     conditions as a function of matrix row size.  Entries with "cpp"
     denote cases where coding was performed without MIC vector
-    instructions.  \todo{Can we label the x-axis "number of floats" or
+    instructions. \todo{legend}  \todo{Can we label the x-axis "number of floats" or
       "size in MB"?}\todo{Can we use the same symbols in both charts?}
     \todo{Can we change the color scheme? in (a), I do not see the
       difference between "read\_cpp" and "read/write cpp"} }
   \label{fig:bandwidth}
-\end{figure*}
+  \label{fig:band_rw_MIC}
+\end{figure}
 
 Figure~\ref{fig:bandwidth} gives some benchmark that compute the
 bandwidth achieved when reading and/or writing large arrays on both
@@ -769,16 +764,6 @@ instruction on its own because using would break the memory convention
 useful for some parallel algorithms. The {\tt read/write} benchmark
 performs at 140GB/s while the {\tt read/write cpp} benchmark performs
 at about 90GB/s.
-
-Looking at the results on the host in Figure~\ref{fig:band_rw_CPU}
-show no significant difference between manual vectorization and the
-compiler generated one (there is no store nrngo on the host). It also
-shows quite stable performance with about 70GB/s in the {\tt read}
-benchmark, about 40GB/s in the {\tt write} benchmark and about 49 in
-the {\tt read write} benchmark. The bandwidth achieved on MIC is about
-2 to 3 times faster than the bandwidth achieved on the CPU. The
-kernels we consider being memory bound, we expect MIC to be 2 to 3
-times faster.
 
 Note that SpMV kernels will likely use only simple read and simple
 writes on the MIC architecture. We also benchmark the performance we
@@ -809,8 +794,7 @@ in a typical SpMV computation, one can expect a bandwidth between
 140GB/s to 160GB/s. That is why we set in our estimation the best
 achievable bandwidth to 150GB/s despite carefully crafted code to
 maximize bandwidth can reach higher
-values~\cite{Saule13-ARXIV}. Comparing to a CPU architecture, we
-expect MIC to be 2 to 3 times faster.
+values~\cite{Saule13-ARXIV}. 
 
 \subsection{Instances}
 
@@ -914,23 +898,20 @@ within 15\% of the peak predicted performance. The performance of the
 time, the RCM ordering provide an improvement which can be as high as
 30Gflop/s.
 
-\begin{figure*}
-  \centering \subfigure[Performance of $y=Ax$ on the MIC. Squares:
+\begin{figure}
+  \centering 
+  
+  \includegraphics[width=.9\linewidth]{figures/mic_performance_nb_threads.pdf}
+
+  \caption{Performance of $y=Ax$ on the MIC. Squares:
     base 1/1 case, solid circles: 4/4 case implemented in C++, solid
     triangles: 4/4 case implemented with MIC vector instructions. Each
     symbol has two cases: with (red) and without (blue) Reverse
-    Cuthill-McKee bandwidth reduction. The grid is $96^3$]
-             {\includegraphics[width=.40\linewidth]{figures/mic_performance_nb_threads.pdf}\label{fig:perf_mic}}
-%
-\hspace{.4in}
-%
-  \subfigure[Performance on the host on a sparse matrix with $64^3$ rows. Manual
-    vectorization brings significant improvement there as
-    well.]{\includegraphics[width=.40\linewidth]{figures/64x64x64.pdf}\label{fig:perf_host}}
-  \caption{Vectorization matters in practice. Differences in BW
-    translate in different performance.\todo{this two plots should ``correlate'' }\todo{legend}}
+    Cuthill-McKee bandwidth reduction. The grid is $96^3$. Vectorization matters in practice. Differences in BW
+    translate in different performance.\todo{legend} \todo{fix caption}}
   \label{fig:comparison_spmv}
-\end{figure*}
+  \label{fig:perf_mic}
+\end{figure}
 
 We finally investigate the central questions of this paper. Do we gain
 actual performance by transforming classical SpMV computation into the
@@ -939,7 +920,7 @@ derivative of RBFs? Does using manual vectorization improve actual
 application performance? Figure~\ref{fig:comparison_spmv} compares the
 performance achieved by a classical SpMV and by the multiplication of
 4 vectors by 4 matrices using either standard C++ code and our
-optimized implementation. On MIC (Figure~\ref{fig:perf_mic}) the
+optimized implementation. The
 classical SpMV computation reaches 15Gflop/s\todo{check}. The standard
 C++ implementation reaches a performance of 40Gflop/s while our
 optimized implementation reaches 137Gflop/s\todo{check}. Notice that
@@ -947,10 +928,7 @@ RCM ordering has no impact in the standard C++ implementation while it
 provides an significant improvement in our manually vectorized
 version. This highlights the C++ implementation is instruction bound
 while our manually vectorized implementation is most likely memory
-bound.  As a point of comparison, we show an AVX implementation on the
-CPU of the two kernels and we show the best achievable performance in
-the classical SpMV in Figure~\ref{fig:perf_host}. \todo{waiting for
-  complete plot before writing more.}
+bound. 
 
 %% Scaling results as a function of the number of processors, on the MIC
 %% and on the host. The host calculations are performed for reference
