@@ -743,11 +743,9 @@ the compiler through intrinsics.
   \centering
   \includegraphics[width=.9\linewidth]{figures/bandwidth_read_write.pdf}
   
-  \caption{On MIC with 240 threads, 64-byte memory
-    alignment. Bandwidth performance under idealized
-    conditions as a function of matrix row size.  Entries with "cpp"
-    denote cases where coding was performed without MIC vector
-    instructions. \todo{legend} }
+  \caption{Bandwidth performance under idealized conditions.  Entries
+    with "cpp" (triangles) denote cases where vectorization is
+    compiler generated. \todo{legend} }
   \label{fig:bandwidth}
   \label{fig:band_rw_MIC}
 \end{figure}
@@ -876,8 +874,8 @@ seen in Figure~\ref{fig:rbf3drcm}.
 
 \begin{figure*}[t]
   \centering
-  \subfigure[Supercompact and Random.]{\includegraphics[width=.48\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
-  \subfigure[Compact and RBF-FD.]{\includegraphics[width=.48\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
+  \subfigure[Supercompact and Random.]{\includegraphics[width=.45\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
+  \subfigure[Compact and RBF-FD.]{\includegraphics[width=.45\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
     horizontal lines depict the worst and the best predicted performances. }
@@ -913,12 +911,12 @@ time, the RCM ordering provide an improvement which can be as high as
   
   \includegraphics[width=.9\linewidth]{figures/mic_performance_nb_threads.pdf}
 
-  \caption{Performance of $y=Ax$ on the MIC. Squares:
-    base 1/1 case, solid circles: 4/4 case implemented in C++, solid
-    triangles: 4/4 case implemented with MIC vector instructions. Each
-    symbol has two cases: with (red) and without (blue) Reverse
-    Cuthill-McKee bandwidth reduction. The grid is $96^3$. Vectorization matters in practice. Differences in BW
-    translate in different performance.\todo{legend} \todo{fix caption}}
+  \caption{Performance of $y=Ax$ for a RBF derivative stencil of a
+    $96^3$ 3D grid. Classical SpMV ($n_m=n_v=1$ given in blue) has low
+    performance. The manually vectorized code (red) is 3.5 times
+    faster than the compiler generated one (green). RCM ordering
+    (squares) only improves the performance for our manually
+    vectorized code.}
   \label{fig:comparison_spmv}
   \label{fig:perf_mic}
 \end{figure}
