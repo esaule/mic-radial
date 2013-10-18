@@ -179,12 +179,6 @@ remarks and perspectives are provided in Section~\ref{sec:ccl}.
 \section{Derivatives of Radial Basis Functions}
 \label{sec:rbf}
 
-%In the theory of Radial Basis Functions Finite-Difference (RBFFD),
-%derivatives of a function $f(\rvec)$ at node $i$ are expressed as a
-%linear combination of the function values at the stencil center and
-%the nodes connected to node $i$ (Figure~\ref{fig:rbf_stencils}). Thus
-%$y$ is a discrete derivative of the vector $x$.
-
 In this paper, we propose a new idea that is applicable to radial
 basis functions (RBFs). Their strength is the ability to randomly
 distribute points across complex physical domains, and have an
@@ -260,7 +254,7 @@ implies a non-symmetric sparsity pattern in the derivative matrix.
 
 \begin{figure}[tbh]
   \centering
-  \includegraphics[width=\linewidth]{figures/rbf_stencils.pdf}
+  \includegraphics[width=.8\linewidth]{figures/rbf_stencils.pdf}
   \caption{RBFFD Stencils. Each node of the stencil is connected to
     $n_z-1$ stencil nodes in addition to itself. In the figure, node
     $A$ is connected to $B$, but $B$ is {\em not\/} connected to
@@ -389,7 +383,7 @@ application. Relevant notations are given in Table~\ref{tab:not}.
 
 \begin{figure}[bth]
   \begin{center}
-    \scalebox{.9}{
+    \scalebox{.8}{
       \begin{tabular}{|c|l|}
         %\hline
         %& & \\
@@ -538,7 +532,7 @@ problem faced when performing a standard SpMV computation.
   \label{fig:ratio_bytes_flops}
 \end{figure*}
 
-Figure~\ref{fig:ratio_bytes_flops} shows how these ratios translate
+Figure~\ref{fig:perf_predict} shows how these ratios translate
 into actual performance. This figure provides projected best and worst
 Gflop/s achievable assuming the computation is memory-bound and the
 architecture reaches 150 Gflop/s. Notice that \cite{Saule13-ARXIV}
@@ -551,19 +545,14 @@ performance reachable is 210Gflop/s: almost six times higher than the
 peak of the classical SpMV case. 
 
 
-\begin{figure*}
+\begin{figure}
   \centering 
-  \subfigure[Absolute performance ]{\includegraphics[width=.49\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}}
-%
-  \subfigure[Relative performance to using one matrix and one
-    vector.]{\includegraphics[width=.49\linewidth]{figures/speedup_wrt_base.pdf}\label{fig:speedup}}
-  
-  \caption{Estimation of the maximum achievable performance 
-    using a device with a memory to computational units of 150GB/s
-    when varying the number of vectors and matrices. \todo{we could
-      remove the speedup plot if we need space.}}
+  \includegraphics[width=.9\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}
+  \caption{Estimation of the maximum achievable performance using a
+    device with a memory to computational units of 150GB/s when
+    varying the number of vectors and matrices.}
   \label{fig:perf_predict}
-\end{figure*}
+\end{figure}
 
 \section{Efficient Implementation on the Intel Xeon Phi processor}
 \label{sec:impl}
