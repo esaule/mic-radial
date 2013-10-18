@@ -623,7 +623,7 @@ of $n_z$ entries that label the column index of each nonzero in
 $A$. The other array is the {\tt data} array that gives the values of
 the nonzeros in the four matrices. The values of the matrices are
 interleaved by group of four so that the value $A^l_{col\_id[k]}$ of
-the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.
+the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.\todo{check that formula}
 (In other words, the first 4 entries are from $A^{1}$ and the next 4 are from $A^2$.) The vectors {\tt x} are
 interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
 consecutive in memory. The vector {\tt y} is similarly interleaved,
