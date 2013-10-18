@@ -674,8 +674,8 @@ load. One can load the 16 floating point values for 4 non zeroes of
 the matrix at once. The 4 floats coming from each matrix four 4
 consecutive non zeroes are naturally grouped within each lane of the
 SIMD vector. One can use a swizzle operation to broadcast the 4
-elements of a single matrix to take the whole vector. (The values
-$A_h^1,A_h^2,A_h^3,A_h^4$ are broadcasted in Figure~\ref{code:mat_mul}).
+elements of a single matrix to take the whole vector. (The broadcast of 
+$A_h^1,A_h^2,A_h^3,A_h^4$ is shown in Figure~\ref{code:mat_mul}.)
 
 Loading the entries from the {\tt x} vector is a little bit more
 complicated. First the columns pointers of 4 different non zeroes are
@@ -694,8 +694,14 @@ performed bring the 16 entries of the {\tt x} vector into the SIMD
 register. At this point we have a SIMD register where each lane is the
 four vector entries for a non zero element. Using a broadcast
 permutation, one can replicate an entry of the four vectors accross
-each lane.
+each lane. (The broadcast of $x_m^1,x_m^2,x_m^3,x_m^4$ is shown in
+Figure~\ref{code:mat_mul}.)
 
+Now that $A_h^1,A_h^2,A_h^3,A_h^4$ and $x_m^1,x_m^2,x_m^3,x_m^4$ are
+properly laid out in the vectors, a partial value for $y_i$ can be
+computed. Once all the non zeroes of the row have been processed, the
+exact $y_i$ value can be sent to memory using a the No Read No Global
+Order hint to optimize traffic on the memory bus.
 
 
 \section{Experimental Validation}
