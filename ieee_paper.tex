@@ -743,11 +743,11 @@ Order hint to optimize write traffic on the memory bus.
 In this section, we describe a series of numerical experiments to confirm 
 the performance predictions of Section~\ref{sec:model}. To better
 understand our results, we first perform some bandwidth measurements, followed
-by the actual SPmV.  \todo{We might be criticized for not comparing with other work.}
+by the actual SpMV. 
 
 \subsection{Instances}
 
-\def\ww{.13\textwidth}
+\def\ww{.19\textwidth}
 \begin{figure*}[tbh]
   \begin{center}
     \subfigure[Supercompact.]{%
@@ -759,12 +759,12 @@ by the actual SPmV.  \todo{We might be criticized for not comparing with other w
     \subfigure[Random.]{%
       \label{fig:random}
       \includegraphics[width=\ww]{figures/random_matrix-crop.png}}%
-    \subfigure[2D, no RCM.]{%
-      \label{fig:rbf2dnorcm}
-      \includegraphics[width=\ww]{figures/kd-tree-2d-norcm-crop.png}}%
-    \subfigure[2D, RCM.]{%
-      \label{fig:rbf2drcm}
-      \includegraphics[width=\ww]{figures/kd-tree-2d-rcm-crop.png}} 
+    %% \subfigure[2D, no RCM.]{%
+    %%   \label{fig:rbf2dnorcm}
+    %%   \includegraphics[width=\ww]{figures/kd-tree-2d-norcm-crop.png}}%
+    %% \subfigure[2D, RCM.]{%
+    %%   \label{fig:rbf2drcm}
+    %%   \includegraphics[width=\ww]{figures/kd-tree-2d-rcm-crop.png}} 
     \subfigure[3D, RCM.]{%
       \label{fig:rbf3dnorcm} 
       \includegraphics[width=\ww]{figures/kd-tree-3d-norcm-crop.png}}%
@@ -798,40 +798,74 @@ randomly (uniformly) distributed in the matrix; they represent the
 worst case scenario for a cache based architecture where the cache
 reutilisation is the lowest from one row to the next.
 
-The other two types of matrices are used in derivative stencils in 2D
-and 3D RBF-FD calculations (Figure~\ref{fig:rbf2dnorcm} pictures a
-$32$-points stencil of a $23^2$ 2D grid and
-Figure~\ref{fig:rbf2dnorcm} shows a $32$-points stencil of a $8^3$
-grid). We also apply a Cuthill-Mckee reordering to all the matrices. 
-The 2D and 3D grid sizes are chosen to have comparable matrix sizes. One notes
-that the bandwidth reduction is higher in the 2D configuration, which leads
-to better performance.  \todo{we do not show performance results in 2D. Do we
-need to change anything? Do we have a reference for RCM?} 
-This ordering technique is designed to reduce the distance between the 
-nonzeros and the diagonal, hopefully allowing a better cache
-reutilisation. The reordered version of these two matrices can be seen
-in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
+The other two types of matrices are used in derivative stencils in 3D
+RBF-FD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-points
+stencil of a 3D $8^3$ grid). We also apply a Cuthill-Mckee reordering to
+all the matrices.  This ordering technique is designed to reduce the
+distance between the nonzeros and the diagonal, hopefully allowing a
+better cache reutilisation. The reordered version of the matrix can be
+seen in Figure~\ref{fig:rbf3drcm}.
 
 \subsection{Bandwidth}
 
+In this experimental section, as a point of reference we provide some
+results on a typical CPU architecture. This system is ...\todo{include
+  a short description of the host.}
+All the codes are compiled with icc xxx and -O3 optimization.
+
 \begin{figure*}
 \centering
-  \subfigure[Run on the MIC with 240 threads, 64-byte memory alignment.]{\includegraphics[width=.40\linewidth]{figures/bandwidth_read_write.pdf}\label{fig:band_rw}}
+%
+ \subfigure[On MIC with 240 threads, 64-byte memory
+   alignment.]{\includegraphics[width=.40\linewidth]{figures/bandwidth_read_write.pdf}\label{fig:band_rw_MIC}}
 %
   \hspace{.3in}
 %
-  \subfigure[
-    Run on the host with 32 threads, 32-byte memory alignment.]{\includegraphics[width=.40\linewidth]{figures/host_test1_readwrite_no_temporal_hint.pdf}\label{fig:read_write}}
+  \subfigure[On CPU with 32 threads, 32-byte memory
+    alignment.]{\includegraphics[width=.40\linewidth]{figures/host_test1_readwrite_no_temporal_hint.pdf}\label{fig:band_rw_CPU}}
 
-\caption{Bandwidth performance on the host under idealized conditions as a function of matrix row size.
-  Entries with "cpp" denote cases where coding was performed without MIC vector intructions. 
-\todo{not 100\% sure what this plots are.}}
+  \caption{Bandwidth performance on the host under idealized
+    conditions as a function of matrix row size.  Entries with "cpp"
+    denote cases where coding was performed without MIC vector
+    intructions.  \todo{Can we label the x-axis "number of floats" or
+      "size in MB"?}\todo{Can we use the same symbols in both charts?}
+    \todo{Can we change the color scheme? in (a), I do not see the
+      difference between "read\_cpp" and "read/write cpp"} }
+  \label{fig:bandwidth}
 \end{figure*}
 
+Figure~\ref{fig:bandwidth} gives some benchmark that compute the
+bandwidth achieved when reading and/or writing large arrays on both
+the MIC card and the CPU architecture. The read benchmark performs a
+simple sum of the array. The write benchmark sets whole the elemtns of
+the array to 0. While the read/write benchmarks copies the array into
+another one. We also investigate the difference between a straight C++
+implementation (compiled with -O3 with proper tagging to inform the
+compiler of memory alignments) and a simple implementation using
+vector register explicitly.
+
+When using the MIC card (Figure~\ref{fig:band_rw_MIC}) the {\tt
+  read\_cpp} implementation reaches a performance of 160GB/s
+\todo{gordon check exact number} which is better than the {\tt read}
+implementation which only achieves 145GB/s \todo{and that one}. This
+is explained by the compiler adding loop unrolling and software
+prefetching in the assembly code in the {\tt read\_cpp} case which is
+not added in the {\tt read} case. On the other hand, the {\tt write}
+case reaches a performance of 155GB/s\todo{and that one} while the
+{\tt write\_cpp} implementation never passes 55GB/s. This difference
+is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction
+which bypasses the Read For Ownership protocol and allows the writes
+to be performed in any order. The compiler can not use that
+instruction on its own because using would break the memory convention
+useful for some parallel algorithms. The {\tt read/write} benchmark
+performs at 140GB/s while the {\tt read/write cpp} benchmark performs
+at about 90GB/s.
+
 \begin{figure}
-\centering
-  \subfigure[Performance of gather and unpack operations on the MIC. ] 
-  {\includegraphics[width=.8\linewidth]{figures/bandwidth_gather_unpack.pdf}\label{fig:band_gather}} \\
+  \centering
+  \includegraphics[width=\linewidth]{figures/bandwidth_gather_unpack.pdf}
+  \caption{Performance of gather and unpack operations on the MIC.}
+  \label{fig:band_gather} 
 \end{figure}
 %
 
