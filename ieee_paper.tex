@@ -32,6 +32,7 @@
 %\usepackage{morefloats}
 
 \newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -622,8 +623,8 @@ of $n_z$ entries that label the column index of each nonzero in
 $A$. The other array is the {\tt data} array that gives the values of
 the nonzeros in the four matrices. The values of the matrices are
 interleaved by group of four so that the value $A^l_{col\_id[k]}$ of
-the $k$th nonzero of the $l$th matrix is at index $(k-1)*4+l-1$.
-(In other words, the first 4 entries are from $A^1$ and the next 4 are from $A^2$) The vectors {\tt x} are
+the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.
+(In other words, the first 4 entries are from $A^{1}$ and the next 4 are from $A^2$.) The vectors {\tt x} are
 interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
 consecutive in memory. The vector {\tt y} is similarly interleaved,
 grouped in sets of 16, which correspond to four derivatives applied to
