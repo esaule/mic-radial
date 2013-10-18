@@ -162,7 +162,7 @@ with a common sparsity pattern. Section~\ref{sec:model} presents an
 estimation of the instruction intensity of various form of the
 computations and we show that a 6- fold improvement can be
 expected when computing the 16 multiplications simultaneously and
-reach a total of about 210 Gflop/s. This performance represents
+reach a total of about 210~Gflop/s. This performance represents
 approximatively 10\% of the available flop/s of a Knight Corner
 coprocessor. Therefore, it is necessary to have implementations that
 perform the computation in as little amount of instructions as
@@ -174,7 +174,7 @@ experimental result about the amount of bandwidth that can be achieved
 depending on how the SpMV kernel is written and the actual performance
 of the various kernel on multiple classes of matrices some generated
 for analysis purpose and some extracted from and RBF application. A
-performance of 135 Gflop/s is achieved on real scenario. Concluding
+performance of 135~Gflop/s is achieved on real scenario. Concluding
 remarks and perspectives are provided in Section~\ref{sec:ccl}.
 
 \section{Derivatives of Radial Basis Functions}
@@ -538,13 +538,13 @@ is the main problem faced when performing a standard SpMV computation.
 Figure~\ref{fig:perf_predict} shows how these ratios translate
 into actual performance. This figure provides projected best and worst
 Gflop/s achievable assuming the computation is memory-bound and the
-architecture reaches 150 Gflop/s. Notice that \cite{Saule13-ARXIV}
+architecture reaches 150~Gflop/s. Notice that \cite{Saule13-ARXIV}
 showed a higher peak bandwidth, but we will show in
-Section~\ref{sec:expe} why 150Gflop/s is a better estimate of what one
+Section~\ref{sec:expe} why 150~Gflop/s is a better estimate of what one
 might achieve in these kernels. In single precision, the worse that
 one could achieve by using 4 vectors and 4 matrices is much higher
 than the best achievable using a classical SpMV computation. The best
-performance reachable is 210Gflop/s: almost six times higher than the
+performance reachable is 210~Gflop/s: almost six times higher than the
 peak of the classical SpMV case. 
 
 
@@ -552,7 +552,7 @@ peak of the classical SpMV case.
   \centering 
   \includegraphics[width=.9\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}
   \caption{Estimation of the maximum achievable performance using a
-    device with a memory to computational units of 150GB/s when
+    device with a memory to computational units of 150~GB/s when
     varying the number of vectors and matrices.}
   \label{fig:perf_predict}
 \end{figure}
@@ -565,14 +565,14 @@ peak of the classical SpMV case.
 In this work, we use an Intel Xeon Phi 5110P coprocessor. This card
 has 8 memory controllers that can each execute 5 billion
 transactions per second. Each has two 32-bit channels, achieving a total
-bandwidth of 320GB/s aggregated across all the memory
+bandwidth of 320~GB/s aggregated across all the memory
 controllers. There are 60 cores clocked at 1.05GHz. Their memory
 interfaces are 32-bit wide with two channels and the total bandwidth
-is 8.4GB/s per core. Thus, the cores should be able to consume 504GB/s
+is 8.4~GB/s per core. Thus, the cores should be able to consume 504~GB/s
 at most. However, the bandwidth between the cores and the memory
 controllers is limited by the ring network that connect the cores and
 the memory controller. Its precise bandwidth is unknown but it is
-believed to be between 200GB/s and 250GB/s.
+believed to be between 200~GB/s and 250~GB/s.
 
 Each core in the architecture has a 32kB L1 data cache, a 32kB L1
 instruction cache, and a 512kB L2 cache. The architecture of a core is
@@ -605,7 +605,7 @@ achieved.
 \subsection{Bringing the data into the vector register}
 
 As explained in Section~\ref{sec:model}, we expect to achieve a performance of
-about 210Gflop/s in single precision in the best case. We will focus
+about 210~Gflop/s in single precision in the best case. We will focus
 on the single precision case with four vectors and four matrices. 
 Similar techniques apply for other matrix/vector combinations. This target
 performance represents 10\% of the peak performance of the
@@ -765,36 +765,36 @@ compiler of memory alignments) and a simple implementation using
 vector register explicitly.
 
 When using the MIC card (Figure~\ref{fig:band_rw_MIC}) the {\tt
-  read\_cpp} implementation reaches a performance of 160GB/s
+  read\_cpp} implementation reaches a performance of 160~GB/s
 \todo{gordon check exact number} which is better than the {\tt read}
-implementation which only achieves 145GB/s \todo{and that one}. This
+implementation which only achieves 145~GB/s \todo{and that one}. This
 is explained by the compiler adding loop unrolling and software
 prefetching in the assembly code in the {\tt read\_cpp} case which is
 not added in the {\tt read} case. On the other hand, the {\tt write}
-case reaches a performance of 155GB/s\todo{and that one} while the
-{\tt write\_cpp} implementation never passes 55GB/s. This difference
+case reaches a performance of 155~GB/s\todo{and that one} while the
+{\tt write\_cpp} implementation never passes 55~GB/s. This difference
 is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction
 which bypasses the Read For Ownership protocol and allows the writes
 to be performed in any order. The compiler can not use this
 instruction on its own because using would break the memory convention
 useful for some parallel algorithms. The {\tt read/write} benchmark
-performs at 140GB/s while the {\tt read/write cpp} benchmark performs
-at about 90GB/s.
+performs at 140~GB/s while the {\tt read/write cpp} benchmark performs
+at about 90~GB/s.
 
 Note that SpMV kernels will likely use only simple read and simple
 writes on the MIC architecture. We also benchmark the performance we
 can achieve using {\tt gather} and {\tt unpack} operations and we
 present the results in Figure~\ref{fig:band_gather}. The {\tt unpack}
-instruction can reach a performance of 140GB/s. (There is no easy way
+instruction can reach a performance of 140~GB/s. (There is no easy way
 to implement the equivalent of the {\tt unpack} operation without
 using explicit registers.) The performance of the {\tt gather}
 operations depends in which order the array is read. If the indices
-are ordered ({\tt compact}) then a performance of 140GB/s is
+are ordered ({\tt compact}) then a performance of 140~GB/s is
 reached. If the indices are completely randomized, the performance
-drops to 2GB/s\todo{correct?}. We can see that implementing the
+drops to 2~GB/s\todo{correct?}. We can see that implementing the
 indirection mechanism without vector instructions makes the
 performance drop significantly. (In the {\tt compact} case, it never
-passes 100GB/s and is close to 50GB/s most of the time.)
+passes 100~GB/s and is close to 50~GB/s most of the time.)
 
 \begin{figure}
   \centering
@@ -807,8 +807,8 @@ passes 100GB/s and is close to 50GB/s most of the time.)
 To summarize, using vector instruction seems mandatory to reach the
 highest bandwidth on the MIC architecture. For the instructions used
 in a typical SpMV computation, one can expect a bandwidth between
-140GB/s to 160GB/s. That is why we set in our estimation the best
-achievable bandwidth to 150GB/s despite carefully crafted code to
+140~GB/s to 160~GB/s. That is why we set in our estimation the best
+achievable bandwidth to 150~GB/s despite carefully crafted code to
 maximize bandwidth can reach higher
 values~\cite{Saule13-ARXIV}. 
 
@@ -898,21 +898,21 @@ predicted in Section~\ref{sec:model}. Figure~\ref{fig:perf_ideal}
 gives the results for the {\tt supercompact} and {\tt random} matrices
 which represent both the best and the worst case for such a
 computation. The {\tt supercompact} case peaks at
-205Gflop/s\todo{check that} being very close to the predicted peak
-performance of 213Gflop/s. Conversely the performance of the {\tt
-  random} case decreases to 59Gflop/s\todo{check} which is close to
-the lowest predicted performance of 55Gflop/s. One can see that RCM
+205~Gflop/s\todo{check that} being very close to the predicted peak
+performance of 213~Gflop/s. Conversely the performance of the {\tt
+  random} case decreases to 59~Gflop/s\todo{check} which is close to
+the lowest predicted performance of 55~Gflop/s. One can see that RCM
 ordering helps the {\tt random} case but the impact decreases when the
 size of the matrix increase.
 
 Figure~\ref{fig:perf_realistic} gives the results on the {\tt compact}
 case which represents the best realistic matrix one could find and in
 an {\tt rbf} matrix extracted from a real application. In the {\tt
-  compact} case, the performance can be as high as 195Gflop/s being
+  compact} case, the performance can be as high as 195~Gflop/s being
 within 15\% of the peak predicted performance. The performance of the
-{\tt rbf} case varies between 100Gflop/s and 140Gflop/s. Most of the
+{\tt rbf} case varies between 100~Gflop/s and 140~Gflop/s. Most of the
 time, the RCM ordering provide an improvement which can be as high as
-30Gflop/s.
+30~Gflop/s.
 
 \begin{figure}
   \centering 
@@ -937,9 +937,9 @@ application performance? Figure~\ref{fig:comparison_spmv} compares the
 performance achieved by a classical SpMV and by the multiplication of
 4 vectors by 4 matrices using either standard C++ code and our
 optimized implementation. The
-classical SpMV computation reaches 15Gflop/s\todo{check}. The standard
-C++ implementation reaches a performance of 40Gflop/s while our
-optimized implementation reaches 137Gflop/s\todo{check}. Notice that
+classical SpMV computation reaches 15~Gflop/s\todo{check}. The standard
+C++ implementation reaches a performance of 40~Gflop/s while our
+optimized implementation reaches 137~Gflop/s\todo{check}. Notice that
 RCM ordering has no impact in the standard C++ implementation while it
 provides an significant improvement in our manually vectorized
 version. This highlights the C++ implementation is instruction bound
@@ -950,12 +950,12 @@ To put things in perspective, we conducted some experiments on a
 classical CPU architecture with 2 Intel Core i7 processor, each has 8
 cores which support AVX instructions. Both the compiler generated and
 the manually written vectorization using AVX instruction reach a
-(read) bandwidth of 70GB/s. This indicates that the performance of the
-classical SpMV can not overcome 16.8Gflop/s. A generic implementation
-of the multiplication of 4 vectors with 4 matrices on the {\tt RBF}
-matrix reaches a performance of 27 Gflop/s; while a manual
-implementation using AVX instruction reaches a performance of 42
-Gflop/s. This confirms that our method is sound and generalizes to
+(read) bandwidth of 70~GB/s. This indicates that the performance of
+the classical SpMV can not overcome 16.8~Gflop/s. A generic
+implementation of the multiplication of 4 vectors with 4 matrices on
+the {\tt RBF} matrix reaches a performance of 27~Gflop/s; while a
+manual implementation using AVX instruction reaches a performance of
+42~Gflop/s. This confirms that our method is sound and generalizes to
 other architecture than the Intel MIC architecture.
 
 %% Scaling results as a function of the number of processors, on the MIC
@@ -1007,22 +1007,10 @@ with 16 outputs, computed as a sum of outer products.
 Our implementation makes use of the IMCI MIC instruction set and
 includes a number of swizzling and channel swapping operations, for an
 extremely efficient tensor product implementation. On a $96^3$ 3D
-grid, it reaches a performance of 140 Gflop/s which is 2.7 times
+grid, it reaches a performance of 140~Gflop/s which is 2.7 times
 faster than the best possible performance achievable for a single
 vector and a single derivative and more than 7 times faster than a
 practical implementation.
-
-%% Using a matrix with $96^3$ rows, we achieve a speedup of 7.7 relative
-%% to the base case of one derivative and one function (1/1 case). We
-%% have achieved a speed between 100 Gflop/s to 140 Gflop/s on 60 cores
-%% using 240 threads, or a speed of 47\% to 66\% of the maximum possible
-%% performance of this architecture. As a point of comparison, the
-%% maximum possible speed for the 1/1 case is around 36 Gflop/s, of which
-%% we achieve 18 Gflop/s. Our optimal implementation makes use of the
-%% IMCI MIC instruction set which includes a number of swizzling and
-%% channel swapping operations, for an extremely efficient tensor product
-%% implementation. A straightforward implementation without vectorization
-%% runs at around 35 Gflops, or 16\% of peak performance.
 
 In a future work, we will examine the effect of larger stencil sizes
 and of using double precision. We will also integrate the techniques
