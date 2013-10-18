@@ -189,7 +189,7 @@ single radially symmetric function $\phi(r)$, where $r =
 \|\rvec-\rvec_{j}\|$ denotes the Euclidean distance %(e.g., in 2-D
 %$\sqrt{(x-x_j)^2+(y-y_j)^2}$) 
 between where the function is evaluated
-$\rvec$ and where the RBF is centered $\rvec_{j}$. That is, the
+$\rvec$ and where the RBF is centered at $\rvec_{j}$. That is, the
 interpolant is $s(\rvec) = \sum_{j=1}^{N} w_j
 \phi_i(\|\rvec-\rvec_{j}\|)$. The weights $w_j$ are obtained by
 inverting the system
@@ -238,11 +238,11 @@ each of size $n_z \times n_z$. Each linear solve produces a row of the
 RBF-FD differentiation matrix $A_{n_z}$, resulting in a $N \times N$
 matrix with $n_zN$ nonzero entries. To evaluate the derivative at all
 points in the domain, one multiplies the source vector $x$ by the 
-derivative matrix $A_{n_z}$ to obtain the vector $y$ of derivative values, 
+derivative matrix $A$ to obtain the vector $y$ of derivative values, 
 $$
-  y = A_{n_z} x
+  y = A x
 $$
-computation of a single derivative has been reduced to a SpMV, 
+The computation of a single derivative has been reduced to a SpMV, 
 where each row has $n_z$ nonzeros\footnote{We use non-conventional 
 symbology for differentiation matrix, source and destination vectors
 anticipating what follows.}. 
@@ -295,7 +295,7 @@ vectors and multiple matrices simultaneously. We limit this initial
 study to four vectors and four matrices. 
 %\todo{I have remove reference to $x$, $y$, ... to avoid confusion with what follows.}
 
-5\todo{Add few sentence with discretization. Check Erik}
+%\todo{Add few sentence with discretization. Check Erik}
 In discrete form, Equation (\ref{eq:Q}) takes the form
 $$
   y^{i,j} = A^i x^j 
