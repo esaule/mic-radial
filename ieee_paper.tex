@@ -296,6 +296,8 @@ for this reason that we seek to combine the benefits of multiple
 vectors and multiple matrices simultaneously. We limit this initial 
 study to four vectors and four matrices. 
 
+\todo{Add few sentence with discretization}
+
 % GORDON I WOULD ELIMINATE BELOW AND END HERE.
 
 %**** PUT ELSEWHERE OR ELIMINATE? ****
@@ -663,7 +665,7 @@ are necessary to convert to a vector to/from the integer type.
 \todo{I added a comment stating we preferred swizzling.}
 (Note that we prefer swizzling to permutation if possible because we believe 
 it is cheaper. Many instructions have swizzling capability, while permuation
-is its own instruction.} \todo{reference?}
+is its own instruction. \todo{reference?}
 
 \begin{figure}
   \centering
@@ -763,31 +765,32 @@ Order hint to optimize write traffic on the memory bus.
   \label{fig:spy_plots}
 \end{figure*}
 
-To perform our experiments and analysis, we use multiple kinds of
-matrices which are presented in Figure~\ref{fig:spy_plots}. The
+The different matrices used to perform our experiments and analysis
+are presented in Figure~\ref{fig:spy_plots}. The
 Supercompact matrices (Figure~\ref{fig:supercompact}) have been
 generated to only have nonzero elements in the first 32 columns of
 the matrix. That way we ensure the simplest form of multiplication,
-the amount of elements from the {\tt x} vector data transfered from
-the memory will be minimum. The Compact matrices
+the number of elements from the {\tt x} vector data transfered from
+the memory is be minimum, they are transferred efficiently and remain 
+in cache. The Compact matrices
 (Figure~\ref{fig:compact}) are generated to have 32 nonzeros per row
-centered around the diagonal and it represents the ideal case for most
-application relying on sparse matrix vector multiplication. The Random
-matrices (Figure~\ref{fig:compact}) see their nonzero element
-randomly (uniformly) distributed in the matrix, they represent the
-worst case scenario for cache based architecture where the cache
+centered around the diagonal and it represents the ideal case for many
+applications that rely on sparse matrix vector multiplication. The nonzero
+elements of the Random
+matrices (Figure~\ref{fig:compact}) see their nonzero elements
+randomly (uniformly) distributed in the matrix; they represent the
+worst case scenario for a cache based architecture where the cache
 reutilisation is the lowest from one row to the next.
 
 The other two types of matrices are used in derivative stencils in 2D
 and 3D RBF-FD calculations (Figure~\ref{fig:rbf2dnorcm} pictures a
 $32$-points stencil of a $23^2$ 2D grid and
 Figure~\ref{fig:rbf2dnorcm} shows a $32$-points stencil of a $8^3$
-grid). We also apply Cuthill-Mckee reordering to all the matrices This
-ordering technique is designed to reduce the distance between the non
-zeroes and the diagonal, hopefully allowing a better cache
+grid). We also apply a Cuthill-Mckee reordering to all the matrices. This
+ordering technique is designed to reduce the distance between the 
+nonzeros and the diagonal, hopefully allowing a better cache
 reutilisation. The reordered version of these two matrices can be seen
 in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
-
 
 \subsection{Bandwidth}
 
