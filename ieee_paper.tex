@@ -367,8 +367,6 @@ matrices and there are $i*j$ output vectors $y$.
   \end{array}\right)
   \times \left(x^1 x^2 x^3 x^4 \right) \] 
   
-
-%  \includegraphics[width=\linewidth]{figures/matrix_not.pdf}
   \caption{Matrix of the computation.}
   \label{fig:mat_struct}
 \end{figure}
@@ -798,8 +796,8 @@ passes 100~GB/s and is close to 50~GB/s most of the time.)
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{figures/bandwidth_gather_unpack.pdf}
-  \caption{Performance of gather and unpack operations on the MIC.}
+  \includegraphics[width=.9\linewidth]{figures/bandwidth_gather_unpack.pdf}
+  \caption{Performance of gather and unpack operations.}
   \label{fig:band_gather} 
 \end{figure}
 %
@@ -835,15 +833,15 @@ values~\cite{Saule13-ARXIV}.
     \subfigure[3D, RCM.]{%
       \label{fig:rbf3dnorcm} 
       \includegraphics[width=\ww]{figures/kd-tree-3d-norcm-crop.png}}%
-    \subfigure[3D, RCM.]{%
+    \subfigure[3D, no RCM.]{%
       \label{fig:rbf3drcm}
       \includegraphics[width=\ww]{figures/kd-tree-3d-rcm-crop.png}}%
   \end{center}
   
   \caption{Different sparsity distributions. In all cases, there are
-    32 nonzeros per line and 300 rows. The last four matrices
-    corresponds to derivative stencils in 2D and 3D RBF-FD
-    calculations.}
+    512 rows and 32 nonzeros per row. The last two matrices
+    corresponds to a derivative stencil in 3D RBF-FD
+    calculations (with and without RCM ordering).}
   \label{fig:spy_plots}
 \end{figure*}
 
@@ -878,8 +876,8 @@ seen in Figure~\ref{fig:rbf3drcm}.
 
 \begin{figure*}[t]
   \centering
-  \subfigure[Supercompact and Random]{\includegraphics[width=.48\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
-  \subfigure[Compact and RBF-FD]{\includegraphics[width=.48\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
+  \subfigure[Supercompact and Random.]{\includegraphics[width=.48\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
+  \subfigure[Compact and RBF-FD.]{\includegraphics[width=.48\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
     horizontal lines depict the worst and the best predicted performances. }
