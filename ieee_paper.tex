@@ -932,6 +932,18 @@ version. This highlights the C++ implementation is instruction bound
 while our manually vectorized implementation is most likely memory
 bound. 
 
+To put things in perspective, we conducted some experiments on a
+classical CPU architecture with 2 Intel Core i7 processor, each has 8
+cores which support AVX instructions. Both the compiler generated and
+the manually written vectorization using AVX instruction reach a
+(read) bandwidth of 70GB/s. This indicates that the performance of the
+classical SpMV can not overcome 16.8Gflop/s. A generic implementation
+of the multiplication of 4 vectors with 4 matrices on the {\tt RBF}
+matrix reaches a performance of 27 Gflop/s; while a manual
+implementation using AVX instruction reaches a performance of 42
+Gflop/s. This confirms that our method is sound and generalizes to
+other architecture than the Intel MIC architecture.
+
 %% Scaling results as a function of the number of processors, on the MIC
 %% and on the host. The host calculations are performed for reference
 %% only, to bring out the dominance of the MIC due to its advanced
