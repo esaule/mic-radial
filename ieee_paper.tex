@@ -419,7 +419,7 @@ the matrix. Each of these nonzero entries has one index of size $b_i$
 and $n_m$ values of size $b_x$. The matrices have a total size
 of $$s_M = n_c (b_i + b_x n_m) = n_r n_z (b_i + b_x n_m)$$
 
-If we assume an algorithm where the rows are processed the one after
+If we assume an algorithm where the rows are processed one after
 the other, the amount of memory written is precisely the
 size of the {\tt y} vector. (This assumption removes the possibility of
 blocking or cache partitioning techniques.) $$b_{wT} = s_y = n_v n_m b_x n_r$$
@@ -451,7 +451,7 @@ matrix. Note however that most architectures cannot read memory a
 single byte at a time. Instead, a minimum number of bytes, equal to
 the size of a cacheline $cl$, are transfered at once.  When there are
 multiple vectors, each nonzero element uses $n_v$ consecutive
-entries. The worst case number of bytes read and transfered are
+entries. In the worst case, the number of bytes read and transfered is
 $$B_{rT} = s_M + n_c cl \ceil{\frac{n_vb_x}{cl}} $$ 
 $$B_T = n_v n_m b_x n_r + n_r n_z \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)$$
 
@@ -500,13 +500,15 @@ classical cache based architecture ($cl = 64$) and assuming $cl=1$. We
 can easily see the potential improvement in the computational
 intensity when the number of matrices of vectors increase. There is a
 significant difference between the best and the worst case: there is a
-$8$ fold difference in the 1 matrix 1 vector case but that gap closes
-with the increase in the number of vectors and matrices to a 4 fold
-difference in the 4 matrices and 4 vectors case and 1.6 fold in the 16
-matrices and 16 vectors. The ratios computed with $cl = 1$ are mostly
-similar to the the one with $cl=64$ when the number of vectors is
-large. But the differences are important when the number of vector is
-low: this highlight that accessing the memory per batch is the main
+eightfold difference in the one matrix -- one vector (1/1) case but that gap closes
+with the increase in the number of vectors and matrices to a fourfold
+difference in the four4matrices and four vectors (4/4) case and 1.6 fold in the 
+16/16 case. 
+The ratios computed with $cl = 1$ are mostly
+similar to the one with $cl=64$ when the number of vectors is
+large. But the differences are important when the number of vectors is
+low: this highlights that accessing the memory per batch \todo{what do you mean by 
+accessing the memory per batch} is the main
 problem faced when performing a standard SpMV computation.
 
 \begin{figure*}
@@ -515,24 +517,23 @@ problem faced when performing a standard SpMV computation.
   \subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
   \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
   
-  \caption{Ratio of flops to bytes in single precision: in the best case in
-    \ref{fig:ratio_best} best; in the worst case when $cl=64$ in
-    \ref{fig:ratio_worst}; and in the worst case neglecting that the
-    memory transfers are by batch (equivalent to $cl = 1$) in
-    \ref{fig:ratio_worst_nocache}.}
+  \caption{Ratio of flops to bytes in single precision:  
+    \ref{fig:ratio_best} best case; \ref{fig:ratio_worst} worst case when $cl=64$ 
+    ; and \ref{fig:ratio_worst_nocache} worst case neglecting that the
+    memory transfers are by batch (equivalent to $cl = 1$)}
   \label{fig:ratio_bytes_flops}
 \end{figure*}
 
 Figure~\ref{fig:ratio_bytes_flops} shows how these ratios translate
 into actual performance. This figure provides projected best and worst
-Gflop/s achievable assuming the computation is memory bound and the
-architecture reaches 150Gflop/s. Notice that \cite{Saule13-ARXIV}
+Gflop/s achievable assuming the computation is memory-bound and the
+architecture reaches 150 Gflop/s. Notice that \cite{Saule13-ARXIV}
 showed a higher peak bandwidth, but we will show in
 Section~\ref{sec:expe} why 150Gflop/s is a better estimate of what one
 might achieve in these kernels. In single precision, the worse that
 one could achieve by using 4 vectors and 4 matrices is much higher
 than the best achievable using a classical SpMV computation. The best
-performance reachable is 210Gflop/s: almost 6 times higher than the
+performance reachable is 210Gflop/s: almost six times higher than the
 peak of the classical SpMV case. 
 
 
