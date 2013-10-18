@@ -589,7 +589,7 @@ achieved.
 
 \subsection{Bringing the data in vector register}
 
-As explained in Section~XXX, we expect to achieve a performance of
+As explained in Section~\ref{sec:model}, we expect to achieve a performance of
 about 210Gflop/s in single precision in the best case. We will focus
 on the single precision case with 4 vectors and 4 matrices. But
 similar techniques apply for other combinations. This target
@@ -601,14 +601,15 @@ instruction on fully loaded registers must be executed at most every
 
 We discuss how the implementation of the v4m4 kernel works using
 vectorial instruction. The code is given for reference in
-Figure~\ref{code:mat_mul}. (We will show in Section~\ref{sec:expe} that an implementation
-relying on compiler vectorization does not lead to desirable
-performance, which confirms the results of~\cite{Saule13-ARXIV}.) The registers in the MIC architecture are 512 bits wide
-and can store 16 floats or integers. (In comparison to OpenCL or CUDA,
-one can think of these registers as a warp.) The end goal is to be
-able to load and format the non zero values $a,b,c,d$ and the vector
-entries $p,q,r,s$ in two vector registers to be able to apply Fused
-Multiply-Add on them, which is depicted in
+Figure~\ref{code:mat_mul}. (We will show in Section~\ref{sec:expe}
+that an implementation relying on compiler vectorization does not lead
+to desirable performance, which confirms the results
+of~\cite{Saule13-ARXIV}.) The registers in the MIC architecture are
+512 bits wide and can store 16 floats or integers. (In comparison to
+OpenCL or CUDA, one can think of these registers as a warp.) The end
+goal is to be able to load and format the non zero values $a,b,c,d$
+and the vector entries $p,q,r,s$ in two vector registers to be able to
+apply Fused Multiply-Add on them, which is depicted in
 Figure~\ref{fig:tensor_product}. Bringing the data in the vector
 register as depicted in the figure is the difficult part that we now
 explain. A thread will perform the multiplications one row at a time,
@@ -669,110 +670,29 @@ always a multiple of 4, if it was, we would need to add some explicit
 zeroes in the data structure to pad it.)
 
 The values from the non zero element in the matrix are the simplest to
-load. One can load the 16 floating point values for the 4 non zero of
-the matrix at once. The 4 floats coming from the four matrices for
-each non zero are naturally grouped within each lane of the SIMD
-vector. One can use a swizzle operation to broadcast the 4 elements of
-a single matrix to take the whole vector.
+load. One can load the 16 floating point values for 4 non zeroes of
+the matrix at once. The 4 floats coming from each matrix four 4
+consecutive non zeroes are naturally grouped within each lane of the
+SIMD vector. One can use a swizzle operation to broadcast the 4
+elements of a single matrix to take the whole vector (values
+$A_h^1,A_h^2,A_h^3,A_h^4$ are broadcasted in Figure~\ref{code:mat_mul}).
 
 Loading the entries from the {\tt x} vector is a little bit more
 complicated. First the columns pointers of 4 different non zeroes are
 loaded in a vector register and the values are distributed one per
 lane of the vector register using an {\tt unpack}
 operation\footnote{Notice that there are two calls to unpack for the
-  LSB and MSB. Both are mandatory even according the documentation of
-  the hardware}. They replicated so that each fill a vector lane using
-a swizzle operation. Then each value is multiplied by 4 (because there
-are 4 vectors) and the offsets $(3,2,1,0)$ is added each lane to
-obtain the correct index of the elements of the {\tt x} vector within
-each lane. Then a {\tt gather} operation is performed bring the 16
-entries of the {\tt x} vector into the SIMD register. At this point we
-have a SIMD register where each lane is the four vector entries for a
-non zero element. Using a broadcast permutation, one can replicate an
-entry of the four vectors accross each lane.
-
-
-%\newfig{figures/source_code.pdf}{6in}{Source code}{fig:source}
-
-%\begin{figure}[h]
-%\begin{center}
-%\lstset{language=c++,basicstyle=\scriptsize,numbers=left,numbersep=5pt}
-%\begin{lstlisting}{float=h, Caption}
-%const __m512i offsets = _mm512_set4_epi32(3,2,1,0);
-%const __m512i four = _mm512_set4_epi32(4,4,4,4); 
-%int int_mask = 0x1111;
-%__mmask16 mask = _mm512_int2mask(int_mask);
-%
-%#pragma omp parallel for
-%for (int r=0; r < nb_rows; r++) {
-%  __m512 accu = _mm512_setzero_ps();
-%
-%  for (int n=0; n < nz; n+=4) {
-%    float* a = &dom.col_id_t[0]+n+nz*r;
-%    __m512i vect_i = _mm512_setzero_ps();
-%    vect_i = _mm512_mask_loadunpacklo_ps(vect_i, mask, a);
-%    vect_i = _mm512_mask_loadunpackhi_ps(vect_i, mask, a);
-%    vect_i = _mm512_swizzle_ps(vect_i, _MM_SWIZ_REG_AAAA);
-%    vect_i = _mm512_fmadd_epi32(vect_i, four, offsets);
-%
-%    all_vect = _mm512_i32gather_ps(vect_i, dom.vec_vt, scale);
-%
-%    mat_ent = _mm512_load_ps(dom.data_t + nb_mat*(n + r*nz));
-%
-%    //perform first tensor multiplication
-%    correct_vect = permute(all_vect, _MM_PERM_AAAA);
-%    correct_mat = _mm512_swizzle_ps(mat_ent, _MM_SWIZ_REG_AAAA);
-%    accu = _mm512_fmadd_ps(correct_vect, correct_mat, accu);
-%
-%    //three more times with BBBB, CCCC, and DDDD
-%  }
-%  _mm512_storenrngo_ps(dom.result_vt+nb_mat*nb_vec*r, accu);  
-%\end{lstlisting}
-%\end{center}
-%\end{figure}
-%
-
-
-
-
-%\begin{figure*}
-%\begin{verbatim}
-%const __m512i offsets = _mm512_set4_epi32(3,2,1,0);
-%const __m512i four = _mm512_set4_epi32(4,4,4,4); 
-%int int_mask = 0x1111;
-%__mmask16 mask = _mm512_int2mask(int_mask);
-%
-%#pragma omp parallel for
-%for (int r=0; r < nb_rows; r++) {
-%  __m512 accu = _mm512_setzero_ps();
-%
-%  for (int n=0; n < nz; n+=4) {
-%    float* a = &dom.col_id_t[0]+n+nz*r;
-%    __m512i vect_i = _mm512_setzero_ps();
-%    vect_i = _mm512_mask_loadunpacklo_ps(vect_i, mask, a);
-%    vect_i = _mm512_mask_loadunpackhi_ps(vect_i, mask, a);
-%    vect_i = _mm512_swizzle_ps(vect_i, _MM_SWIZ_REG_AAAA);
-%    vect_i = _mm512_fmadd_epi32(vect_i, four, offsets);
-%
-%    all_vect = _mm512_i32gather_ps(vect_i, dom.vec_vt, scale);
-%
-%    mat_ent = _mm512_load_ps(dom.data_t + nb_mat*(n + r*nz));
-%
-%    //perform first tensor multiplication
-%    correct_vect = permute(all_vect, _MM_PERM_AAAA);
-%    correct_mat = _mm512_swizzle_ps(mat_ent, _MM_SWIZ_REG_AAAA);
-%    accu = _mm512_fmadd_ps(correct_vect, correct_mat, accu);
-%
-%    //three more times with BBBB, CCCC, and DDDD
-%  }
-%  _mm512_storenrngo_ps(dom.result_vt+nb_mat*nb_vec*r, accu);  
-%} 
-%\end{verbatim}
-%\caption{mat mul code.}
-%\label{code:mat_mul}
-%\end{figure*}
-
-
+  LSB and MSB. Both are mandatory even if one is known not to be
+  useful according the documentation of the hardware}. (The column pointers are named $j,k,l,m$ in Figure~\ref{code:mat_mul}.) They replicated
+so that each fill a vector lane using a swizzle operation. Then each
+value is multiplied by 4 (because there are 4 vectors) and the offsets
+$(3,2,1,0)$ is added each lane to obtain the correct index of the
+elements of the {\tt x} vector within each lane. Then a {\tt gather}
+operation is performed bring the 16 entries of the {\tt x} vector into
+the SIMD register. At this point we have a SIMD register where each
+lane is the four vector entries for a non zero element. Using a
+broadcast permutation, one can replicate an entry of the four vectors
+accross each lane.
 
 
 
