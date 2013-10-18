@@ -118,7 +118,7 @@ provide some useful yet limited improvements). Register blocking~\cite{conf/ppsc
 not apply well to most the matrix at hand (despite it can be applied
 with virtually no overhead in all cases thanks to compressed
 representation~\cite{Buluc11}). There is about 8 bytes of the matrix to move
-in per non zero (assuming single precision); each nonzero requires two
+in per nonzero (assuming single precision); each nonzero requires two
 floating point operations leading to a flop-to-byte ratio of at most
 $\frac{1}{4}$. This limits the obtained performance to at most a
 quarter of the bandwidth of the architecture wasting a lot of
@@ -253,7 +253,7 @@ derivative has been reduced to a SpMV, where each row has $n_z$
 nonzeros. In
 practice, $n_z=32$ in two-dimensional flows and 64 or 100 for
 three-dimensional flows. These numbers are similar to what is used in
-finite-element codes. Notice that the non zero elements of the matrix
+finite-element codes. Notice that the nonzero elements of the matrix
 correspond to a relation of nearest neighbor. This relationship is not
 necessarily symmetric as shown in Figure~\ref{fig:rbf_stencils} which
 means that the matrix sparsity pattern might not be symmetric either.
@@ -334,14 +334,14 @@ leading to an overall benefit.
 
 
 In term of memory layout, we choose a format similar to the ELLPACK
-format to store the matrix since the number of non zero per row is
+format to store the matrix since the number of nonzero per row is
 constant throughout the matrix. The matrix is given in two arrays. The
 first one is the classical {\tt col\_id} array that describes the
 sparsity structure of the matrix. For each row it consists of $n_z$
-consecutive entries which give in which column is the non zero. The
+consecutive entries which give in which column is the nonzero. The
 other array is the {\tt data} array which gives the values of the non
 zero in the four matrices. The values of the matrices are interleaved
-so that the value $A^l_{col\_id[k]}$ of the $k$th non zero of the
+so that the value $A^l_{col\_id[k]}$ of the $k$th nonzero of the
 $l$th matrix is at index $(k-1)*4+l-1$. The vectors {\tt x} are also
 similarly interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
 consecutive in memory. The vector {\tt y} is similarly
@@ -377,7 +377,7 @@ application. Relevant notations are given in Table~\ref{tab:not}.
         $b_x$ & number of bytes per value \\
         $n_z$ & number of nonzeros per row $A$ \\
         $n_r$ & number of column/rows of $A$ \\
-        $n_c$ & total number of non-zero\\
+        $n_c$ & total number of nonzeros\\
         $n_v$ & number of {\tt x} vectors \\
         $n_m$ & number of matrices \\
         $s_M$ & size of the matrice(s) in bytes\\
@@ -406,9 +406,9 @@ takes $b_x$ bytes. There are $n_v$ {\tt x} vectors and $n_v n_m$ {\tt
   y} vectors, which lead to the size of the {\tt x} and {\tt y} vectors:
 $$s_x = n_v b_x n_r$$ $$s_y = n_v n_m b_x n_r$$
 
-The matrix is composed of $n_r$ rows and columns with $n_z$ non-zeros
-per row leading to a total of $$n_c = n_r n_z$$ non-zero entries in
-the matrix. Each of these non-zero entries has one index of size $b_i$
+The matrix is composed of $n_r$ rows and columns with $n_z$ nonzeros
+per row leading to a total of $$n_c = n_r n_z$$ nonzero entries in
+the matrix. Each of these nonzero entries has one index of size $b_i$
 and $n_m$ values of size $b_x$. The matrices have a total size
 of $$s_M = n_c (b_i + b_x n_m) = n_r n_z (b_i + b_x n_m)$$
 
@@ -439,16 +439,16 @@ multiple cores can have a significant impact on the performance
 
 On the other hand, in the worst case, every time the {\tt x} vector is
 accessed, the value needs to be transfered from memory again. So in
-total, there are as many transfers as the number of non-zeros in the
+total, there are as many transfers as the number of nonzeros in the
 matrix. Note however that most architectures cannot read memory a
 single byte at a time. Instead, a minimum number of bytes, equal to
 the size of a cacheline $cl$, are transfered at once.  When there are
-multiple vectors, each non-zero element uses $n_v$ consecutive
+multiple vectors, each nonzero element uses $n_v$ consecutive
 entries. The worst case number of bytes read and transfered are
 $$B_{rT} = s_M + n_c cl \ceil{\frac{n_vb_x}{cl}} $$ 
 $$B_T = n_v n_m b_x n_r + n_r n_z \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)$$
 
-In SpMV, each non-zero of the matrix requires two floating point
+In SpMV, each nonzero of the matrix requires two floating point
 operations: one for performing the multiplication and one for
 accumulating the result row-wise. Here we are dealing with $n_v n_m$
 simultaneous SpMVs and the number of floating point operations is
@@ -607,7 +607,7 @@ to desirable performance, which confirms the results
 of~\cite{Saule13-ARXIV}.) The registers in the MIC architecture are
 512 bits wide and can store 16 floats or integers. (In comparison to
 OpenCL or CUDA, one can think of these registers as a warp.) The end
-goal is to be able to load and format the non zero values $a,b,c,d$
+goal is to be able to load and format the nonzero values $a,b,c,d$
 and the vector entries $p,q,r,s$ in two vector registers to be able to
 apply Fused Multiply-Add on them, which is depicted in
 Figure~\ref{fig:tensor_product}. Bringing the data in the vector
@@ -660,25 +660,25 @@ are necessary to convert to a vector to/from the integer type.
 \end{figure}
 
 All the operations that loads data from the memory into a register
-allows to transfer 512 bits, so 16 floats at a time. A single non zero
+allows to transfer 512 bits, so 16 floats at a time. A single nonzero
 in the matrix will cause 16 operations to be performed, but it only
 uses 4 floats from the matrix and 4 floats from the {\tt x} vector. So
-we need to load at once the data for 4 non zeroes in the matrix,
+we need to load at once the data for four nonzeros in the matrix,
 representing 16 floats from the matrix and 16 floats from the vectors
-at once. (The number of non zeroes on a row in our application is
+at once. (The number of nonzeros on a row in our application is
 always a multiple of 4, if it was, we would need to add some explicit
 zeroes in the data structure to pad it.)
 
-The values from the non zero element in the matrix are the simplest to
-load. One can load the 16 floating point values for 4 non zeroes of
+The values from the nonzero element in the matrix are the simplest to
+load. One can load the 16 floating point values for four nonzeroes of
 the matrix at once. The 4 floats coming from each matrix four 4
-consecutive non zeroes are naturally grouped within each lane of the
+consecutive nonzeros are naturally grouped within each lane of the
 SIMD vector. One can use a swizzle operation to broadcast the 4
 elements of a single matrix to take the whole vector. (The broadcast of 
 $A_h^1,A_h^2,A_h^3,A_h^4$ is shown in Figure~\ref{code:mat_mul}.)
 
 Loading the entries from the {\tt x} vector is a little bit more
-complicated. First the columns pointers of 4 different non zeroes are
+complicated. First the columns pointers of 4 different nonzeros are
 loaded in a vector register and the values are distributed one per
 lane of the vector register using an {\tt unpack}
 operation\footnote{Notice that there are two calls to unpack for the
@@ -692,14 +692,14 @@ correct index of the elements of the {\tt x} vector within each lane
 using a Fused Multiply-Add operation. Then a {\tt gather} operation is
 performed bring the 16 entries of the {\tt x} vector into the SIMD
 register. At this point we have a SIMD register where each lane is the
-four vector entries for a non zero element. Using a broadcast
+four vector entries for a nonzero element. Using a broadcast
 permutation, one can replicate an entry of the four vectors accross
 each lane. (The broadcast of $x_m^1,x_m^2,x_m^3,x_m^4$ is shown in
 Figure~\ref{code:mat_mul}.)
 
 Now that $A_h^1,A_h^2,A_h^3,A_h^4$ and $x_m^1,x_m^2,x_m^3,x_m^4$ are
 properly laid out in the vectors, a partial value for $y_i$ can be
-computed. Once all the non zeroes of the row have been processed, the
+computed. Once all the nonzeros of the row have been processed, the
 exact $y_i$ value can be sent to memory using a the No Read No Global
 Order hint to optimize traffic on the memory bus.
 
@@ -746,14 +746,14 @@ Order hint to optimize traffic on the memory bus.
 To perform our experiments and analysis, we use multiple kinds of
 matrices which are presented in Figure~\ref{fig:spy_plots}. The
 Supercompact matrices (Figure~\ref{fig:supercompact}) have been
-generated to only have non zero elements in the first 32 columns of
+generated to only have nonzero elements in the first 32 columns of
 the matrix. That way we ensure the simplest form of multiplication,
 the amount of elements from the {\tt x} vector data transfered from
 the memory will be minimum. The Compact matrices
-(Figure~\ref{fig:compact}) are generated to have 32 non zeroes per row
+(Figure~\ref{fig:compact}) are generated to have 32 nonzeros per row
 centered around the diagonal and it represents the ideal case for most
 application relying on sparse matrix vector multiplication. The Random
-matrices (Figure~\ref{fig:compact}) see their non zero element
+matrices (Figure~\ref{fig:compact}) see their nonzero element
 randomly (uniformly) distributed in the matrix, they represent the
 worst case scenario for cache based architecture where the cache
 reutilisation is the lowest from one row to the next.
@@ -891,7 +891,7 @@ In the previous sections, we have explored in the practical
 implementation on a MIC architecture of multiple derivative operators
 acting on multiple vectors within the context of RBF-RD. Each
 derivative has an associated sparse matrix with a fixed number of
-non-zeros on each row. While computing a single derivative of multiple
+nonzeros on each row. While computing a single derivative of multiple
 functions is rather common (vectorization occurs over the vectors), we
 accelerate the algorithm further by considering multiple derivatives
 with corresponding matrices with identical adjacency graphs. We
