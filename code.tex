@@ -42,12 +42,12 @@ for (int r=0; r < nb_rows; r++) {
 
    mat_ent = _mm512_load_ps(dom.data_t + nb_mat*(n + r*nz));
 
-   //perform first tensor multiplication
+   //perform first tensor multiplication with AAAA pattern
    vect = permute(all_vect, _MM_PERM_AAAA);
    mat = _mm512_swizzle_ps(mat_ent, _MM_SWIZ_REG_AAAA);
    accu = _mm512_fmadd_ps(vect, mat, accu);
 
-   //three more times with BBBB, CCCC, and DDDD
+   //three more times with BBBB, CCCC, and DDDD patterns
  }
  _mm512_storenrngo_ps(dom.result_vt+nb_mat*nb_vec*r, accu);  
 \end{verbatim}
