@@ -480,7 +480,7 @@ peak of the classical SpMV case.
   \includegraphics[width=.9\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}
   \caption{Estimation of the maximum achievable performance using a
     device with a bandwidth from memory to computational units of 150~GB/s when
-    varying the number of vectors and matrices.\todo{yabel=Peak Performance (Gflop/s)}\todo{no xlabel}}
+    varying the number of vectors and matrices.}
   \label{fig:perf_predict}
 \end{figure}
 
@@ -674,7 +674,7 @@ the compiler through intrinsics.
   
   \caption{Bandwidth performance under idealized conditions.  Entries
     with "cpp" (triangles) denote cases where vectorization is
-    compiler generated. \todo{legend} \todo{ylabel=Bandwidth(GB/s)}}
+    compiler generated.}
   \label{fig:bandwidth}
   \label{fig:band_rw_MIC}
 \end{figure}
@@ -724,7 +724,7 @@ passes 100~GB/s and is close to 50~GB/s most of the time.)
 \begin{figure}
   \centering
   \includegraphics[width=.9\linewidth]{figures/bandwidth_gather_unpack.pdf}
-  \caption{Performance of gather and unpack operations.\todo{ylabel=Bandwidth(GB/s)}}
+  \caption{Performance of {\tt gather} and {\tt unpack} operations.}
   \label{fig:band_gather} 
 \end{figure}
 %
@@ -807,7 +807,7 @@ seen in Figure~\ref{fig:rbf3drcm}.
   \subfigure[Compact and RBF-FD.]{\includegraphics[width=.45\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
-    horizontal lines depict the worst and the best predicted performances. \todo{font size} \todo{ylabel=Performance(Gflop/s)}}
+    horizontal lines depict the worst and the best predicted performances. \todo{font size}}
   \label{fig:expe_types}
 \end{figure*}
 
@@ -845,7 +845,7 @@ time, the RCM ordering provide an improvement which can be as high as
     performance. The manually vectorized code (red) is 3.5 times
     faster than the compiler generated one (green). RCM ordering
     (squares) only improves the performance for our manually
-    vectorized code.\todo{ylabel=Performance(Gflop/s)}}
+    vectorized code.}
   \label{fig:comparison_spmv}
   \label{fig:perf_mic}
 \end{figure}
