@@ -694,12 +694,11 @@ zeroes in the data structure for padding.)
 
 The values from the nonzero elements in the matrix are the simplest to
 load. One can load the 16 floating point values for four nonzeroes of
-the matrix at once. The four floats coming from each matrix four 4
-\todo{something wrong with sentence I am in. Did you discuss matrix ordering?}
-consecutive nonzeros are naturally grouped within each lane of the
-SIMD vector. One can use a swizzle operation to broadcast the 4
-elements of a single matrix to take the whole vector. (The broadcast of 
-$A_h^1,A_h^2,A_h^3,A_h^4$ is shown in Figure~\ref{code:mat_mul}.)
+the matrix at once. The four floats coming from each matrix are
+naturally grouped within each lane of the SIMD vector. One can use a
+swizzle operation to broadcast the 4 elements of a single matrix to
+take the whole vector. (The broadcast of $A_h^1,A_h^2,A_h^3,A_h^4$ is
+shown in Figure~\ref{code:mat_mul}.)
 
 Loading the entries from the {\tt x} vector is a little bit more
 involved. First, the columns pointers of four different nonzeros are
