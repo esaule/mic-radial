@@ -619,10 +619,10 @@ to desirable performance, which confirms the results
 of~\cite{Saule13-ARXIV}.) The registers in the MIC architecture are
 512 bits wide and can store 16 floats or integers. (In comparison to
 OpenCL or CUDA, one can think of these registers as a warp.) The end
-goal is to load and format the nonzero values $a,b,c,d$
-and the vector entries $p,q,r,s$ in two vector registers and 
-apply Fused Multiply-Add on them, which is depicted in
-Figure~\ref{fig:tensor_product}. Bringing the data into the vector
+goal is to load and format the nonzero values $A_h^1,A_h^2,A_h^3,A_h^4$
+and the vector entries $x_m^1,x_m^2,x_m^3,x_m^4$ in two vector registers and 
+apply Fused Multiply-Add on them, which is depicted in the {\tt accu} line of 
+Figure~\ref{code:mat_mul}. Bringing the data into the vector
 register as depicted in the figure is the difficult component of our 
 proposed algorith, which we proceed to explain further. 
 A thread will perform the multiplications one row at a time,
@@ -642,14 +642,6 @@ using an OpenMP construct.
 
 \end{figure*}
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{figures/tensor_product.pdf}
-  \caption{Structure of the vector registers to perform an efficient
-    tensor scalar product. See Figure~\ref{fig:mat_struct} for
-    reference.}
-  \label{fig:tensor_product}
-\end{figure}
 
 The core of the technique is the use of swizzling and permutation
 features of the vectors in the Intel MIC architecture. A vector of 512
@@ -715,7 +707,6 @@ properly laid out in the vectors, a partial value for $y_i$ can be
 computed. Once all the nonzeros of the row have been processed, the
 exact $y_i$ value can be sent to memory using a the No Read No Global
 Order hint to optimize write traffic on the memory bus.
-\todo{I added "write" to traffic }
 
 
 \section{Experimental Validation}
