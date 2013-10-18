@@ -944,13 +944,12 @@ time, the RCM ordering provide an improvement which can be as high as
 30Gflop/s.
 
 \begin{figure*}
-  \centering
-  \subfigure[Performance of $y=Ax$ on the MIC. Squares: base 1/1 case,
-    solid circles: 4/4 case implemented in C++, solid triangles: 4/4
-    case implemented with MIC vector instructions. $-O3$ compilation
-    options. Each symbol has two cases: with (red) and without (blue) 
-    Reverse Cuthill-McKee bandwidth reduction. The grid is $96^3$.]
-    {\includegraphics[width=.40\linewidth]{figures/mic_performance_nb_threads.pdf}\label{fig:perf_mic}}
+  \centering \subfigure[Performance of $y=Ax$ on the MIC. Squares:
+    base 1/1 case, solid circles: 4/4 case implemented in C++, solid
+    triangles: 4/4 case implemented with MIC vector instructions. Each
+    symbol has two cases: with (red) and without (blue) Reverse
+    Cuthill-McKee bandwidth reduction. The grid is $96^3$]
+             {\includegraphics[width=.40\linewidth]{figures/mic_performance_nb_threads.pdf}\label{fig:perf_mic}}
 %
 \hspace{.4in}
 %
@@ -958,7 +957,7 @@ time, the RCM ordering provide an improvement which can be as high as
     vectorization brings significant improvement there as
     well.]{\includegraphics[width=.40\linewidth]{figures/64x64x64.pdf}\label{fig:perf_host}}
   \caption{Vectorization matters in practice. Differences in BW
-    translate in different performance.\todo{this two plots should ``correlate'' }}
+    translate in different performance.\todo{this two plots should ``correlate'' }\todo{legend}}
   \label{fig:comparison_spmv}
 \end{figure*}
 
