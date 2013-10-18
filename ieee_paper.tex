@@ -347,23 +347,6 @@ matrices and there are $i*j$ output vectors $y$.
 %  using ELLPACK. Let's focus on on why this computation is important
 %  and how does the 16 multiplication appears in the equations.}
 
-
-In term of memory layout, we adopt a format similar to the ELLPACK
-format to store the matrix since the number of nonzeros per row is
-constant throughout the matrix. The matrix is given in two arrays. The
-first one is the classical {\tt col\_id} array that describes the
-sparsity structure of the matrix. Each row of {\tt col\_id} consists of $n_z$
-entries that label the column index of each nonzero in $A$. The
-other array is the {\tt data} array that gives the values of the 
-nonzeros in the four matrices. The values of the matrices are interleaved
-so that the value $A^l_{col\_id[k]}$ of the $k$th nonzero of the
-$l$th matrix is at index $(k-1)*4+l-1$. The vectors {\tt x} are 
-interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
-consecutive in memory. The vector {\tt y} is similarly
-interleaved. This is schematically shown in Figure~\ref{fig:mat_struct}, 
-where the elements of $y$ are grouped in sets of 16, which correspond
-to four derivatives applied to four functions, at a single point. \todo{this description is innacurate.}
-
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{figures/matrix_not.pdf}
@@ -610,6 +593,23 @@ architecture which is impossible without an efficient vectorization of
 the kernel. Indeed, to reach such a performance, a Fused Multiply-Add
 instruction on fully loaded registers must be executed at most every
 10 cycles.
+
+
+In term of memory layout, we adopt a format similar to the ELLPACK
+format to store the matrix since the number of nonzeros per row is
+constant throughout the matrix. The matrix is given in two arrays. The
+first one is the classical {\tt col\_id} array that describes the
+sparsity structure of the matrix. Each row of {\tt col\_id} consists of $n_z$
+entries that label the column index of each nonzero in $A$. The
+other array is the {\tt data} array that gives the values of the 
+nonzeros in the four matrices. The values of the matrices are interleaved
+so that the value $A^l_{col\_id[k]}$ of the $k$th nonzero of the
+$l$th matrix is at index $(k-1)*4+l-1$.  \todo{this description is innacurate.} The vectors {\tt x} are 
+interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
+consecutive in memory. The vector {\tt y} is similarly
+interleaved, grouped in sets of 16, which correspond
+to four derivatives applied to four functions, at a single point.
+
 
 We discuss how the implementation of the v4m4 kernel works using
 vectorial instructions. The code is given for reference in
