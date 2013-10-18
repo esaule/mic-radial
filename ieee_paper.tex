@@ -836,6 +836,17 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
 %
 
 \subsection{Computations}
+%----------------------
+Scaling results as a function of the number of processors, on the MIC and on the host. The host calculations
+are performed for reference only, to bring out the dominance of the MIC due to its advanced swizzling and channel 
+operations, not available on the host. The performance on the host is 3x slower than on the MIC. The large cache
+of the host alleviates somewhat the lower memory bandwidth, but this only reduces the cost of transfer {\tt x}. 
+The cost memory cost for {\tt A} and {\tt col\_id} is unaffected by the larger cache size. 
+
+The performance on the MIC scales linearly with the number of threads. We compare three cases, each with and without bandwidth reduction using Reverse Cuthil-McKee (RCM). There are $96^3$ RBF nodes, leading to a matrix with 884,736 rows. The four source vectors occupy more than 14M bytes, which exceeds the aggregate L2 cache of 31 Mbytes (7.8 Mfloats.) 
+
+\todo{Is the host architecture described? Problem: I had to change hosts a few weeks ago, and it has different characteristics}. 
+%----------------------
 
 \begin{figure*}
   \centering
