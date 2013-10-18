@@ -745,14 +745,14 @@ confirm the performance predictions of Section~\ref{sec:model}. To
 better understand our results, we first perform some bandwidth
 measurements, followed by the actual SpMV computations.
 
+In this experimental section, as a point of reference we also provide
+some results on a typical CPU architecture. This system is
+...\todo{include a short description of the host.}  All the codes are
+compiled with icc xxx and -O3 optimization. The MIC codes use the IMCI
+instructions while the CPU codes use AVX instructions.
 
 \subsection{Bandwidth}
 
-In this experimental section, as a point of reference we provide some
-results on a typical CPU architecture. This system is ...\todo{include
-  a short description of the host.}  All the codes are compiled with
-icc xxx and -O3 optimization. The MIC codes use the IMCI instructions
-while the CPU codes use AVX instructions.
 
 \begin{figure*}[bth]
   \centering
