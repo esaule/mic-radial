@@ -379,7 +379,7 @@ We saw in the previous section that one can express the RBF problem as
 a multiplication of four matrices by four vectors. We present here an
 estimation of the variation on the flop intensity of the computation
 and its impact on the expected performance of the
-application. Relevant notations are given in Table~\ref{tab:not}.
+application. Relevant notations are given in Figure~\ref{tab:not}.
 
 \begin{figure}[bth]
   \begin{center}
@@ -412,7 +412,7 @@ application. Relevant notations are given in Table~\ref{tab:not}.
       \end{tabular}
     }
   \end{center}
-  \caption{Notation relative to the matrices (upper section) and to the benchmarks (lower section.)}
+  \caption{Notation relative to the application problem (upper section) and to the benchmarks (lower section.)}
   \label{tab:not}
 \end{figure}
 
@@ -475,32 +475,6 @@ $$I_b = \frac{O}{b_T} = \frac{2 n_v n_m}{ (b_i + b_x n_m) + n_v n_m b_x n_z^{-1}
 %$$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{n_v n_m b_x n_z^{-1} + \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)}$$
 $$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{(b_i+b_x n_m) + n_v n_m b_x n_z^{-1} + cl \ceil{\frac{n_vb_x}{cl}} }$$
 
-%% In the special case $n_v=n_m=1$ in single precision
-%% $$I_b = \frac{1}{4} \frac{ n_z }{ n_z + 1} \approx \frac{1}{4}$$
-%% %$$I_w = \frac{n_z }{2  + 36  n_z} \approx \frac{1}{36}$$
-%% $$I_w = \frac{n_z }{2  + (4+cl/2)  n_z} \approx \frac{1}{4+cl/2}$$
-
-%% In the special case $n_v=n_m=4$ in single precision
-%% $$I_b = \frac{32 n_z }{ n_z 20 + 80} \approx \frac{32}{20} = \frac{8}{5} $$
-%% %$$I_w = \frac{32 n_z }{64 + n_z 84} \approx \frac{32}{84} = \frac{8}{21} $$
-%% $$I_w = \frac{32 n_z }{64 + (20+cl) n_z} \approx \frac{32}{84} = \frac{8}{21} $$
-%% The above formulas have been applied to MIC, which has a cache size $cl=64$ bytes.
-
-%% \begin{table}
-%%   \centering
-%%   \begin{tabular}{|l|r|r|r|r|}
-%%     \hline
-%%                            & v1m1  & v1m4  & v4m1   & v4m4  \\
-%%     \hline
-%%     Best Single Precision  & 36.36 & 58.18 & 133.33 & 213.33\\
-%%     Worst Single Precision &  4.15 & 14.20 &  16.55 &  55.81\\
-%%     Best Double Precision  & 24.00 & 32.21 &  85.71 & 117.07\\
-%%     Worst Double Precision &  3.93 & 11.88 &  15.58 &  46.15\\
-%%     \hline
-%%   \end{tabular}
-%%   \caption{Estimation of performance in GFlop/s at 150GB/s for a
-%%     matrix of $n_z = 32$}
-%% \end{table}
 
 Figure~\ref{fig:ratio_bytes_flops} presents the flop to byte ratios
 for single precision computation in the best and the worst case on a
@@ -529,7 +503,7 @@ is the main problem faced when performing a standard SpMV computation.
   \caption{Ratio of flops to bytes in single precision:  
     \ref{fig:ratio_best} best case; \ref{fig:ratio_worst} worst case when $cl=64$ 
     ; and \ref{fig:ratio_worst_nocache} worst case neglecting that the
-    memory transfers are by batch (equivalent to $cl = 1$)}
+    memory transfers are with a grenularity of one cache line (equivalent to $cl = 1$)}
   \label{fig:ratio_bytes_flops}
 \end{figure*}
 
@@ -551,7 +525,7 @@ peak of the classical SpMV case.
   \includegraphics[width=.9\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}
   \caption{Estimation of the maximum achievable performance using a
     device with a memory to computational units of 150~GB/s when
-    varying the number of vectors and matrices.}
+    varying the number of vectors and matrices.\todo{yabel=Peak Performance (Gflop/s)}\todo{no xlabel}}
   \label{fig:perf_predict}
 \end{figure}
 
@@ -743,11 +717,9 @@ the compiler through intrinsics.
   \centering
   \includegraphics[width=.9\linewidth]{figures/bandwidth_read_write.pdf}
   
-  \caption{On MIC with 240 threads, 64-byte memory
-    alignment. Bandwidth performance under idealized
-    conditions as a function of matrix row size.  Entries with "cpp"
-    denote cases where coding was performed without MIC vector
-    instructions. \todo{legend} }
+  \caption{Bandwidth performance under idealized conditions.  Entries
+    with "cpp" (triangles) denote cases where vectorization is
+    compiler generated. \todo{legend} \todo{ylabel=Bandwidth(GB/s)}}
   \label{fig:bandwidth}
   \label{fig:band_rw_MIC}
 \end{figure}
@@ -797,7 +769,7 @@ passes 100~GB/s and is close to 50~GB/s most of the time.)
 \begin{figure}
   \centering
   \includegraphics[width=.9\linewidth]{figures/bandwidth_gather_unpack.pdf}
-  \caption{Performance of gather and unpack operations.}
+  \caption{Performance of gather and unpack operations.\todo{ylabel=Bandwidth(GB/s)}}
   \label{fig:band_gather} 
 \end{figure}
 %
@@ -876,11 +848,11 @@ seen in Figure~\ref{fig:rbf3drcm}.
 
 \begin{figure*}[t]
   \centering
-  \subfigure[Supercompact and Random.]{\includegraphics[width=.48\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
-  \subfigure[Compact and RBF-FD.]{\includegraphics[width=.48\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
+  \subfigure[Supercompact and Random.]{\includegraphics[width=.45\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
+  \subfigure[Compact and RBF-FD.]{\includegraphics[width=.45\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
-    horizontal lines depict the worst and the best predicted performances. }
+    horizontal lines depict the worst and the best predicted performances. \todo{font size} \todo{ylabel=Performance(Gflop/s)}\todo{font size}}
   \label{fig:expe_types}
 \end{figure*}
 
@@ -913,12 +885,12 @@ time, the RCM ordering provide an improvement which can be as high as
   
   \includegraphics[width=.9\linewidth]{figures/mic_performance_nb_threads.pdf}
 
-  \caption{Performance of $y=Ax$ on the MIC. Squares:
-    base 1/1 case, solid circles: 4/4 case implemented in C++, solid
-    triangles: 4/4 case implemented with MIC vector instructions. Each
-    symbol has two cases: with (red) and without (blue) Reverse
-    Cuthill-McKee bandwidth reduction. The grid is $96^3$. Vectorization matters in practice. Differences in BW
-    translate in different performance.\todo{legend} \todo{fix caption}}
+  \caption{Performance of $y=Ax$ for a RBF derivative stencil of a
+    $96^3$ 3D grid. Classical SpMV ($n_m=n_v=1$ given in blue) has low
+    performance. The manually vectorized code (red) is 3.5 times
+    faster than the compiler generated one (green). RCM ordering
+    (squares) only improves the performance for our manually
+    vectorized code.\todo{ylabel=Performance(Gflop/s)}}
   \label{fig:comparison_spmv}
   \label{fig:perf_mic}
 \end{figure}
