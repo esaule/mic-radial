@@ -79,8 +79,8 @@ max_bandwidth = 150
 bandwidths = [150,190]
 nv = [1,4]
 nm = [1,4]
-labels = [(v+m) for v in ["v1","v4"] for m in ["m1","m4"]]
-labels.extend(["v16m1"])
+labels = [(v+','+m) for v in ["nv=1","nv=4"] for m in ["nm=1","nm=4"]]
+labels.extend(["nv=16,nm=1"])
 print labels
 # v loop is slowest
 # m loop is fastest
@@ -122,8 +122,8 @@ print ratios_s_best
 rects2 = plt.bar(index+2*bar_width, ratios_d_worst, bar_width, alpha=1, color='r', label='double precision worst case')
 rects2 = plt.bar(index+3*bar_width, ratios_d_best, bar_width, alpha=.5, color='r', label='double precision best case')
 
-plt.xlabel('Vector/Matrix sizes', fontsize=14)
-plt.ylabel('Peak Gflops', fontsize=14)
+plt.xlabel('Vector/Matrix sizes', fontsize=16)
+plt.ylabel('Peak Gflops', fontsize=16)
 #plt.title('Best possible performance (max application bandwidth: 150 Gbytes/sec')
 plt.xticks(index + bar_width, labels)
 plt.legend(loc=2)  # upper left
