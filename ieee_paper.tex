@@ -735,7 +735,7 @@ In this section, we describe a series of numerical experiments to
 confirm the performance predictions of Section~\ref{sec:model}. To
 better understand our results, we first perform some bandwidth
 measurements, followed by the actual SpMV computations. All the codes
-are compiled with the Intel C Compiler version xxx\todo{gordon?} and
+are compiled with the Intel C Compiler version 13 and
 -O3 optimization. The MIC codes use the IMCI instructions exposed by
 the compiler through intrinsics.
 
@@ -750,10 +750,7 @@ the compiler through intrinsics.
     alignment. Bandwidth performance under idealized
     conditions as a function of matrix row size.  Entries with "cpp"
     denote cases where coding was performed without MIC vector
-    instructions. \todo{legend}  \todo{Can we label the x-axis "number of floats" or
-      "size in MB"?}\todo{Can we use the same symbols in both charts?}
-    \todo{Can we change the color scheme? in (a), I do not see the
-      difference between "read\_cpp" and "read/write cpp"} }
+    instructions. \todo{legend} }
   \label{fig:bandwidth}
   \label{fig:band_rw_MIC}
 \end{figure}
