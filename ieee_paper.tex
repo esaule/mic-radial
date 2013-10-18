@@ -810,8 +810,9 @@ seen in Figure~\ref{fig:rbf3drcm}.
 
 In this experimental section, as a point of reference we provide some
 results on a typical CPU architecture. This system is ...\todo{include
-  a short description of the host.}
-All the codes are compiled with icc xxx and -O3 optimization.
+  a short description of the host.}  All the codes are compiled with
+icc xxx and -O3 optimization. The MIC codes use the IMCI instructions
+while the CPU codes use AVX instructions.
 
 \begin{figure*}
 \centering
@@ -855,11 +856,36 @@ case reaches a performance of 155GB/s\todo{and that one} while the
 {\tt write\_cpp} implementation never passes 55GB/s. This difference
 is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction
 which bypasses the Read For Ownership protocol and allows the writes
-to be performed in any order. The compiler can not use that
+to be performed in any order. The compiler can not use this
 instruction on its own because using would break the memory convention
 useful for some parallel algorithms. The {\tt read/write} benchmark
 performs at 140GB/s while the {\tt read/write cpp} benchmark performs
 at about 90GB/s.
+
+Looking at the results on the host in Figure~\ref{fig:band_rw_CPU}
+show no significant difference between manual vectorization and the
+compiler generated one (there is no store nrngo on the host). It also
+shows quite stable performance with about 70GB/s in the {\tt read}
+benchmark, about 40GB/s in the {\tt write} benchmark and about 49 in
+the {\tt read write} benchmark. The bandwidth achieved on MIC is about
+2 to 3 times faster than the bandwidth achieved on the CPU. The
+kernels we consider being memory bound, we expect MIC to be 2 to 3
+times faster.
+
+Note that SpMV kernels will likely use only simple read and simple
+writes on the MIC architecture. We also benchmark the performance we
+can achieve using {\tt gather} and {\tt unpack} operations and we
+present the results in Figure~\ref{fig:band_gather}. The {\tt unpack}
+instruction can reach a performance of 140GB/s. (There is no easy way
+to implement the equivalent of the {\tt unpack} operation without
+using explicit registers.) The performance of the {\tt gather}
+operations depends in which order the array is read. If the indices
+are ordered ({\tt compact}) then a performance of 140GB/s is
+reached. If the indices are completely randomized, the performance
+drops to 2GB/s\todo{correct?}. We can see that implementing the
+indirection mechanism without vector instructions makes the
+performance drop significantly. (In the {\tt compact} case, it never
+passes 100GB/s and is close to 50GB/s most of the time.)
 
 \begin{figure}
   \centering
@@ -868,6 +894,15 @@ at about 90GB/s.
   \label{fig:band_gather} 
 \end{figure}
 %
+
+To summarize, using vector instruction seems mandatory to reach the
+highest bandwidth on the MIC architecture. For the instructions used
+in a typical SpMV computation, one can expect a bandwidth between
+140GB/s to 160GB/s. That is why we set in our estimation the best
+achievable bandwidth to 150GB/s despite carefully crafted code to
+maximize bandwidth can reach higher
+values~\cite{Saule13-ARXIV}. Comparing to a CPU architecture, we
+expect MIC to be 2 to 3 times faster.
 
 \subsection{Computations}
 %----------------------
@@ -915,40 +950,6 @@ The performance on the MIC scales linearly with the number of threads. We compar
 \end{figure*}
 
 
-%<<<<<<< HEAD
-%\begin{figure}
-%  \centering
-%  \includegraphics[width=.45\textwidth]{figures/plot_for_natasha_ncar_end_of_year.pdf}
-%
-%  \caption{Performance on a MIC of derivative computation for RBFFD
-%    with 884,736 nodes distributed quasi-randomly in a cube. Single
-%    derivative of a single function (base case, triangle) and four
-%    derivatives of four functions (multi case, circles). No bandwidth
-%    reduction (blue) and Reverse Cuthill-McKee (red).\todo{should we have a similar one for the host?}}
-%\end{figure}
-%
-%\begin{figure*}
-%\centering
-%\subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}} %\label{fig:ratio_best}}
-%\subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}}%\label{fig:ratio_worst}}
-%\subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}}%\label{fig:ratio_nocache}}
-%\caption{Ratio of flops to bytes; (a) simple count of flops and bytes that require transfer from memory;(b) best and (c) worst
-%case taking into account that bringing one element of $x$ into memory brings along the remainder of the cache line.}
-%\label{fig:ratio_bytes_flops}
-%\end{figure*}
-%=======
-%\begin{figure}
-%  \centering
-%  \includegraphics[width=.45\textwidth]{figures/plot_for_natasha_ncar_end_of_year.pdf}
-%
-%  \caption{Performance on a MIC of derivative computation for RBFFD
-%    with 884,736 nodes distributed quasi-randomly in a cube. Single
-%    derivative of a single function (base case, triangle) and four
-%    derivatives of four functions (multi case, circles). No bandwidth
-%    reduction (blue) and Reverse Cuthill-McKee (red).\todo{should we have a similar one for the host?}}
-%\end{figure}
-%
-%>>>>>>> 619115cea6da9466f09a3b01456eacf7991606e2
 
 Derivatives in an RBFFD formulation are expressed as a sparse
 matrix/vector multiplication (SpMV). Using the full 61 nodes of a MIC
