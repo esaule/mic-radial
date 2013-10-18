@@ -615,6 +615,19 @@ explain. A thread will perform the multiplications one row at a time,
 and parallelism is achieved by giving blocks of rows to each core
 using an OpenMP construct.
 
+\begin{figure*}
+  \centering
+\subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{code.pdf}}%
+\subfigure[Content of the vector registers]{\hspace{-0.07\linewidth}\includegraphics[width=.5\linewidth]{figures/code-annote.pdf}}
+
+\caption{Code snippet of the multiplication of 4 vectors with 4
+  matrices. When a line changes the content of a vector register its
+  new content is shown on the right. The effects of swizzling and
+  permutations are highlighted using a color code.}
+\label{code:mat_mul}
+
+\end{figure*}
+
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{figures/tensor_product.pdf}
@@ -678,21 +691,7 @@ have a SIMD register where each lane is the four vector entries for a
 non zero element. Using a broadcast permutation, one can replicate an
 entry of the four vectors accross each lane.
 
-\begin{figure*}
-  \centering
-  %\subfigure[Source code}
-%  \includegraphics[width=0.8\textwidth]{figures/source_code.pdf}%
 
-\subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{code.pdf}}%
-\subfigure[Content of the vector registers]{\hspace{-0.07\linewidth}\includegraphics[width=.5\linewidth]{figures/code-annote.pdf}}
-
-\caption{Code snippet of the multiplication of 4 vectors with 4
-  matrices. When a line changes the content of a vector register its
-  content is shown on the right. The effects of swizzling and
-  permutations are highlighted using a color code.}
-\label{fig:code}
-
-\end{figure*}
 %\newfig{figures/source_code.pdf}{6in}{Source code}{fig:source}
 
 %\begin{figure}[h]
@@ -784,7 +783,7 @@ entry of the four vectors accross each lane.
 
 
 \def\ww{.13\textwidth}
-\begin{figure*}
+\begin{figure*}[tbh]
   \begin{center}
     \subfigure[Supercompact.]{%
       \label{fig:supercompact}
@@ -906,9 +905,7 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
   %\subfigure[Compact]{\includegraphics[width=.48\linewidth]{figures/compact_max_perf.pdf}} \\
   %\subfigure[Random]{\includegraphics[width=.48\linewidth]{figures/random_max_perf.pdf}}
   %\subfigure[RBF 3D]{\includegraphics[width=.48\linewidth]{figures/rbf_max_perf_run1.pdf}}
-  \caption{Performance of "best code" accross instance types. \todo{Why stop at 1.6M
-      rows. Is that because of memory limitation? I guess that's what
-      it is}}
+  \caption{Performance of "best code" accross instance types.}
 \end{figure*}
 
 
