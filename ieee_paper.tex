@@ -242,21 +242,19 @@ For a total of $N$ points, there will be $N$ linear systems to solve,
 each of size $n_z \times n_z$. Each linear solve produces a row of the
 RBF-FD differentiation matrix $D_{n_z}$, resulting in a $N \times N$
 matrix with $n_zN$ nonzero entries. To evaluate the derivative at all
-points in the domain, takes the form
+points in the domain, one multiplies the source vector $f$ by the 
+derivative matrix $D_{n_z}$ to obtain the vector $g$ of derivative values, 
 $$
-  \mathbf{g} = D_{n_z} \mathbf{f}
+  g = D_{n_z} f
 $$
-
-where $f$ is the source vector of function values and $g$ is the
-resulting vector of derivative values. The computation of a single
-derivative has been reduced to a SpMV, where each row has $n_z$
-nonzeros. In
+computation of a single derivative has been reduced to a SpMV, 
+where each row has $n_z$ nonzeros. In
 practice, $n_z=32$ in two-dimensional flows and 64 or 100 for
-three-dimensional flows. These numbers are similar to what is used in
+three-dimensional flows. These numbers are on a par with what is used in
 finite-element codes. Notice that the nonzero elements of the matrix
 correspond to a relation of nearest neighbor. This relationship is not
 necessarily symmetric as shown in Figure~\ref{fig:rbf_stencils} which
-means that the matrix sparsity pattern might not be symmetric either.
+implies a non-symmetric sparsity pattern in the derivative matrix. 
 
 \begin{figure}[tbh]
   \centering
@@ -273,21 +271,30 @@ solution to transport equations of the form
 $$
 \pf{Q}{t} = f(Q,Q_x, Q_y, Q_z, \Laplacian{Q})
 $$
-where $Q$ is a vector of unknowns (3 components of velocity, pressure,
-temperature). For example, in solving a system of equations, it is
+where $Q$ is a vector of unknowns %(e.g., 3D Navier-Stokes has
+%three components of velocity, pressure and temperature). 
+For example, in solving a system of equations, it is
 often necessary to compute the $x$ derivative of multiple functions,
 typically four for the Euler equations, or five for the Navier-Stokes
 equations. Multiple right-hand sides transform a SpMV into a SpMM
 (Sparse Matrix/dense Matrix multiplication), which improves register
 utilization and decreases cache misses by vectorizing over the
 multiple source vectors. Further improvements are possible by
-recognizing that different derivative matrices (x,y,z and Laplacian
-for example), have the same sparsity distribution; only the weight
-change.  Thus, alternative to computing a derivative of multiple
-functions, we can calculate multiple derivatives of a single
-functions. The increased memory bandwidth due to an increase in the
+recognizing that different derivative matrices (e.g., $x$, $y$, $z$ 
+and Laplacian operators), 
+have the same sparsity distribution as long as the derivative stencils
+remain unchanged; only the values in the sparse matrix change. 
+change.  Thus, rather than computing a derivative of multiple
+functions, one can calculate multiple derivatives of a single
+function. The increased memory bandwidth due to an increase in the
 number of derivative matrices is offset by better cache utilization,
-leading to an overall benefit.
+leading to an overall performance benefit. In practice however, the number of 
+vectors whose derivatives are required is limited, limiting the 
+performance of the matrix/vector multiplication. Similarly, the number
+of different derivatives in a particular computation is limited. It is 
+for this reason that we seek to combine the benefits of multiple
+vectors and multiple matrices simultaneously. We limit this initial 
+study to four vectors and four matrices. 
 
 % GORDON I WOULD ELIMINATE BELOW AND END HERE.
 
@@ -333,20 +340,21 @@ leading to an overall benefit.
 %  and how does the 16 multiplication appears in the equations.}
 
 
-In term of memory layout, we choose a format similar to the ELLPACK
-format to store the matrix since the number of nonzero per row is
+In term of memory layout, we adopt a format similar to the ELLPACK
+format to store the matrix since the number of nonzeros per row is
 constant throughout the matrix. The matrix is given in two arrays. The
 first one is the classical {\tt col\_id} array that describes the
-sparsity structure of the matrix. For each row it consists of $n_z$
-consecutive entries which give in which column is the nonzero. The
-other array is the {\tt data} array which gives the values of the non
-zero in the four matrices. The values of the matrices are interleaved
+sparsity structure of the matrix. Each row of {\tt col\_id} consists of $n_z$
+entries that label the column index of each nonzero in$A$. The
+other array is the {\tt data} array that gives the values of the 
+nonzeros in the four matrices. The values of the matrices are interleaved
 so that the value $A^l_{col\_id[k]}$ of the $k$th nonzero of the
-$l$th matrix is at index $(k-1)*4+l-1$. The vectors {\tt x} are also
-similarly interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
+$l$th matrix is at index $(k-1)*4+l-1$. The vectors {\tt x} are 
+interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
 consecutive in memory. The vector {\tt y} is similarly
-interleaved. This is schematically shown in Figure~\ref{fig:mat_struct}.
-
+interleaved. This is schematically shown in Figure~\ref{fig:mat_struct}, 
+where the elements of $y$ are grouped in sets of 16, which correspond
+to four derivatives applied to four functions, at a single point. 
 
 \begin{figure}
   \centering
@@ -354,7 +362,6 @@ interleaved. This is schematically shown in Figure~\ref{fig:mat_struct}.
   \caption{Matrix Structure.}
   \label{fig:mat_struct}
 \end{figure}
-
 
 
 \section{Modelization of the Potential Improvements}
@@ -380,24 +387,24 @@ application. Relevant notations are given in Table~\ref{tab:not}.
         $n_c$ & total number of nonzeros\\
         $n_v$ & number of {\tt x} vectors \\
         $n_m$ & number of matrices \\
-        $s_M$ & size of the matrice(s) in bytes\\
-        $s_x$ & size of the {\tt x} vector(s) in bytes\\
-        $s_y$ & size of the {\tt y} vector(s) in bytes\\
+        $s_M$ & size of the $n_m$ matrices in bytes\\
+        $s_x$ & size of the $n_v$ {\tt x} vectors in bytes\\
+        $s_y$ & size of the $n_v n_m$ {\tt y} vectors in bytes\\
         \hline
         $cl$    & size of a cache line in bytes\\
         $b_{wT}$ & number of bytes written to memory  \\
         $b_{rT}$ & minimum number of bytes read from memory  \\
-        $b_T$   & minimum number of bytes transferred  \\
+        $b_T$   & minimum number of bytes transferred \\
         $B_{rT}$ & maximum number of bytes read from memory \\
-        $B_T$   & maximum number of bytes transferred  \\
+        $B_T$   & maximum number of bytes transferred \\
         $O$     & number of floating point operations \\
-        $I_b$   & maximal computational intensity\\
+        $I_b$   & maximum computational intensity\\
         $I_w$   & minimum computational intensity\\        
         \hline
       \end{tabular}
     }
   \end{center}
-  \caption{Notations}
+  \caption{Notation relative to the matrices (upper section) and to the benchmarks (lower section.)}
   \label{tab:not}
 \end{figure}
 
@@ -776,7 +783,7 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
   \subfigure[
     Entries with "cpp" denote cases where
     coding was performed without MIC vector
-    instructions.]{\includegraphics[width=.40\linewidth]{figures/test1_readwrite.pdf}\label{fig:band_rw}}
+    instructions.]{\includegraphics[width=.40\linewidth]{figures/bandwidth_read_write.pdf}\label{fig:band_rw}}
 %
   \hspace{.3in}
 %
@@ -790,17 +797,11 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
 \todo{not 100\% sure what this plots are.}}
 \end{figure*}
 
-\begin{figure*}
+\begin{figure}
 \centering
-  \subfigure[ xxx ] 
-  {\includegraphics[width=.20\linewidth]{figures/test1_gather.pdf}\label{fig:band_gather}} \\
-
-  \subfigure[The greater
-    speed of the cpp version is obtained throught the use of
-    \ttt{\#Ivdep} {\em and\/} \ttt{\_\_assumed\_aligned}. All memory
-    is aligned on 64
-    bytes.]{\includegraphics[width=.20\linewidth]{figures/test3_gather.pdf}\label{fig:band_gather_ivdep}}
-\end{figure*}
+  \subfigure[Performance of gather and unpack operations on the MIC. ] 
+  {\includegraphics[width=.8\linewidth]{figures/bandwidth_gather_unpack.pdf}\label{fig:band_gather}} \\
+\end{figure}
 %
 
 \subsection{Computations}
