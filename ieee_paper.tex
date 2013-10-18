@@ -240,16 +240,18 @@ method.
 
 For a total of $N$ points, there will be $N$ linear systems to solve,
 each of size $n_z \times n_z$. Each linear solve produces a row of the
-RBF-FD differentiation matrix $D_{n_z}$, resulting in a $N \times N$
+RBF-FD differentiation matrix $A_{n_z}$, resulting in a $N \times N$
 matrix with $n_zN$ nonzero entries. To evaluate the derivative at all
-points in the domain, one multiplies the source vector $f$ by the 
-derivative matrix $D_{n_z}$ to obtain the vector $g$ of derivative values, 
+points in the domain, one multiplies the source vector $x$ by the 
+derivative matrix $A_{n_z}$ to obtain the vector $y$ of derivative values, 
 $$
-  g = D_{n_z} f
+  y = A_{n_z} x
 $$
 computation of a single derivative has been reduced to a SpMV, 
-where each row has $n_z$ nonzeros. In
-practice, $n_z=32$ in two-dimensional flows and 64 or 100 for
+where each row has $n_z$ nonzeros\footnote{We use non-conventional 
+symbology for differentiation matrix, source and destination vectors
+anticipating what follows.}. 
+In practice, $n_z=32$ in two-dimensional flows and 64 or 100 for
 three-dimensional flows. These numbers are on a par with what is used in
 finite-element codes. Notice that the nonzero elements of the matrix
 correspond to a relation of nearest neighbor. This relationship is not
@@ -268,20 +270,21 @@ implies a non-symmetric sparsity pattern in the derivative matrix.
 
 Many problems in fluid dynamics and in the geosciences require the
 solution to transport equations of the form
-$$
-\pf{Q}{t} = f(Q,Q_x, Q_y, Q_z, \Laplacian{Q})
-$$
+\begin{equation}
+\pf{Q}{t} = f(Q,\grad{Q},\Laplacian{Q})  \label{eq:Q}
+\end{equation}
 where $Q$ is a vector of unknowns %(e.g., 3D Navier-Stokes has
 %three components of velocity, pressure and temperature). 
 For example, in solving a system of equations, it is
-often necessary to compute the $x$ derivative of multiple functions,
+often necessary to compute the derivative of multiple functions along
+the same coordinate direction,
 typically four for the Euler equations, or five for the Navier-Stokes
 equations. Multiple right-hand sides transform a SpMV into a SpMM
 (Sparse Matrix/dense Matrix multiplication), which improves register
 utilization and decreases cache misses by vectorizing over the
 multiple source vectors. Further improvements are possible by
-recognizing that different derivative matrices (e.g., $x$, $y$, $z$ 
-and Laplacian operators), 
+recognizing that different derivative matrices (e.g., gradient and 
+Laplacian operators), 
 have the same sparsity distribution as long as the derivative stencils
 remain unchanged; only the values in the sparse matrix change. 
 change.  Thus, rather than computing a derivative of multiple
@@ -295,8 +298,17 @@ of different derivatives in a particular computation is limited. It is
 for this reason that we seek to combine the benefits of multiple
 vectors and multiple matrices simultaneously. We limit this initial 
 study to four vectors and four matrices. 
+\todo{I have remove reference to $x$, $y$, ... to avoid confusion with what follows.}
 
-\todo{Add few sentence with discretization}
+\todo{Add few sentence with discretization. Check Erik}
+In discrete form, Equation (\ref{eq:Q}) takes the form
+$$
+  y^{i,j} = A^i x^j 
+$$
+where $j$ ranges over the number of source vectors, $i$ ranges of the number of derivative
+matrices and there are $i*j$ output vectors $y$. 
+
+
 
 % GORDON I WOULD ELIMINATE BELOW AND END HERE.
 
@@ -347,7 +359,7 @@ format to store the matrix since the number of nonzeros per row is
 constant throughout the matrix. The matrix is given in two arrays. The
 first one is the classical {\tt col\_id} array that describes the
 sparsity structure of the matrix. Each row of {\tt col\_id} consists of $n_z$
-entries that label the column index of each nonzero in$A$. The
+entries that label the column index of each nonzero in $A$. The
 other array is the {\tt data} array that gives the values of the 
 nonzeros in the four matrices. The values of the matrices are interleaved
 so that the value $A^l_{col\_id[k]}$ of the $k$th nonzero of the
@@ -384,7 +396,7 @@ application. Relevant notations are given in Table~\ref{tab:not}.
         \hline
         $b_i$ & number of bytes per index \\
         $b_x$ & number of bytes per value \\
-        $n_z$ & number of nonzeros per row $A$ \\
+        $n_z$ & number of nonzeros per row of $A$ \\
         $n_r$ & number of column/rows of $A$ \\
         $n_c$ & total number of nonzeros\\
         $n_v$ & number of {\tt x} vectors \\
@@ -541,7 +553,7 @@ peak of the classical SpMV case.
 
 \begin{figure*}
   \centering 
-  \subfigure[Absolute performance ]{\includegraphics[width=.49\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops_peak_perf}}
+  \subfigure[Absolute performance ]{\includegraphics[width=.49\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}}
 %
   \subfigure[Relative performance to using one matrix and one
     vector.]{\includegraphics[width=.49\linewidth]{figures/speedup_wrt_base.pdf}\label{fig:speedup}}
@@ -654,8 +666,8 @@ The core of the technique is the use of swizzling and permutation
 features of the vectors in the Intel MIC architecture. A vector of 512
 bits is composed of four lanes (sometimes called channels) of 128 bits, 
 which are made of four segments of 32 bits. A swizzling operation allows
-the reorder of the elements within each lane, while a permutation allows 
-changes the order of entire lanes. 
+the reorder of the elements within each lane, while a permutation reorders
+entire lanes, without changing their contents. 
 Figure~\ref{fig:swizzling_permutation}
 illustrates these two possibilities. Both permutation and swizzling
 support common reordering and broadcast. In the code, the ``permute''
@@ -665,17 +677,17 @@ are necessary to convert to a vector to/from the integer type.
 \todo{I added a comment stating we preferred swizzling.}
 (Note that we prefer swizzling to permutation if possible because we believe 
 it is cheaper. Many instructions have swizzling capability, while permuation
-is its own instruction. \todo{reference?}
+is its own instruction. \todo{do we need a reference to my note?})
 
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{figures/swizzling_lanes.pdf}
   \caption{Swizzling enables the reorder or broadcast of elements within
     each 128 bit group. Permutation enables to reorder or broadcast
-    whole 128 bit groups. All lanes must be sizzeled identically.}
+    whole 128 bit groups. All lanes must be sizzeled identically.
+    \todo{I added to the caption.}}
   \label{fig:swizzling_permutation}
 \end{figure}
-\todo{I added to the caption.}
 
 Every operation that loads data from memory into a register
 transfers 512 bits, or 16 floats at a time. A single nonzero
@@ -686,7 +698,7 @@ nonzeros in the matrix, representing 16 floats from the matrix and 16 floats fro
 at once. (The number of nonzeros on a row in our application is
 always a multiple of 4; if it weren't, we would add some explicit
 zeroes in the data structure for padding.)
-\todo{ reread paragraph above. single instruction to load 16 floats. Confused.}
+\todo{Erik, reread paragraph above. single instruction to load 16 floats. Confused.}
 
 The values from the nonzero elements in the matrix are the simplest to
 load. One can load the 16 floating point values for four nonzeroes of
@@ -723,14 +735,17 @@ properly laid out in the vectors, a partial value for $y_i$ can be
 computed. Once all the nonzeros of the row have been processed, the
 exact $y_i$ value can be sent to memory using a the No Read No Global
 Order hint to optimize write traffic on the memory bus.
-\todo{ added "write" to traffic }
+\todo{I added "write" to traffic }
 
 
 \section{Experimental Validation}
 \label{sec:expe}
+In this section, we describe a series of numerical experiments to confirm 
+the performance predictions of Section~\ref{sec:model}. To better
+understand our results, we first perform some bandwidth measurements, followed
+by the actual SPmV.  \todo{We might be criticized for not comparing with other work.}
 
 \subsection{Instances}
-
 
 \def\ww{.13\textwidth}
 \begin{figure*}[tbh]
@@ -769,10 +784,11 @@ The different matrices used to perform our experiments and analysis
 are presented in Figure~\ref{fig:spy_plots}. The
 Supercompact matrices (Figure~\ref{fig:supercompact}) have been
 generated to only have nonzero elements in the first 32 columns of
-the matrix. That way we ensure the simplest form of multiplication,
-the number of elements from the {\tt x} vector data transfered from
-the memory is be minimum, they are transferred efficiently and remain 
-in cache. The Compact matrices
+the matrix. As a result, only 32 values of {\tt x} are read
+from memory, and the expense associated with cache misses and gather
+operation is removed from consideration. The cost associated with 
+{\tt A} remains.   \todo{reread the above.}
+The Compact matrices
 (Figure~\ref{fig:compact}) are generated to have 32 nonzeros per row
 centered around the diagonal and it represents the ideal case for many
 applications that rely on sparse matrix vector multiplication. The nonzero
@@ -786,8 +802,12 @@ The other two types of matrices are used in derivative stencils in 2D
 and 3D RBF-FD calculations (Figure~\ref{fig:rbf2dnorcm} pictures a
 $32$-points stencil of a $23^2$ 2D grid and
 Figure~\ref{fig:rbf2dnorcm} shows a $32$-points stencil of a $8^3$
-grid). We also apply a Cuthill-Mckee reordering to all the matrices. This
-ordering technique is designed to reduce the distance between the 
+grid). We also apply a Cuthill-Mckee reordering to all the matrices. 
+The 2D and 3D grid sizes are chosen to have comparable matrix sizes. One notes
+that the bandwidth reduction is higher in the 2D configuration, which leads
+to better performance.  \todo{we do not show performance results in 2D. Do we
+need to change anything? Do we have a reference for RCM?} 
+This ordering technique is designed to reduce the distance between the 
 nonzeros and the diagonal, hopefully allowing a better cache
 reutilisation. The reordered version of these two matrices can be seen
 in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
@@ -796,17 +816,12 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
 
 \begin{figure*}
 \centering
-  \subfigure[
-    Entries with "cpp" denote cases where
-    coding was performed without MIC vector
-    instructions.]{\includegraphics[width=.40\linewidth]{figures/bandwidth_read_write.pdf}\label{fig:band_rw}}
+  \subfigure[Run on the MIC with 240 threads, 64-byte memory alignment.]{\includegraphics[width=.40\linewidth]{figures/bandwidth_read_write.pdf}\label{fig:band_rw}}
 %
   \hspace{.3in}
 %
   \subfigure[
-    The speed on the CPU matches the speed with vector instructions.
-    All memory is aligned on 32
-    bytes.]{\includegraphics[width=.40\linewidth]{figures/host_test1_readwrite_no_temporal_hint.pdf}\label{fig:read_write}}
+    Run on the host with 32 threads, 32-byte memory alignment.]{\includegraphics[width=.40\linewidth]{figures/host_test1_readwrite_no_temporal_hint.pdf}\label{fig:read_write}}
 
 \caption{Bandwidth performance on the host under idealized conditions as a function of matrix row size.
   Entries with "cpp" denote cases where coding was performed without MIC vector intructions. 
@@ -827,8 +842,8 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
   \subfigure[Performance of $y=Ax$ on the MIC. Squares: base 1/1 case,
     solid circles: 4/4 case implemented in C++, solid triangles: 4/4
     case implemented with MIC vector instructions. $-O3$ compilation
-    options. Each symbol has two cases: with (red) and without blue) 
-    with and without Reverse Cuthill-McKee. The grid is $96^3$.]
+    options. Each symbol has two cases: with (red) and without (blue) 
+    Reverse Cuthill-McKee bandwidth reduction. The grid is $96^3$.]
     {\includegraphics[width=.40\linewidth]{figures/mic_performance_nb_threads.pdf}\label{fig:perf_mic}}
 %
 \hspace{.4in}
@@ -843,14 +858,15 @@ in Figure~\ref{fig:rbf2drcm} and in Figure~\ref{fig:rbf3drcm}.
 
 \begin{figure*}[t]
   \centering
-  \subfigure[Supercompact and random.]{\includegraphics[width=.48\linewidth]{figures/random_supercompact.pdf}}
+  \subfigure[Supercompact and Random]{\includegraphics[width=.48\linewidth]{figures/random_supercompact.pdf}}
   \subfigure[Compact and RBF-FD]{\includegraphics[width=.48\linewidth]{figures/rbf_compact.pdf}}
 
   %\subfigure[Supercompact]{\includegraphics[width=.48\linewidth]{figures/supercompact_max_perf.pdf}}
   %\subfigure[Compact]{\includegraphics[width=.48\linewidth]{figures/compact_max_perf.pdf}} \\
   %\subfigure[Random]{\includegraphics[width=.48\linewidth]{figures/random_max_perf.pdf}}
   %\subfigure[RBF 3D]{\includegraphics[width=.48\linewidth]{figures/rbf_max_perf_run1.pdf}}
-  \caption{Performance of "best code" accross instance types.}
+  \caption{Performance of "best code" accross matrix types. The two horizontal lines depict worst and 
+  best case performance (Figure fig:gflops-peak-perf). RCM (blue, $\blacktriangle$) and no RCM (red,$\blacktriangledown$).}
 \end{figure*}
 
 
