@@ -915,7 +915,7 @@ seen in Figure~\ref{fig:rbf3drcm}.
     (Figure~\ref{fig:gflops-peak-perf}). RCM (blue, $\blacktriangle$)
     and no RCM (red,$\blacktriangledown$).\todo{can we reorder the
       legend to give supercompact first in (a) and compact first in
-      (b)?}}
+      (b)?}}\todo{is there a symbol/color collision?}
   \label{fig:expe_types}
 \end{figure*}
 
@@ -1018,41 +1018,44 @@ the classical SpMV in Figure~\ref{fig:perf_host}. \todo{waiting for
 \label{sec:ccl}
 
 In the previous sections, we have explored in the practical
-implementation on a MIC architecture of multiple derivative operators
-acting on multiple vectors within the context of RBF-RD. Each
-derivative has an associated sparse matrix with a fixed number of
-nonzeros on each row. While computing a single derivative of multiple
-functions is rather common (vectorization occurs over the vectors), we
-accelerate the algorithm further by considering multiple derivatives
-with corresponding matrices with identical adjacency graphs. We
-specialize to four matrices and four derivatives, with 16 outputs,
-computed as a sum of outer products.
+implementation on a Intel Xeon Phi card of multiple derivative
+operators acting on multiple vectors within the context of
+RBF-RD. Each derivative has an associated sparse matrix with a fixed
+number of nonzeros on each row. While computing a single derivative of
+multiple functions is rather common (vectorization occurs over the
+vectors), we accelerate the algorithm further by considering multiple
+derivatives with corresponding matrices with identical adjacency
+graphs. We specialize our study to four matrices and four derivatives,
+with 16 outputs, computed as a sum of outer products.
 
-Using a matrix with $64^3$ (or $96^3$ rows, we achieve a speedup of
-xxx relative to the base case of one derivative and one function (1/1
-case), relative to a potential speedup of 16. We have achieved a
-speed of 100 Gflop/s on 60 cores using 240 threads, or a speed of 61\% of
-maximum possible performance. The maximum possible speed for the 1/1
-case is around 40 Gflop/s, of which we achieve 20 Gflop/s. On matrices
-that exceed the cache, a reverse Cuthill-McKee is applied to reduce the
-bandwidth, with an associated speedup of 30\% up to 135 Gflop/s. Our
-optimal implementation makes use of the (as yet unreleased) IMCI MIC instruction set 
-%\todo{that's not AVX on MIC, not sure what the name is}, 
-which includes a number of swizzling and channel swapping operations, for an
-extremely efficient tensor product implementation. A straightforward
-implementation without vectorization runs at around 35 Gflops, or 16\% of peak
-performance. RCM has no effect because the number of floating point
-operations is excessive (the algorithm does not fill the vector
-registers to capacity).
+Our implementation makes use of the IMCI MIC instruction set and
+includes a number of swizzling and channel swapping operations, for an
+extremely efficient tensor product implementation. On a $96^3$ 3D
+grid, it reaches a performance of 140 Gflop/s which is 2.7 times
+faster than the best possible performance achievable for a single
+vector and a single derivative and more than 7 times faster than a
+practical implementation.
 
-In a future work, we will examine the effect of larger stencil sizes,
-double precision, and the actual cost of computing the derivatives
-within a fluid simulation using RBF-FD.
+%% Using a matrix with $96^3$ rows, we achieve a speedup of 7.7 relative
+%% to the base case of one derivative and one function (1/1 case). We
+%% have achieved a speed between 100 Gflop/s to 140 Gflop/s on 60 cores
+%% using 240 threads, or a speed of 47\% to 66\% of the maximum possible
+%% performance of this architecture. As a point of comparison, the
+%% maximum possible speed for the 1/1 case is around 36 Gflop/s, of which
+%% we achieve 18 Gflop/s. Our optimal implementation makes use of the
+%% IMCI MIC instruction set which includes a number of swizzling and
+%% channel swapping operations, for an extremely efficient tensor product
+%% implementation. A straightforward implementation without vectorization
+%% runs at around 35 Gflops, or 16\% of peak performance.
+
+In a future work, we will examine the effect of larger stencil sizes
+and of using double precision. We will also integrate the techniques
+presented in this paper within a fluid simulation using RBF-FD.
 
 \section*{Acknowledgment}
-The first and last authors acknowledge NSF funding under NSF grant DMS-\#0934331 (FSU). 
-NCAR is sponsored by the National Science Foundation. N. Flyer      
-acknowledges support of NSF grant DMS-0934317.
+The first and last authors acknowledge NSF funding under NSF grant
+DMS-\#0934331 (FSU). NCAR is sponsored by the National Science
+Foundation. N. Flyer acknowledges support of NSF grant DMS-0934317.
 
 
 \bibliographystyle{plain} %{IEEEabrv,paper.bib}
