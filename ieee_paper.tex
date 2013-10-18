@@ -674,7 +674,7 @@ load. One can load the 16 floating point values for 4 non zeroes of
 the matrix at once. The 4 floats coming from each matrix four 4
 consecutive non zeroes are naturally grouped within each lane of the
 SIMD vector. One can use a swizzle operation to broadcast the 4
-elements of a single matrix to take the whole vector (values
+elements of a single matrix to take the whole vector. (The values
 $A_h^1,A_h^2,A_h^3,A_h^4$ are broadcasted in Figure~\ref{code:mat_mul}).
 
 Loading the entries from the {\tt x} vector is a little bit more
@@ -683,16 +683,18 @@ loaded in a vector register and the values are distributed one per
 lane of the vector register using an {\tt unpack}
 operation\footnote{Notice that there are two calls to unpack for the
   LSB and MSB. Both are mandatory even if one is known not to be
-  useful according the documentation of the hardware}. (The column pointers are named $j,k,l,m$ in Figure~\ref{code:mat_mul}.) They replicated
-so that each fill a vector lane using a swizzle operation. Then each
-value is multiplied by 4 (because there are 4 vectors) and the offsets
-$(3,2,1,0)$ is added each lane to obtain the correct index of the
-elements of the {\tt x} vector within each lane. Then a {\tt gather}
-operation is performed bring the 16 entries of the {\tt x} vector into
-the SIMD register. At this point we have a SIMD register where each
-lane is the four vector entries for a non zero element. Using a
-broadcast permutation, one can replicate an entry of the four vectors
-accross each lane.
+  useful according the documentation of the hardware}. (The column
+pointers are named $j,k,l,m$ in Figure~\ref{code:mat_mul}.) They
+replicated so that each fill a vector lane using a swizzle
+operation. Then each value is multiplied by 4 (because there are 4
+vectors) and the offsets $(3,2,1,0)$ is added each lane to obtain the
+correct index of the elements of the {\tt x} vector within each lane
+using a Fused Multiply-Add operation. Then a {\tt gather} operation is
+performed bring the 16 entries of the {\tt x} vector into the SIMD
+register. At this point we have a SIMD register where each lane is the
+four vector entries for a non zero element. Using a broadcast
+permutation, one can replicate an entry of the four vectors accross
+each lane.
 
 
 
