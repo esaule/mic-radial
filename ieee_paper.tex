@@ -300,54 +300,9 @@ study to four vectors and four matrices.
 In discrete form, Equation (\ref{eq:Q}) takes the form
 $$
   y^{i,j} = A^i x^j 
-$$
-where $j$ ranges over the number of source vectors, $i$ ranges of the number of derivative
-matrices and there are $i*j$ output vectors $y$. 
-
-
-
-% GORDON I WOULD ELIMINATE BELOW AND END HERE.
-
-%**** PUT ELSEWHERE OR ELIMINATE? ****
-%
-%When solving a one dimensional system of PDEs, one might require an
-%$x$ derivative of multiple functions. For example, the Euler equations
-%require the $x$ derivative of the three components of velocity and
-%pressure. In this case, there are $n_v=4$ vectors $x^k$,
-%$k=0,\cdots,3$.
-%
-%Thus for each vector element $y_i$, we compute $y_i = \sum_j A_{ij}
-%x_j$. If $A_i$ is row $i$ of $A$, $y_i$ is simply the dot product $A_i
-%x$. The next level of generality is to consider $n_v$ vectors $x^k$,
-%$k=0,\cdots,n_v-1$. Whatever the spmv implementation, one achieves
-%improved performance if the matrix formed from the columns $x^k$ are
-%stored in row major order. Thus, $x^0_0,x^1_0,\cdots,x^{n_v-1}_0$, are
-%stored in consecutive memory location. The random access of the
-%elements of $x$ is thus reduced. Maximum efficiency is achieved when
-%$n_v=16$ floats or $8$ doubles, given that cache lines take 64
-%bytes. We will benchmark this case, labeled $Svn$, where $n$ refers to
-%the number of vectors (Iv4 uses four vectors). The $S$ refers to singe
-%precision. A double precision run is labelled $Dvn$.
-%
-%Alternatively, when solving a PDE, one might require derivatives of a
-%given scalar function with respect to coordinate directions $x$, $y$,
-%$z$. Second order operators of often required, such as a second
-%derivative with respect to $x$ or a Laplacian operator. In the RBFFD
-%formulation, on can compute different derivatives using the same
-%stencil, but with different weights. In other words, the adjacency
-%matrix that corresponds to $A$ remains constant, but the matrix
-%elements of $A$ change with the particular derivative.  In this case,
-%label with a superscript $l$ the particular matrix $A^k$. Since the
-%adjacency matrix is assumed invariant, there is only need for a single
-%matrix \ttt{C{ij}}. In Ellpack format, each row is of constant size
-%(the number of nonzeros per row of $A$. $C_{ij}$ is the column number
-%that locates the $j^{th}$ nonzero in row $i$ of $A$.
-%
-%
-%\todo{Must rewrite the above to make it more focused on the
-% application. Remove the architectural/implementation details such as
-%  using ELLPACK. Let's focus on on why this computation is important
-%  and how does the 16 multiplication appears in the equations.}
+$$ where $j$ ranges over the number of source vectors, $i$ ranges of
+  the number of derivative matrices and there are $i*j$ output vectors
+  $y$ (graphically shown in Figure~\ref{fig:struct_comp}).
 
 \begin{figure}
   \centering
@@ -367,8 +322,8 @@ matrices and there are $i*j$ output vectors $y$.
   \end{array}\right)
   \times \left(x^1 x^2 x^3 x^4 \right) \] 
   
-  \caption{Matrix of the computation.}
-  \label{fig:mat_struct}
+  \caption{Structure of the computation.}
+  \label{fig:struct_comp}
 \end{figure}
 
 
@@ -503,7 +458,7 @@ is the main problem faced when performing a standard SpMV computation.
   \caption{Ratio of flops to bytes in single precision:  
     \ref{fig:ratio_best} best case; \ref{fig:ratio_worst} worst case when $cl=64$ 
     ; and \ref{fig:ratio_worst_nocache} worst case neglecting that the
-    memory transfers are with a grenularity of one cache line (equivalent to $cl = 1$)}
+    memory transfers are with a granularity of one cache line (equivalent to $cl = 1$)}
   \label{fig:ratio_bytes_flops}
 \end{figure*}
 
@@ -524,7 +479,7 @@ peak of the classical SpMV case.
   \centering 
   \includegraphics[width=.9\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}
   \caption{Estimation of the maximum achievable performance using a
-    device with a memory to computational units of 150~GB/s when
+    device with a bandwidth from memory to computational units of 150~GB/s when
     varying the number of vectors and matrices.\todo{yabel=Peak Performance (Gflop/s)}\todo{no xlabel}}
   \label{fig:perf_predict}
 \end{figure}
@@ -852,7 +807,7 @@ seen in Figure~\ref{fig:rbf3drcm}.
   \subfigure[Compact and RBF-FD.]{\includegraphics[width=.45\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
-    horizontal lines depict the worst and the best predicted performances. \todo{font size} \todo{ylabel=Performance(Gflop/s)}\todo{font size}}
+    horizontal lines depict the worst and the best predicted performances. \todo{font size} \todo{ylabel=Performance(Gflop/s)}}
   \label{fig:expe_types}
 \end{figure*}
 
