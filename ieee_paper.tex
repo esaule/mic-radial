@@ -835,15 +835,15 @@ values~\cite{Saule13-ARXIV}.
     \subfigure[3D, RCM.]{%
       \label{fig:rbf3dnorcm} 
       \includegraphics[width=\ww]{figures/kd-tree-3d-norcm-crop.png}}%
-    \subfigure[3D, RCM.]{%
+    \subfigure[3D, no RCM.]{%
       \label{fig:rbf3drcm}
       \includegraphics[width=\ww]{figures/kd-tree-3d-rcm-crop.png}}%
   \end{center}
   
   \caption{Different sparsity distributions. In all cases, there are
-    32 nonzeros per line and 300 rows. The last four matrices
-    corresponds to derivative stencils in 2D and 3D RBF-FD
-    calculations.}
+    512 rows and 32 nonzeros per row. The last two matrices
+    corresponds to a derivative stencil in 3D RBF-FD
+    calculations (with and without RCM ordering).}
   \label{fig:spy_plots}
 \end{figure*}
 
