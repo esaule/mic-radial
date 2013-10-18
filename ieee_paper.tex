@@ -586,7 +586,6 @@ using an OpenMP construct.
   new content is shown on the right. The effects of swizzling and
   permutations are highlighted using a color code.}
 \label{code:mat_mul}
-
 \end{figure*}
 
 
@@ -613,11 +612,13 @@ transfers 512 bits, or 16 floats at a time. A single nonzero
 in the matrix will cause 16 operations to be performed, but it only
 uses 4 floats from the matrix and 4 floats from the {\tt x} vector. So
 we would like to execute a single instruction to load the data for four 
-nonzeros in the matrix, representing 16 floats from the matrix and 16 floats from the vectors
-at once. (The number of nonzeros on a row in our application is
+nonzeros in the matrix, and another instruction to load the data for
+four nonzeros from the vectors.  
+%representing 16 floats from the matrix and 16 floats from the vectors at once. 
+(The number of nonzeros on a row in our application is
 always a multiple of 4; if it weren't, we would add some explicit
 zeroes in the data structure for padding.)
-\todo{Erik, reread paragraph above. single instruction to load 16 floats. Confused.}
+\todo{Erik, I rewrote the paragraph. Please reread.}
 
 The values from the nonzero elements in the matrix are the simplest to
 load. One can load the 16 floating point values for four nonzeroes of
@@ -689,19 +690,19 @@ implementation (compiled with -O3 with proper tagging to inform the
 compiler of memory alignments) and a simple implementation using
 vector register explicitly.
 
-When using the MIC card (Figure~\ref{fig:band_rw_MIC}) the {\tt
+When using the MIC card (Figure~\ref{fig:band_rw_MIC}), the {\tt
   read\_cpp} implementation reaches a performance of 160~GB/s
-\todo{gordon check exact number} which is better than the {\tt read}
-implementation which only achieves 145~GB/s \todo{and that one}. This
+\todo{gordon check exact number, 168GB/s} which is better than the {\tt read}
+implementation which only achieves 145~GB/s \todo{and that one, 145 is correct}. This
 is explained by the compiler adding loop unrolling and software
-prefetching in the assembly code in the {\tt read\_cpp} case which is
+prefetching in the assembly code in the {\tt read\_cpp} case, which is
 not added in the {\tt read} case. On the other hand, the {\tt write}
-case reaches a performance of 155~GB/s\todo{and that one} while the
-{\tt write\_cpp} implementation never passes 55~GB/s. This difference
-is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction
+case reaches a performance of 158~GB/s\todo{and that one, 158GB} while the
+{\tt write\_cpp} implementation never passes 58~GB/s \todo{I fixed the number}. 
+This difference is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction, 
 which bypasses the Read For Ownership protocol and allows the writes
 to be performed in any order. The compiler can not use this
-instruction on its own because using would break the memory convention
+instruction on its own because this would break the memory convention
 useful for some parallel algorithms. The {\tt read/write} benchmark
 performs at 140~GB/s while the {\tt read/write cpp} benchmark performs
 at about 90~GB/s.
@@ -716,7 +717,7 @@ using explicit registers.) The performance of the {\tt gather}
 operations depends in which order the array is read. If the indices
 are ordered ({\tt compact}) then a performance of 140~GB/s is
 reached. If the indices are completely randomized, the performance
-drops to 2~GB/s\todo{correct?}. We can see that implementing the
+drops to 3~GB/s\todo{correct?. Chaged. It is 3-4}. We can see that implementing the
 indirection mechanism without vector instructions makes the
 performance drop significantly. (In the {\tt compact} case, it never
 passes 100~GB/s and is close to 50~GB/s most of the time.)
@@ -732,9 +733,9 @@ passes 100~GB/s and is close to 50~GB/s most of the time.)
 To summarize, using vector instruction seems mandatory to reach the
 highest bandwidth on the MIC architecture. For the instructions used
 in a typical SpMV computation, one can expect a bandwidth between
-140~GB/s to 160~GB/s. That is why we set in our estimation the best
-achievable bandwidth to 150~GB/s despite carefully crafted code to
-maximize bandwidth can reach higher
+140~GB/s to 160~GB/s. That is why we set in our estimation a best
+achievable bandwidth of 150~GB/s despite the fact that a 
+carefully crafted code to maximize bandwidth can reach higher
 values~\cite{Saule13-ARXIV}. 
 
 \subsection{Instances}
@@ -778,8 +779,8 @@ Supercompact matrices (Figure~\ref{fig:supercompact}) have been
 generated to only have nonzero elements in the first 32 columns of
 the matrix. As a result, only 32 values of {\tt x} are read
 from memory, and the expense associated with cache misses and gather
-operation is removed from consideration. The cost associated with 
-{\tt A} remains.   \todo{reread the above.}
+operations is removed from consideration. The cost associated with 
+{\tt A} remains.   \todo{reread the above. Reread by Gordon}
 The Compact matrices
 (Figure~\ref{fig:compact}) are generated to have 32 nonzeros per row
 centered around the diagonal and it represents the ideal case for many
@@ -819,20 +820,21 @@ predicted in Section~\ref{sec:model}. Figure~\ref{fig:perf_ideal}
 gives the results for the {\tt supercompact} and {\tt random} matrices
 which represent both the best and the worst case for such a
 computation. The {\tt supercompact} case peaks at
-205~Gflop/s\todo{check that} being very close to the predicted peak
+208~Gflop/s\todo{check that. changed to 208} being very close to the predicted peak
 performance of 213~Gflop/s. Conversely the performance of the {\tt
-  random} case decreases to 59~Gflop/s\todo{check} which is close to
+  random} case decreases to 56~Gflop/s\todo{check, changed to 56} which is close to
 the lowest predicted performance of 55~Gflop/s. One can see that RCM
 ordering helps the {\tt random} case but the impact decreases when the
-size of the matrix increase.
+size of the matrix increases.
 
 Figure~\ref{fig:perf_realistic} gives the results on the {\tt compact}
-case which represents the best realistic matrix one could find and in
-an {\tt rbf} matrix extracted from a real application. In the {\tt
+case, which represents the best realistic matrix one could find with very
+structured grids and a
+{\tt RBF} matrix extracted from a real application. In the {\tt
   compact} case, the performance can be as high as 195~Gflop/s being
 within 15\% of the peak predicted performance. The performance of the
 {\tt rbf} case varies between 100~Gflop/s and 140~Gflop/s. Most of the
-time, the RCM ordering provide an improvement which can be as high as
+time, the RCM ordering provides an improvement which can be as high as
 30~Gflop/s.
 
 \begin{figure}
