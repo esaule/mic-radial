@@ -859,14 +859,14 @@ while our manually vectorized implementation is most likely
 memory-bound. 
 
 To put things in perspective, we conducted some experiments on a
-classical CPU architecture with two Intel Core i7 processors, each has 8
+classical CPU architecture with two Intel Core i7 processors, each has eight
 cores that support AVX instructions. Both the compiler-generated and
-the manually-written vectorization using AVX instruction reach a
+the manually-written vectorization using AVX instructions reach a
 (read) bandwidth of 70~GB/s. This indicates that the performance of
 the classical SpMV can not overcome 17~Gflop/s. A generic
 implementation of the multiplication of four vectors with four matrices on
 the {\tt RBF} matrix reaches a performance of 27~Gflop/s; while a
-manual implementation using AVX instruction reaches a performance of
+manual implementation using AVX instructions reaches a performance of
 42~Gflop/s. This confirms that our method is sound and generalizes to
 architectures other than the Intel MIC architecture.
 
@@ -875,13 +875,13 @@ architectures other than the Intel MIC architecture.
 \label{sec:ccl}
 
 In the previous sections, we have explored the practical
-implementation on a Intel Xeon Phi card of multiple derivative
+implementation on an Intel Xeon Phi card of multiple derivative
 operators acting on multiple vectors within the context of
-RBF-RD. Each derivative has an associated sparse matrix with a fixed
+RBFFD. Each derivative has an associated sparse matrix with a fixed
 number of nonzeros on each row. While computing a single derivative of
-multiple functions is rather common (vectorization occurs over the
-vectors), we accelerate the algorithm further by considering multiple
-matrices (identical sparsity patterns) acting on multiple vectors. 
+multiple functions is rather common, we accelerate the algorithm further 
+by considering multiple
+matrices, with identical sparsity patterns, acting on multiple vectors. 
 We specialize our study to four matrices and four derivatives,
 with 16 outputs, computed as a sum of outer products.
 
@@ -894,7 +894,7 @@ vector and a single derivative and more than 7 times faster than a
 practical implementation.
 
 In future work, we will examine the effect of larger stencil sizes and
-double precision. The presented performance do not reach the predicted
+double precision. The presented performance does not reach the predicted
 peak and we believe that common techniques from SpMV such as cache
 partitioning can be successfully applied. We will also integrate the
 techniques presented in this paper within a fluid simulation using
