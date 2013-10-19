@@ -696,7 +696,7 @@ is explained by the compiler adding loop unrolling and software
 prefetching in the assembly code in the {\tt read\_cpp} case, which is
 not added in the {\tt read} case. On the other hand, the {\tt write}
 case reaches a performance of 158~GB/s\todo{and that one, 158GB} while the
-{\tt write\_cpp} implementation never passes 58~GB/s \todo{I fixed the number}. 
+{\tt write\_cpp} implementation never passes 58~GB/s. 
 This difference is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction, 
 which bypasses the Read For Ownership protocol and allows the writes
 to be performed in any order. The compiler can not use this
