@@ -818,9 +818,9 @@ predicted in Section~\ref{sec:model}. Figure~\ref{fig:perf_ideal}
 gives the results for the {\tt supercompact} and {\tt random} matrices
 that represent both the best and the worst case for such a practical 
 computation. The {\tt supercompact} case peaks at
-208~Gflop/s\todo{check that. changed to 208} being very close to the predicted peak
+208~Gflop/s being very close to the predicted peak
 performance of 213~Gflop/s. Conversely the performance of the {\tt
-  random} case decreases to 56~Gflop/s\todo{check, changed to 56} which is close to
+  random} case decreases to 56~Gflop/s which is close to
 the lowest predicted performance of 55~Gflop/s. One can see that RCM
 ordering helps the {\tt random} case but the impact decreases when the
 size of the matrix increases.
@@ -858,9 +858,9 @@ application performance? Figure~\ref{fig:comparison_spmv} compares the
 performance achieved by a classical SpMV and by the multiplication of
 4 vectors by 4 matrices using either standard C++ code and our
 optimized implementation. The
-classical SpMV computation reaches 14~Gflop/s\todo{check? 14 on 244 nodes}. 
+classical SpMV computation reaches 14~Gflop/s. 
 The standard C++ implementation reaches a performance of 38~Gflop/s while our
-optimized implementation reaches 140~Gflop/s\todo{check 140 for $64^3$, 135 for $96^3$ on 61 cores}. 
+optimized implementation reaches 140~Gflop/s. 
 Notice that \todo{I do not know that I ran host and mic on the same grid, but your 
 numbers are approximately correct. The numbers are a function of resolution} 
 RCM ordering has no impact in the standard C++ implementation while it
