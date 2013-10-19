@@ -54,14 +54,14 @@
 Erik Saule\IEEEauthorrefmark{2}, Natasha Flyer\IEEEauthorrefmark{3}, 
 and Evan Bollig\IEEEauthorrefmark{1}}
 \IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Scientific Computing, 
-Florida State University, Tallahassee, FL 32306-4120\\
-Email: gerlebacher@fsu.edu}
+Florida State University\\ %, Tallahassee %FL 32306-4120\\
+Email: gerlebacher@fsu.edu, bollig@gmail.com}
 \IEEEauthorblockA{\IEEEauthorrefmark{2}Department of Computer Science, University of North Carolina at Charlotte\\
 Email: esaule@uncc.edu}
 \IEEEauthorblockA{\IEEEauthorrefmark{3}Computational and Information Systems Laboratory, UCAR \\
 Email: flyer@ucar.edu}
-\IEEEauthorblockA{\IEEEauthorrefmark{4}Department of Scientific Computing, Florida State University\\
-Email: bollig@gmail.com}\todo{check affiliation fsu's are strange.}}
+%\IEEEauthorblockA{\IEEEauthorrefmark{4}Department of Scientific Computing, Florida State University\\
+%Email: bollig@gmail.com}\todo{check affiliation fsu's are strange.}}
 \maketitle
 
 
@@ -222,7 +222,8 @@ operations. To alleviate the cost of this global approach (i.e. using
 every node in the domain to calculate the derivative at a given node
 $\rvec_i$), RBF-generated finite differences (RBF-FD) have been
 derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBF-FD uses only
-a local set of the $n_z-1$ nearest neighbors to the point $\rvec_i$ to
+a local set of the $n_z-1$  (often nearest) points in a neighborhood of 
+the point $\rvec_i$ to
 approximate the derivative. In other words,
 $Lf(\rvec_i)=\sum_{j=1}^{n_z}a_jf(\rvec_j)$. The differentiation
 weights, $a_j$, are calculated by enforcing that this linear
@@ -249,7 +250,8 @@ anticipating what follows.}.
 In practice, $n_z=32$ in two-dimensional flows and 64 or 100 for
 three-dimensional flows. These numbers are on a par with what is used in
 finite-element codes. Notice that the nonzero elements of the matrix
-correspond to a relation of nearest neighbor. This relationship is not
+correspond to a relationship of closeness in the physical domain. 
+This relationship is not
 necessarily symmetric as shown in Figure~\ref{fig:rbf_stencils} which
 implies a non-symmetric sparsity pattern in the derivative matrix. 
 
@@ -282,7 +284,7 @@ recognizing that different derivative matrices (e.g., gradient and
 Laplacian operators), 
 have the same sparsity distribution as long as the derivative stencils
 remain unchanged; only the values in the sparse matrix change. 
-change.  Thus, rather than computing a derivative of multiple
+Thus, rather than computing a derivative of multiple
 functions, one can calculate multiple derivatives of a single
 function. The increased memory bandwidth due to an increase in the
 number of derivative matrices is offset by better cache utilization,
@@ -492,7 +494,7 @@ In this work, we use an Intel Xeon Phi 5110P coprocessor. This card
 has 8 memory controllers that can each execute 5 billion
 transactions per second. Each has two 32-bit channels, achieving a total
 bandwidth of 320~GB/s aggregated across all the memory
-controllers. There are 60 cores clocked at 1.05GHz. Their memory
+controllers. There are 60 cores clocked at 1.05~GHz. Their memory
 interfaces are 32-bit wide with two channels and the total bandwidth
 is 8.4~GB/s per core. Thus, the cores should be able to consume 504~GB/s
 at most. However, the bandwidth between the cores and the memory
@@ -517,8 +519,8 @@ processing unit. Each core has 32 512-bit SIMD registers that can be
 used for double or single precision, that is, either as a vector of 8
 64-bit values or as a vector of 16 32-bit values, respectively. The
 vector processing unit can perform many basic instructions, such as
-addition or division, and mathematical operations, such as sine and
-sqrt, making it possible to reach 8 double precision (or 16 singe precision)
+addition or division, and mathematical operations, such as {\tt sin} and
+{\tt sqrt}, making it possible to reach 8 double precision (or 16 singe precision)
 operations per cycle.  
 The unit also supports Fused Multiply-Add (FMA)
 operations, which are typically counted as two operations for
@@ -690,7 +692,7 @@ compiler of memory alignments) and a simple implementation using
 vector register explicitly.
 
 When using the MIC card (Figure~\ref{fig:band_rw_MIC}), the {\tt
-  read\_cpp} implementation reaches a performance of 160~GB/s
+  read\_cpp} implementation reaches a performance of 168~GB/s
 \todo{gordon check exact number, 168GB/s} which is better than the {\tt read}
 implementation which only achieves 145~GB/s \todo{and that one, 145 is correct}. This
 is explained by the compiler adding loop unrolling and software
@@ -716,7 +718,7 @@ using explicit registers.) The performance of the {\tt gather}
 operations depends in which order the array is read. If the indices
 are ordered ({\tt compact}) then a performance of 140~GB/s is
 reached. If the indices are completely randomized, the performance
-drops to 3~GB/s\todo{correct?. Chaged. It is 3-4}. We can see that implementing the
+drops below 5~GB/s\todo{correct?. Chaged. It is 3-4}. We can see that implementing the
 indirection mechanism without vector instructions makes the
 performance drop significantly. (In the {\tt compact} case, it never
 passes 100~GB/s and is close to 50~GB/s most of the time.)
@@ -871,7 +873,7 @@ while our manually vectorized implementation is most likely
 memory-bound. 
 
 To put things in perspective, we conducted some experiments on a
-classical CPU architecture with 2 Intel Core i7 processor, each has 8
+classical CPU architecture with two Intel Core i7 processors, each has 8
 cores that support AVX instructions. Both the compiler-generated and
 the manually-written vectorization using AVX instruction reach a
 (read) bandwidth of 70~GB/s. This indicates that the performance of
