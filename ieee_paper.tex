@@ -625,9 +625,9 @@ Loading the entries from the {\tt x} vector is a little bit more
 involved. First, the columns pointers of four different nonzeros are
 loaded into a vector register and the values are distributed one per
 lane of the vector register using an {\tt unpack}
-operation\footnote{Notice that there are two calls to unpack for the
-  LSB and MSB. Both are mandatory even if one is known not to be
-  useful according the documentation of the hardware}. (The column
+operation\footnote{Notice that there are two calls to {\tt unpack} for the
+  LSB and MSB. Both are mandatory even if one is known to be
+  nilpotent according the documentation of the hardware}. (The column
 pointers are named $j,k,l,m$ in Figure~\ref{code:mat_mul}.) They
 are replicated so that each value fills an single vector lane 
 using a swizzle operation. Then each value is multiplied by 4 
