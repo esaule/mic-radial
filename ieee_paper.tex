@@ -499,7 +499,7 @@ believed to be between 200~GB/s and 250~GB/s.
 Each core in the architecture has a 32kB L1 data cache, a 32kB L1
 instruction cache, and a 512kB L2 cache. The architecture of a core is
 based on the traditional Pentium architecture, which has been extended to
-64-bit. A core can hold four hardware contexts at any given time. At each
+64-bit. A core can hold four hardware contexts at any given time (240 threads in total). At each
 clock cycle, instructions from a single thread are executed. Due to
 some hardware constraints, two hardware contexts must be used to reach
 the peak instruction throughput in that architecture. Similar to the
@@ -566,9 +566,9 @@ and the vector entries $x_m^1,x_m^2,x_m^3,x_m^4$ in two vector registers and
 apply Fused Multiply-Add on them, which is depicted in the {\tt accu} line of 
 Figure~\ref{code:mat_mul}. Bringing the data into the vector
 register as depicted in the figure is the difficult component of our 
-proposed algorith, which we proceed to explain further. 
+proposed algorithm, which we proceed to explain further. 
 A thread will perform the multiplications one row at a time,
-and parallelism is achieved by giving blocks of rows to each core
+and parallelism is achieved by giving blocks of rows to each thread
 using an OpenMP construct.
 
 \begin{figure*}
@@ -609,11 +609,9 @@ uses 4 floats from the matrix and 4 floats from the {\tt x} vector. So
 we would like to execute a single instruction to load the data for four 
 nonzeros in the matrix, and another instruction to load the data for
 four nonzeros from the vectors.  
-%representing 16 floats from the matrix and 16 floats from the vectors at once. 
 (The number of nonzeros on a row in our application is
 always a multiple of 4; if it weren't, we would add some explicit
 zeroes in the data structure for padding.)
-\todo{Erik, I rewrote the paragraph. Please reread.}
 
 The values from the nonzero elements in the matrix are the simplest to
 load. One can load the 16 floating point values for four nonzeroes of
