@@ -371,7 +371,7 @@ application. Relevant notations are given in Figure~\ref{tab:not}.
 Each vector in the problem is of dimension $n_r$ and each entry
 takes $b_x$ bytes. There are $n_v$ {\tt x} vectors and $n_v n_m$ {\tt
   y} vectors, which lead to the size of the {\tt x} and {\tt y} vectors:
-$$s_x = n_v b_x n_r$$ $$s_y = n_v n_m b_x n_r$$
+$$s_x = n_v b_x n_r\mbox{, ~}s_y = n_v n_m b_x n_r$$
 
 The matrix is composed of $n_r$ rows and columns with $n_z$ nonzeros
 per row leading to a total of $$n_c = n_r n_z$$ nonzero entries in
@@ -495,7 +495,7 @@ interfaces are 32-bit wide with two channels and the total bandwidth
 is 8.4~GB/s per core. Thus, the cores should be able to consume 504~GB/s
 at most. However, the bandwidth between the cores and the memory
 controllers is limited by the ring network that connects the cores and
-the memory controller. Its precise bandwidth is unknown but it is
+the memory controller. Its precise bandwidth 
 believed to be between 200~GB/s and 250~GB/s.
 
 Each core in the architecture has a 32kB L1 data cache, a 32kB L1
@@ -514,7 +514,7 @@ Most of the performance of the architecture comes from the vector
 processing unit. Each core has 32 512-bit SIMD registers that can be
 used for double or single precision, that is, either as a vector of 8
 64-bit values or as a vector of 16 32-bit values, respectively. The
-vector processing unit can perform many basic instructions, such as
+vector processing unit can perform basic instructions, such as
 addition or division, and mathematical operations, such as {\tt sin} and
 {\tt sqrt}, making it possible to reach 16 single precision (or 8 double precision)
 operations per cycle.  
@@ -545,10 +545,9 @@ achieved.
 As explained in Section~\ref{sec:model}, we expect to achieve a performance of
 about 210~Gflop/s in single precision in the best case. We will focus
 on the single precision case with four vectors and four matrices. 
-Similar techniques apply for other matrix/vector combinations. This target
+Similar techniques apply for other combinations. This target
 performance represents 10\% of the peak performance of the
-architecture which is impossible to reach without an efficient vectorization of
-the kernel. Indeed, to reach such a performance, a Fused Multiply-Add
+architecture which cannot be reached without an efficient vectorization. Indeed, to reach such a performance, a Fused Multiply-Add
 instruction on fully loaded registers must be executed at most every
 10 cycles.
 
@@ -635,12 +634,12 @@ operation\footnote{Notice that there are two calls to {\tt unpack} for the
 pointers are named $j,k,l,m$ in Figure~\ref{code:mat_mul}.) They
 are replicated so that each value fills an single vector lane 
 using a swizzle operation. Then each value is multiplied by 4 
-(because there are 4 vectors) 
+(because $n_v=4$) 
 and the offset vector $(3,2,1,0)$ is added to each lane to obtain the
 correct index of the elements of the {\tt x} vector within each lane
 using a Fused Multiply-Add operation. Then a {\tt gather} operation is
 performed to bring the 16 entries of the {\tt x} vector into the SIMD
-register. At this point we have a SIMD register where each lane is the
+register. At this point we have a register where each lane is the
 four vector entries for a nonzero element. Using a broadcast
 permutation, one can replicate an entry of the four vectors across
 each lane. (The broadcast of $x_m^1,x_m^2,x_m^3,x_m^4$ is shown in
@@ -652,9 +651,20 @@ computed. Once all the nonzeros of the row have been processed, the
 exact $y_i$ value can be sent to memory using a the No Read No Global
 Order hint to optimize write traffic on the memory bus.
 
-
 \section{Experimental Validation}
 \label{sec:expe}
+
+\begin{figure}[tbh]
+  \centering
+  \includegraphics[width=.9\linewidth]{figures/bandwidth_read_write.pdf}
+  
+  \caption{Bandwidth performance under idealized conditions.  Entries
+    with "cpp" (triangles) denote cases where vectorization is
+    compiler generated.}
+  \label{fig:bandwidth}
+  \label{fig:band_rw_MIC}
+\end{figure}
+
 In this section, we describe a series of numerical experiments to
 confirm the performance predictions of Section~\ref{sec:model}. To
 better understand our results, we first perform some bandwidth
@@ -665,16 +675,6 @@ the compiler through intrinsics.
 
 \subsection{Bandwidth}
 
-\begin{figure}[bth]
-  \centering
-  \includegraphics[width=.9\linewidth]{figures/bandwidth_read_write.pdf}
-  
-  \caption{Bandwidth performance under idealized conditions.  Entries
-    with "cpp" (triangles) denote cases where vectorization is
-    compiler generated.}
-  \label{fig:bandwidth}
-  \label{fig:band_rw_MIC}
-\end{figure}
 
 Figure~\ref{fig:bandwidth} shows a benchmark that computes the
 bandwidth achieved when reading and/or writing large arrays on both
