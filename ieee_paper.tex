@@ -47,7 +47,7 @@
 
 \begin{document}
 \title{Sparse Matrix Vector Multiplication with Multiple vectors and
-  Multiple Matrices on the MIC Architecture}
+  Multiple Matrices on the MIC Architecture \todo{? more application oriented''}}
 
 
 \author{\IEEEauthorblockN{Gordon Erlebacher\IEEEauthorrefmark{1},
@@ -61,7 +61,7 @@ Email: esaule@uncc.edu}
 \IEEEauthorblockA{\IEEEauthorrefmark{3}Computational and Information Systems Laboratory, UCAR \\
 Email: flyer@ucar.edu}
 \IEEEauthorblockA{\IEEEauthorrefmark{4}Department of Scientific Computing, Florida State University\\
-Email: bollig@gmail.com}}
+Email: bollig@gmail.com}\todo{check affiliation fsu's are strange.}}
 \maketitle
 
 
@@ -81,14 +81,15 @@ format. We increase the number of operations relative to memory
 bandwidth by calculating four derivatives of four different functions,
 or 16 different derivatives. We demonstrate a novel implementation on
 the MIC architecture, taking into account its advanced swizzling and
-channel interchange features. We present benchmarks that show an
-almost order of magnitude increase in speed compared to efficient
-implementations of a single derivative. We explain the results through
+channel interchange features. We present benchmarks on a real data
+set that show an almost eightfold increase in speed compared to
+efficient implementations of a single derivative, reaching a
+performance of almost 140~Gflop/s. We explain the results through
 consideration of operation count versus memory bandwidth.
 \end{abstract}
 
 \begin{IEEEkeywords}
-OpenMP; MIC; spmv; sparse matrix; Radial Basis Function;
+MIC; SIMD; SpMV; SpMM; Sparse Matrix; Radial Basis Function;
 \end{IEEEkeywords}
 
 \IEEEpeerreviewmaketitle
@@ -96,17 +97,15 @@ OpenMP; MIC; spmv; sparse matrix; Radial Basis Function;
 \section{Introduction}
 The multiplication of sparse matrix by a dense vector (SpMV) is an
 important kernel in many applied fields such as fluid dynamics 
-\cite{journals/tog/BolzFGS03} 
-to graph analysis (recommender systems~\cite{Brin98}, graph
-drawing~\cite{Koren05}). So improving the performance of SpMV has
-captured the interest of many researcher; including the development of
-various implementations for multi-core
+\cite{journals/tog/BolzFGS03}, recommendation systems~\cite{Brin98} and graph
+drawing~\cite{Koren05}). Naturally, improving the performance of SpMV has
+captured the interest of many researchers; including the development of
+various implementations for 
 CPUs~\cite{Buluc2009SPAA,Williams07} and GPUs~\cite{Bell08,
   conf/ipps/KreutzerHWFBB12,
   journals/concurrency/VazquezFG11,kumar2012accelerating}. The main
-challenge that is faced to obtain good performance for SpMV is that
-the operation are conducted using memory location that are irregular
-and often unpredictible. That makes the kernels mostly memory
+challenge  to obtain good performance for SpMV is that
+the operations are conducted using memory location that are irregular. This makes the kernels mostly memory
 bound and there is a significant instruction overhead per flop.
 
 Common improvement techniques such as register blocking, bandwidth
@@ -118,7 +117,7 @@ improvement. (The state-of-the-art techniques in OSKI~\cite{Vuduc05}
 provide some useful yet limited improvements). Register blocking~\cite{conf/ppsc/Toledo97} does
 not apply well to most the matrix at hand (despite it can be applied
 with virtually no overhead in all cases thanks to compressed
-representation~\cite{Buluc11}). There is about 8 bytes of the matrix to move
+representation~\cite{Buluc11}). Indeed, there is about 8 bytes of the matrix to move
 in per nonzero (assuming single precision); each nonzero requires two
 floating point operations leading to a flop-to-byte ratio of at most
 $\frac{1}{4}$. This limits the obtained performance to at most a
@@ -134,11 +133,11 @@ the applications that use SpMV do not typically have an instruction
 intensive kernel to run simultaneously.
 
 An other solution, and the one we pursue in this paper, is to compute
-multiple SpMV at once on matrices that have the same sparsity
+multiple SpMVs at once on matrices that have the same sparsity
 patterns. Obviously not all the applications have such a property. But
 important classes of applications such as graph
 recommendation~\cite{Kucuktunc13-SNAM}, eigensolving~\cite{LOBPCG} and the computation of
-derivatives of Radial Basis Functions(RBF)~\cite{FLBWSC12} can use multiple
+derivatives of Radial Basis Functions (RBF)~\cite{FLBWSC12} can use multiple
 SpMVs simultaneously. In this paper in particular, we investigate the
 case of the derivative of RBFs where four derivatives of four
 different functions is expressed as the multiplication of four vectors
@@ -157,23 +156,23 @@ for sparse linear algebra compared to more classical CPU or GPU
 architecture~\cite{Saule13-ARXIV, Liu:2013:ESM:2464996.2465013, cramer2012openmp}.
 
 In Section~\ref{sec:rbf} we present the computation of RBFs and how it
-can be expressed 16 multiplication of 4 vectors by 4 sparse matrices
-with a common sparsity pattern. Section~\ref{sec:model} presents an
-estimation of the instruction intensity of various form of the
-computations and we show that a 6- fold improvement can be
-expected when computing the 16 multiplications simultaneously and
+can be expressed as sixteen multiplications of four vectors by four sparse matrices
+with identical sparsity patterns. Section~\ref{sec:model} presents an
+estimation of the instruction intensity of various forms of the
+computations and we show that a sixfold improvement can be
+expected when computing the sixteen multiplications simultaneously and
 reach a total of about 210~Gflop/s. This performance represents
 approximatively 10\% of the available flop/s of a Knight Corner
-coprocessor. Therefore, it is necessary to have implementations that
-perform the computation in as little amount of instructions as
+coprocessor. Therefore, it is necessary to have an implementation that
+performs the computation in as few instructions as
 possible. We describe in Section~\ref{sec:impl} the details of the MIC
 architecture and how to use specialized load, store, swizzle and
-permutation instruction to efficiently bring the data in the vector
+permutation instructions to efficiently bring the data in the vector
 registers to be processed. Section~\ref{sec:expe} gives some
-experimental result about the amount of bandwidth that can be achieved
-depending on how the SpMV kernel is written and the actual performance
-of the various kernel on multiple classes of matrices some generated
-for analysis purpose and some extracted from and RBF application. A
+experimental results about the amount of bandwidth that can be achieved
+depending on how the SpMV kernel is written. It also provides the actual performance
+of the various kernel on multiple classes of matrices, some generated
+for analysis purpose, and some extracted from an RBF application. A
 performance of 135~Gflop/s is achieved on real scenario. Concluding
 remarks and perspectives are provided in Section~\ref{sec:ccl}.
 
