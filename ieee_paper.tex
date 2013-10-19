@@ -71,9 +71,9 @@ combination of radial basis functions on an arbitrary set of
 nodes. The Finite-Difference component expresses this combination over
 a local set of nodes neighboring the point where the derivative is
 sought.  The derivative at all points takes the form of a sparse
-matrix/vector multiplication (spmv).
+matrix/vector multiplication (SpMV).
 
-In this paper, we consider the case of local stencils with the number
+In this paper, we consider the case of local stencils with a fixed number
 of nodes at each point and encode the sparse matrix in ELLPACK
 format. We increase the number of operations relative to memory
 bandwidth by calculating four derivatives of four different functions,
@@ -113,22 +113,23 @@ unrolling~\cite{Mellor-Crummey04} have impacts which are very
 dependent on the matrix and overall do not lead to dramatic
 improvement. (The state-of-the-art techniques in OSKI~\cite{Vuduc05}
 provide some useful yet limited improvements). Register blocking~\cite{conf/ppsc/Toledo97} does
-not apply well to most the matrix at hand (despite it can be applied
-with virtually no overhead in all cases thanks to compressed
-representation~\cite{Buluc11}). Indeed, there is about 8 bytes of the matrix to move
-in per nonzero (assuming single precision); each nonzero requires two
+not work well to many of the matrices in general use (although it can be applied
+with virtually no overhead thanks to compressed
+representations~\cite{Buluc11}.) Indeed, there are about 8 bytes of the matrix to transfer
+from memory 
+per nonzero in single precision; each nonzero requires two
 floating point operations leading to a flop-to-byte ratio of at most
 $\frac{1}{4}$. This limits the obtained performance to at most a
-quarter of the bandwidth of the architecture wasting a lot of
+quarter of the bandwidth of the architecture, wasting a lot of
 potentially useful cycles. The commonly used techniques are mostly
 designed to reach that bound rather than overcome it.
 
 Fortunately that fate is not inevitable. One solution would be to
-schedule a more instruction intensive kernel simultaneously with the
+schedule a more instruction-intensive kernel simultaneously with the
 execution of SpMV, relying on some hardware threading capabilities,
-such as HyperThreading, to reduce the cycle wastage. However, most ot
-the applications that use SpMV do not typically have an instruction
-intensive kernel to run simultaneously.
+such as HyperThreading, to reduce the cycle wastage. However, most of 
+the applications that use SpMV do not typically have an 
+instruction-intensive kernel to run simultaneously.
 
 An other solution, and the one we pursue in this paper, is to compute
 multiple SpMVs at once on matrices that have the same sparsity
@@ -211,8 +212,8 @@ large problems, this is a computationally expensive since the matrix
 in (\ref{eq:rbf}) is full and inversion requires O$(N^3)$
 operations. To alleviate the cost of this global approach (i.e. using
 every node in the domain to calculate the derivative at a given node
-$\rvec_i$), RBF-generated finite differences (RBF-FD) have been
-derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBF-FD uses only
+$\rvec_i$), RBF-generated finite differences (RBFFD) have been
+derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBFFD uses only
 a local set of the $n_z-1$  (often nearest) points in a neighborhood of 
 the point $\rvec_i$ to
 approximate the derivative. In other words,
@@ -227,7 +228,7 @@ method.
 
 For a total of $N$ points, there will be $N$ linear systems to solve,
 each of size $n_z \times n_z$. Each linear solve produces a row of the
-RBF-FD differentiation matrix $A_{n_z}$, resulting in a $N \times N$
+RBFFD differentiation matrix $A_{n_z}$, resulting in a $N \times N$
 matrix with $n_zN$ nonzero entries. To evaluate the derivative at all
 points in the domain, one multiplies the source vector $x$ by the 
 derivative matrix $A$ to obtain the vector $y$ of derivative values, 
@@ -747,7 +748,7 @@ surpasses 100~GB/s and is close to 50~GB/s most of the time.)
   
   \caption{Different sparsity distributions. In all cases, there are
     512 rows and 32 nonzeros per row. The last two matrices
-    corresponds to a derivative stencil in 3D RBF-FD
+    corresponds to a derivative stencil in 3D RBFFD
     calculations (with and without RCM ordering).}
   \label{fig:spy_plots}
 \end{figure*}
@@ -778,7 +779,7 @@ randomly (uniformly) distributed in the matrix; they represent the
 worst case scenario for a cache based architecture where the cache
 reutilisation is the lowest from one row to the next.
 The other type of matrix is used in derivative stencils in 3D
-RBF-FD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-points
+RBFFD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-points
 stencil of a 3D $8^3$ grid).
 
 We also apply a Reverse Cuthill-Mckee reordering to
@@ -793,7 +794,7 @@ seen in Figure~\ref{fig:rbf3drcm}.
 \begin{figure*}[t]
   \centering
   \subfigure[Supercompact and Random.]{\includegraphics[width=.48\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
-  \subfigure[Compact and RBF-FD.]{\includegraphics[width=.48\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
+  \subfigure[Compact and RBFFD.]{\includegraphics[width=.48\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
     horizontal lines depict the worst and the best predicted performances.}
@@ -898,7 +899,7 @@ double precision. The presented performance do not reach the predicted
 peak and we believe that common techniques from SpMV such as cache
 partitioning can be successfully applied. We will also integrate the
 techniques presented in this paper within a fluid simulation using
-RBF-FD.
+RBFFD.
 
 \section*{Acknowledgment}
 The first and last authors acknowledge NSF funding under NSF grant
