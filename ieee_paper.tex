@@ -334,7 +334,7 @@ estimation of the variation on the flop intensity of the computation
 and its impact on the expected performance of the
 application. Relevant notations are given in Figure~\ref{tab:not}.
 
-\begin{figure}[bth]
+\begin{figure}[tbh]
   \begin{center}
     \scalebox{.8}{
       \begin{tabular}{|c|l|}
@@ -380,6 +380,20 @@ the matrix. Each of these nonzero entries has one index of size $b_i$
 and $n_m$ values of size $b_x$. The matrices have a total size
 of $$s_M = n_c (b_i + b_x n_m) = n_r n_z (b_i + b_x n_m)$$
 
+\begin{figure*}[tbh]
+  \centering
+  \subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}\label{fig:ratio_best}}%
+  \subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
+  \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
+  
+  \caption{Ratio of flops to bytes in single precision:  
+    \ref{fig:ratio_best} best case; \ref{fig:ratio_worst} worst case when $cl=64$ 
+    ; and \ref{fig:ratio_worst_nocache} worst case neglecting that the
+    memory transfers are with a granularity of one cache line (equivalent to $cl = 1$)}
+  \label{fig:ratio_bytes_flops}
+\end{figure*}
+
+
 If we assume an algorithm where the rows are processed one after
 the other, the amount of memory written is precisely the
 size of the {\tt y} vector. (This assumption removes the possibility of
@@ -422,7 +436,7 @@ accumulating the result row-wise. Here we are dealing with $n_v n_m$
 simultaneous SpMVs and the number of floating point operations is
 $$O = 2 n_v n_m n_c = 2 n_v n_m n_z n_r$$
 
-The computation intensity is the amount of computations performed per
+The computation intensity is the amount of floating point operations performed per
 byte transfered. In the worst case and in the best case, we have
 $$I_b = \frac{O}{b_T} = \frac{2 n_v n_m}{ (b_i + b_x n_m) + n_v n_m b_x n_z^{-1} + n_v b_x n_z^{-1} }$$
 %$$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{n_v n_m b_x n_z^{-1} + \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)}$$
@@ -433,12 +447,12 @@ Figure~\ref{fig:ratio_bytes_flops} presents the flop to byte ratios
 for single precision computation in the best and the worst case on a
 classical cache based architecture ($cl = 64$) and assuming $cl=1$. We
 can easily see the potential improvement in the computational
-intensity when the number of matrices of vectors increase. There is a
+intensity when the number of matrices or vectors increases. There is a
 significant difference between the best and the worst case: there is a
-eightfold difference in the one matrix -- one vector (1/1) case but that gap closes
+eightfold difference in the one matrix -- one vector ($n_m=n_v=1$) case but that gap closes
 with the increase in the number of vectors and matrices to a fourfold
-difference in the four4matrices and four vectors (4/4) case and 1.6 fold in the 
-16/16 case. 
+difference in the four matrices and four vectors ($n_m=n_v=4$) case and 1.6 fold in the 
+$n_m=n_v=16$ case. 
 The ratios computed with $cl = 1$ are mostly
 similar to the one with $cl=64$ when the number of vectors is
 large. But the differences are important when the number of vectors is
@@ -446,27 +460,14 @@ low: this highlights that accessing the memory with a granularity of one cache
 line
 is the main problem faced when performing a standard SpMV computation.
 
-\begin{figure*}
-  \centering
-  \subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}\label{fig:ratio_best}}%
-  \subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
-  \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
-  
-  \caption{Ratio of flops to bytes in single precision:  
-    \ref{fig:ratio_best} best case; \ref{fig:ratio_worst} worst case when $cl=64$ 
-    ; and \ref{fig:ratio_worst_nocache} worst case neglecting that the
-    memory transfers are with a granularity of one cache line (equivalent to $cl = 1$)}
-  \label{fig:ratio_bytes_flops}
-\end{figure*}
-
 Figure~\ref{fig:perf_predict} shows how these ratios translate
 into actual performance. This figure provides projected best and worst
 Gflop/s achievable assuming the computation is memory-bound and the
-architecture reaches 150~Gflop/s. Notice that \cite{Saule13-ARXIV}
+architecture reaches 150~GB/s. Notice that \cite{Saule13-ARXIV}
 showed a higher peak bandwidth, but we will show in
-Section~\ref{sec:expe} why 150~Gflop/s is a better estimate of what one
+Section~\ref{sec:expe} why 150~GB/s is a better estimate of what one
 might achieve in these kernels. In single precision, the worse that
-one could achieve by using 4 vectors and 4 matrices is much higher
+one could achieve by using four vectors and four matrices is much higher
 than the best achievable using a classical SpMV computation. The best
 performance reachable is 210~Gflop/s: almost six times higher than the
 peak of the classical SpMV case. 
