@@ -31,7 +31,7 @@ for (int r=0; r < nb_rows; r++) {
  __m512 accu = _mm512_setzero_ps();
 
  for (int n=0; n < nz; n+=4) {
-   float* a = &dom.col_id_t[0]+n+nz*r;
+   float* a = &dom.col_id[0]+n+nz*r;
    __m512i vect_i = _mm512_setzero_ps();
    vect_i = _mm512_mask_loadunpacklo_ps(vect_i, mask, a);
    vect_i = _mm512_mask_loadunpackhi_ps(vect_i, mask, a);
@@ -40,7 +40,7 @@ for (int r=0; r < nb_rows; r++) {
 
    all_vect = _mm512_i32gather_ps(vect_i, dom.vec_vt, scale);
 
-   mat_ent = _mm512_load_ps(dom.data_t + nb_mat*(n + r*nz));
+   mat_ent = _mm512_load_ps(dom.data + nb_mat*(n + r*nz));
 
    //perform first tensor multiplication with AAAA pattern
    vect = permute(all_vect, _MM_PERM_AAAA);
