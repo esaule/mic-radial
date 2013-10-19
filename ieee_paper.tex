@@ -813,12 +813,12 @@ seen in Figure~\ref{fig:rbf3drcm}.
 \end{figure*}
 
 We now investigate the actual performance that we can obtain when
-multiplying 4 vectors by 4 matrices in single
-precision. Figure~\ref{fig:expe_types} present results for different
+multiplying four vectors by four matrices in single
+precision. Figure~\ref{fig:expe_types} presents results for different
 types of matrices and also shows the minimum and maximum performance
 predicted in Section~\ref{sec:model}. Figure~\ref{fig:perf_ideal}
 gives the results for the {\tt supercompact} and {\tt random} matrices
-which represent both the best and the worst case for such a
+that represent both the best and the worst case for such a practical 
 computation. The {\tt supercompact} case peaks at
 208~Gflop/s\todo{check that. changed to 208} being very close to the predicted peak
 performance of 213~Gflop/s. Conversely the performance of the {\tt
@@ -833,7 +833,7 @@ structured grids and a
 {\tt RBF} matrix extracted from a real application. In the {\tt
   compact} case, the performance can be as high as 195~Gflop/s being
 within 15\% of the peak predicted performance. The performance of the
-{\tt rbf} case varies between 100~Gflop/s and 140~Gflop/s. Most of the
+{\tt RBF} case varies between 100~Gflop/s and 140~Gflop/s. Most of the
 time, the RCM ordering provides an improvement which can be as high as
 30~Gflop/s.
 
@@ -860,26 +860,30 @@ application performance? Figure~\ref{fig:comparison_spmv} compares the
 performance achieved by a classical SpMV and by the multiplication of
 4 vectors by 4 matrices using either standard C++ code and our
 optimized implementation. The
-classical SpMV computation reaches 15~Gflop/s\todo{check}. The standard
-C++ implementation reaches a performance of 40~Gflop/s while our
-optimized implementation reaches 137~Gflop/s\todo{check}. Notice that
+classical SpMV computation reaches 14~Gflop/s\todo{check? 14 on 244 nodes}. 
+The standard C++ implementation reaches a performance of 38~Gflop/s while our
+optimized implementation reaches 140~Gflop/s\todo{check 140 for $64^3$, 135 for $96^3$ on 61 nodes}. 
+Notice that \todo{I do not know that I ran host and mic on the same grid, but your 
+numbers are approximately correct. The numbers are a function of resolution} 
 RCM ordering has no impact in the standard C++ implementation while it
-provides an significant improvement in our manually vectorized
-version. This highlights the C++ implementation is instruction bound
-while our manually vectorized implementation is most likely memory
-bound. 
+provides a significant improvement in our manually vectorized
+version. This highlights that the C++ implementation is instruction-bound
+while our manually vectorized implementation is most likely 
+memory-bound. 
 
 To put things in perspective, we conducted some experiments on a
 classical CPU architecture with 2 Intel Core i7 processor, each has 8
-cores which support AVX instructions. Both the compiler generated and
-the manually written vectorization using AVX instruction reach a
+cores that support AVX instructions. Both the compiler-generated and
+the manually-written vectorization using AVX instruction reach a
 (read) bandwidth of 70~GB/s. This indicates that the performance of
-the classical SpMV can not overcome 16.8~Gflop/s. A generic
-implementation of the multiplication of 4 vectors with 4 matrices on
+the classical SpMV can not overcome 17~Gflop/s. A generic
+implementation of the multiplication of four vectors with four matrices on
 the {\tt RBF} matrix reaches a performance of 27~Gflop/s; while a
 manual implementation using AVX instruction reaches a performance of
 42~Gflop/s. This confirms that our method is sound and generalizes to
-other architecture than the Intel MIC architecture.
+architectures than the Intel MIC architecture. \todo{albeit with less 
+impressive results given that swizzling is often not available. Swizzling
+will become available in a new version of the host: enhanced AVX.}
 
 %% Scaling results as a function of the number of processors, on the MIC
 %% and on the host. The host calculations are performed for reference
@@ -916,15 +920,15 @@ other architecture than the Intel MIC architecture.
 \section{Conclusion}
 \label{sec:ccl}
 
-In the previous sections, we have explored in the practical
+In the previous sections, we have explored the practical
 implementation on a Intel Xeon Phi card of multiple derivative
 operators acting on multiple vectors within the context of
 RBF-RD. Each derivative has an associated sparse matrix with a fixed
 number of nonzeros on each row. While computing a single derivative of
 multiple functions is rather common (vectorization occurs over the
 vectors), we accelerate the algorithm further by considering multiple
-derivatives with corresponding matrices with identical adjacency
-graphs. We specialize our study to four matrices and four derivatives,
+matrices (identical sparsity patterns) acting on multiple vectors. 
+We specialize our study to four matrices and four derivatives,
 with 16 outputs, computed as a sum of outer products.
 
 Our implementation makes use of the IMCI MIC instruction set and
@@ -936,7 +940,7 @@ vector and a single derivative and more than 7 times faster than a
 practical implementation.
 
 In a future work, we will examine the effect of larger stencil sizes
-and of using double precision. We will also integrate the techniques
+and double precision. We will also integrate the techniques
 presented in this paper within a fluid simulation using RBF-FD.
 
 \section*{Acknowledgment}
