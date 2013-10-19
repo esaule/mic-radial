@@ -491,8 +491,8 @@ controllers is limited by the ring network that connects the cores and
 the memory controller. Its precise bandwidth is
 believed to be between 200~GB/s and 250~GB/s.
 
-Each core in the architecture has a 32kB L1 data cache, a 32kB L1
-instruction cache, and a 512kB L2 cache. The architecture of a core is
+Each core in the architecture has a 32~kB L1 data cache, a 32~kB L1
+instruction cache, and a 512~kB L2 cache. The architecture of a core is
 based on the traditional Pentium architecture, which has been extended to
 64-bit. A core can hold four hardware contexts at any given time (240 threads in total). At each
 clock cycle, instructions from a single thread are executed. Due to
@@ -501,20 +501,20 @@ the peak instruction throughput in that architecture. Similar to the
 Pentium architecture, a core has two different concurrent instruction
 pipelines that allow the execution of two instructions per
 cycle. However, only one vector or floating point instruction can be
-executed at each cycle.
+executed per cycle.
 
 Most of the performance of the architecture comes from the vector
 processing unit. Each core has 32 512-bit SIMD registers that can be
-used for double or single precision, that is, either as a vector of 8
+used for double or single precision, that is, either as a vector of eight
 64-bit values or as a vector of 16 32-bit values, respectively. The
 vector processing unit can perform basic instructions, such as
-addition or division, and mathematical operations, such as {\tt sin} and
+addition or division, and mathematical operations, such as {\tt sin} or
 {\tt sqrt}, making it possible to reach 16 single precision (or 8 double precision)
 operations per cycle.  
 The unit also supports Fused Multiply-Add (FMA)
-operations, which are typically counted as two operations for
+operations, which are typically counted as two operations 
 when benchmarking. Therefore, the peak performance of the 5110P
-card is 1 Tflop/s in double precision and 2 Tflop/s in single
+card is one Tflop/s in double precision and two Tflop/s in single
 precision. If FMA cannot be used, only half of these rates can be
 achieved.
 
@@ -540,21 +540,23 @@ about 210~Gflop/s in single precision in the best case. We will focus
 on the single precision case with four vectors and four matrices. 
 Similar techniques apply for other combinations. This target
 performance represents 10\% of the peak performance of the
-architecture which cannot be reached without an efficient vectorization. Indeed, to reach such a performance, a Fused Multiply-Add
+architecture, which cannot be reached without an efficient vectorization. 
+Indeed, to reach such a performance, a Fused Multiply-Add
 instruction on fully loaded registers must be executed at most every
 10 cycles.
 
 In term of memory layout, we adopt a format similar to the ELLPACK
 format to store the matrix since the number of nonzeros per row is
 constant throughout the matrix. The matrix is given in two arrays. The
-first one is {\tt col\_id} that describes the
+first array is {\tt col\_id} that describes the
 sparsity structure of the matrix. Each row of {\tt col\_id} consists
 of $n_z$ entries that label the column index of each nonzero in
 $A$. The other array is  {\tt data} that gives the values of
 the nonzeros in the four matrices. The values of the matrices are
 interleaved by groups of four so that the value $A^l_{col\_id[k]}$ of
 the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.
-(In other words, the first 4 entries are from $A^{1}$ and the next 4 are from $A^2$.) The vectors {\tt x} are
+(In other words, the first four entries are from $A^{1}$ and the 
+next four are from $A^2$.) The vectors {\tt x} are
 interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
 consecutive in memory. The vector {\tt y} is similarly 
 grouped in sets of 16, which correspond to four derivatives applied to
@@ -570,10 +572,10 @@ of~\cite{Saule13-ARXIV}.) The registers in the MIC architecture are
 512 bits wide and can store 16 floats or integers. (In comparison to
 OpenCL or CUDA, one can think of these registers as a warp.) The end
 goal is to load and format the nonzero values $A_h^1,A_h^2,A_h^3,A_h^4$
-and the vector entries $x_m^1,x_m^2,x_m^3,x_m^4$ in two vector registers and 
+and the vector entries $x_m^1,x_m^2,x_m^3,x_m^4$ into two vector registers and 
 apply Fused Multiply-Add on them, which is depicted in the {\tt accu} line of 
 Figure~\ref{code:mat_mul}. Bringing the data into the vector
-register as depicted in the figure is the difficult component of our 
+register as shown in the figure is the difficult component of our 
 proposed algorithm, which we proceed to explain further. 
 A thread will perform the multiplications one row at a time,
 and parallelism is achieved by giving blocks of rows to each thread
@@ -586,51 +588,51 @@ bits is composed of four lanes (sometimes called channels) of 128
 bits, which are made of four segments of 32 bits. A swizzling
 operation allows the reorder of the elements within each lane (see how
 {\tt mat} is extracted from {\tt mat\_ent} in
-Figure~\ref{code:mat_mul}). While a permutation reorders entire lanes,
+Figure~\ref{code:mat_mul}). On the other hand, a permutation reorders entire lanes,
 without changing their contents (see for instance how {\tt vect} is
 generated from {\tt all\_vect} in Figure~\ref{code:mat_mul}).  Both
 permutation and swizzling support common reordering and broadcast. In
 the code, the ``permute'' function needs to use the {\tt
   \_mm512\_permute4f128\_epi32} instruction which is only defined on
-integers and therefore in place typecasts are necessary to convert to
-a vector to/from the integer type.  (Note that we prefer swizzling to
+integers and therefore in place typecasts are necessary to convert
+a vector to and from integer type.  (Note that we prefer swizzling to
 permutation if possible because we believe it is cheaper. Many
 instructions have swizzling capability, while permutation is its own
-instruction. 
+instruction.)
 
 Every operation that loads data from memory into a register
 transfers 512 bits, or 16 floats at a time. A single nonzero
 in the matrix will cause 16 operations to be performed, but it only
-uses 4 floats from the matrix and 4 floats from the {\tt x} vector. So
+uses four floats from the matrix and four floats from the {\tt x} vector. So
 we would like to execute a single instruction to load the data for four 
 nonzeros in the matrix, and another instruction to load the data for
 four nonzeros from the vectors.  
 (The number of nonzeros on a row in our application is
-always a multiple of 4; if it weren't, we would add some explicit
-zeroes in the data structure for padding.)
+always a multiple of four; if it weren't, we would add some explicit
+zeros in the data structure for padding.)
 
 The values from the nonzero elements in the matrix are the simplest to
 load. One can load the 16 floating point values for four nonzeros of
 the matrix at once. The four floats coming from each matrix are
-naturally grouped within each lane of the SIMD vector. One can use a
-swizzle operation to broadcast the 4 elements of a single matrix to
-take the whole vector. (The broadcast of $A_h^1,A_h^2,A_h^3,A_h^4$ is
+naturally grouped within each lane of the SIMD register. One can use a
+swizzle operation to broadcast the four elements of a single matrix to
+fill the whole register. (The broadcast of $A_h^1,A_h^2,A_h^3,A_h^4$ is
 shown in Figure~\ref{code:mat_mul}.)
 
 Loading the entries from the {\tt x} vector is a little bit more
-involved. First, the columns pointers of four different nonzeros are
+involved. First, the column pointers of four different nonzeros are
 loaded into a vector register and the values are distributed one per
 lane of the vector register using an {\tt unpack}
 operation\footnote{Notice that there are two calls to {\tt unpack} for the
-  LSB and MSB. Both are mandatory even if one is known to be
-  nilpotent according the documentation of the hardware}. (The column
+LSB and MSB. Both are mandatory even if one is known to be
+nilpotent according the documentation of the hardware.} (The column
 pointers are named $j,k,l,m$ in Figure~\ref{code:mat_mul}.) They
-are replicated so that each value fills an single vector lane 
-using a swizzle operation. Then each value is multiplied by 4 
+are replicated so that each value fills a single vector lane 
+using a swizzle operation. Then each value is multiplied by four
 (because $n_v=4$) 
 and the offset vector $(3,2,1,0)$ is added to each lane to obtain the
 correct index of the elements of the {\tt x} vector within each lane
-using a Fused Multiply-Add operation. Then a {\tt gather} operation is
+using a Fused Multiply-Add operation. A {\tt gather} operation is then
 performed to bring the 16 entries of the {\tt x} vector into the SIMD
 register. At this point we have a register where each lane is the
 four vector entries for a nonzero element. Using a broadcast
@@ -657,7 +659,6 @@ Order hint to optimize write traffic on the memory bus.
   \label{fig:bandwidth}
   \label{fig:band_rw_MIC}
 \end{figure}
-
 
 In this section, we describe a series of numerical experiments to
 confirm the performance predictions of Section~\ref{sec:model}. To
