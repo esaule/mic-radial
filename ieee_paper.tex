@@ -684,25 +684,25 @@ implementation (compiled with -O3 with proper tagging to inform the
 compiler of memory alignments) and a simple implementation using
 vector register explicitly.
 
-When using the MIC card (Figure~\ref{fig:band_rw_MIC}), the {\tt
-  read\_cpp} implementation reaches a performance of 168~GB/s
+The {\tt
+  read, cpp} implementation reaches a performance of 168~GB/s
  which is better than the {\tt read}
 implementation which only achieves 145~GB/s. This
 is explained by the compiler adding loop unrolling and software
-prefetching in the assembly code in the {\tt read\_cpp} case, which is
+prefetching in the assembly code in the {\tt read, cpp} case, which is
 not added in the {\tt read} case. On the other hand, the {\tt write}
 case reaches a performance of 158~GB/s while the
-{\tt write\_cpp} implementation never passes 58~GB/s. 
+{\tt write, cpp} implementation never passes 58~GB/s. 
 This difference is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction, 
 which bypasses the Read For Ownership protocol and allows the writes
 to be performed in any order. The compiler can not use this
 instruction on its own because this would break the memory convention
 useful for some parallel algorithms. The {\tt read/write} benchmark
-performs at 140~GB/s while the {\tt read/write cpp} benchmark performs
+performs at 140~GB/s while the {\tt read/write, cpp} benchmark performs
 at about 90~GB/s.
 
-Note that SpMV kernels will likely use only simple read and simple
-writes on the MIC architecture. We also benchmark the performance we
+Note that SpMV kernels are not likely to use only simple read and simple
+writes. We also benchmark the performance we
 can achieve using {\tt gather} and {\tt unpack} operations and we
 present the results in Figure~\ref{fig:band_gather}. The {\tt unpack}
 instruction can reach a performance of 140~GB/s. (There is no easy way
@@ -729,7 +729,7 @@ highest bandwidth on the MIC architecture. For the instructions used
 in a typical SpMV computation, one can expect a bandwidth between
 140~GB/s to 160~GB/s. That is why we set in our estimation a best
 achievable bandwidth of 150~GB/s despite the fact that a 
-carefully crafted code to maximize bandwidth can reach higher
+ code carefully crafted to maximize bandwidth can reach higher
 values~\cite{Saule13-ARXIV}. 
 
 \subsection{Instances}
