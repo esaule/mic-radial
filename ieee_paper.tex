@@ -160,7 +160,7 @@ estimation of the instruction intensity of various forms of the
 computations and we show that a sixfold improvement can be
 expected when computing the sixteen multiplications simultaneously and
 reach a total of about 210~Gflop/s. This performance represents
-approximatively 10\% of the available flop/s of a Xeon Phi
+approximately 10\% of the available flop/s of a Xeon Phi
 coprocessor. Therefore, it is necessary to have an implementation that
 performs the computation in as few instructions as
 possible. We describe in Section~\ref{sec:impl} the details of the MIC
@@ -203,13 +203,6 @@ inverting the system
 \label{eq:rbf}
 \end{equation}
 where $\phi_{ij} = \phi(\|\rvec_i-\rvec_j\|)$. 
-%\end{equation}
-%\begin{equation}
-%\begin{bmatrix}
-%\phi(\|\xvec_{1}-\xvec_{1}\|) & \phi(\|\xvec_{1}-\xvec_{2}\|) & \cdots & \phi(\|\xvec_{1}-\xvec_{N}\|) \\
-%\vdots & \ddots & \vdots  \\
-%\phi (\|\xvec_{n}-\xvec_{1}\|) & \phi(\|\xvec_{n}-\xvec_{2}\|) & \cdots & \phi(\|\xvec_{N}-\xvec_{N}\|)
-%\end{bmatrix}
 
 The RBF differentiation matrix, $D_N$, is derived by applying the
 desired analytic derivative operator $L$ to the RBF interpolant
@@ -419,13 +412,13 @@ multiple cores can have a significant impact on the performance
 (growing with $n_v$).
 
 On the other hand, in the worst case, every time the {\tt x} vector is
-accessed, the value needs to be transfered from memory again. So in
+accessed, the value needs to be transferred from memory again. So in
 total, there are as many transfers as the number of nonzeros in the
 matrix. Note however that most architectures cannot read memory a
 single byte at a time. Instead, a minimum number of bytes, equal to
-the size of a cacheline $cl$, are transfered at once.  When there are
+the size of a cacheline $cl$, are transferred at once.  When there are
 multiple vectors, each nonzero element uses $n_v$ consecutive
-entries. In the worst case, the number of bytes read and transfered is
+entries. In the worst case, the number of bytes read and transferred is
 $$B_{rT} = s_M + n_c cl \ceil{\frac{n_vb_x}{cl}} $$ 
 $$B_T = n_v n_m b_x n_r + n_r n_z \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)$$
 
@@ -436,7 +429,7 @@ simultaneous SpMVs and the number of floating point operations is
 $$O = 2 n_v n_m n_c = 2 n_v n_m n_z n_r$$
 
 The computation intensity is the amount of floating point operations performed per
-byte transfered. In the worst case and in the best case, we have
+byte transferred. In the worst case and in the best case, we have
 $$I_b = \frac{O}{b_T} = \frac{2 n_v n_m}{ (b_i + b_x n_m) + n_v n_m b_x n_z^{-1} + n_v b_x n_z^{-1} }$$
 %$$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{n_v n_m b_x n_z^{-1} + \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)}$$
 $$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{(b_i+b_x n_m) + n_v n_m b_x n_z^{-1} + cl \ceil{\frac{n_vb_x}{cl}} }$$
@@ -569,7 +562,7 @@ four functions, at a single point.\looseness=-1
 
 
 We discuss how the implementation of the v4m4 kernel works using
-vectorial instructions. The code is given for reference in
+vector instructions. The code is given for reference in
 Figure~\ref{code:mat_mul}. (We will show in Section~\ref{sec:expe}
 that an implementation that relies on compiler vectorization does not lead
 to desirable performance, which confirms the results
@@ -602,7 +595,7 @@ the code, the ``permute'' function needs to use the {\tt
 integers and therefore in place typecasts are necessary to convert to
 a vector to/from the integer type.  (Note that we prefer swizzling to
 permutation if possible because we believe it is cheaper. Many
-instructions have swizzling capability, while permuation is its own
+instructions have swizzling capability, while permutation is its own
 instruction. 
 
 Every operation that loads data from memory into a register
@@ -617,7 +610,7 @@ always a multiple of 4; if it weren't, we would add some explicit
 zeroes in the data structure for padding.)
 
 The values from the nonzero elements in the matrix are the simplest to
-load. One can load the 16 floating point values for four nonzeroes of
+load. One can load the 16 floating point values for four nonzeros of
 the matrix at once. The four floats coming from each matrix are
 naturally grouped within each lane of the SIMD vector. One can use a
 swizzle operation to broadcast the 4 elements of a single matrix to
