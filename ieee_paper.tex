@@ -689,8 +689,7 @@ implementation (compiled with -O3 with proper tagging to inform the
 compiler of memory alignments) and a simple implementation with
 explicit use of the vector registers.
 
-The {\tt
-  read, cpp} implementation reaches a performance of 168~GB/s
+The {\tt read, cpp} implementation reaches a performance of 168~GB/s
  which is better than the {\tt read}
 implementation which only achieves 145~GB/s. This
 is explained by the compiler adding loop unrolling and software
@@ -776,7 +775,7 @@ applications that rely on sparse matrix vector multiplication. The nonzero
 elements of the Random
 matrices (Figure~\ref{fig:compact}) see their nonzero elements
 randomly (uniformly) distributed in the matrix; they represent the
-worst case scenario for a cache based architecture where the cache
+worst case scenario for a cache-based architecture where the cache
 reutilisation is the lowest from one row to the next.
 The other type of matrix is used in derivative stencils in 3D
 RBFFD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-points
@@ -784,8 +783,8 @@ stencil of a 3D $8^3$ grid).
 
 We also apply a Reverse Cuthill-Mckee reordering to
 all the matrices.  This ordering technique aims to reduce the
-distance between the nonzeros and the diagonal, hopefully allowing a
-better cache reutilisation. The reordered version of the matrix can be
+distance between the nonzeros and the diagonal, hopefully increasing 
+the cache hit ratio.  The reordered version of the matrix can be
 seen in Figure~\ref{fig:rbf3drcm}.
 
 \vspace{-0.3em}
