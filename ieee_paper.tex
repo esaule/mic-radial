@@ -554,10 +554,10 @@ instruction on fully loaded registers must be executed at most every
 In term of memory layout, we adopt a format similar to the ELLPACK
 format to store the matrix since the number of nonzeros per row is
 constant throughout the matrix. The matrix is given in two arrays. The
-first one is the classical {\tt col\_id} array that describes the
+first one is {\tt col\_id} that describes the
 sparsity structure of the matrix. Each row of {\tt col\_id} consists
 of $n_z$ entries that label the column index of each nonzero in
-$A$. The other array is the {\tt data} array that gives the values of
+$A$. The other array is  {\tt data} that gives the values of
 the nonzeros in the four matrices. The values of the matrices are
 interleaved by groups of four so that the value $A^l_{col\_id[k]}$ of
 the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.
