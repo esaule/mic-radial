@@ -563,9 +563,9 @@ interleaved by groups of four so that the value $A^l_{col\_id[k]}$ of
 the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.
 (In other words, the first 4 entries are from $A^{1}$ and the next 4 are from $A^2$.) The vectors {\tt x} are
 interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
-consecutive in memory. The vector {\tt y} is similarly interleaved,
+consecutive in memory. The vector {\tt y} is similarly 
 grouped in sets of 16, which correspond to four derivatives applied to
-four functions, at a single point.
+four functions, at a single point.\looseness=-1
 
 
 We discuss how the implementation of the v4m4 kernel works using
