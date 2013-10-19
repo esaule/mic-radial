@@ -546,7 +546,7 @@ sparsity structure of the matrix. Each row of {\tt col\_id} consists
 of $n_z$ entries that label the column index of each nonzero in
 $A$. The other array is the {\tt data} array that gives the values of
 the nonzeros in the four matrices. The values of the matrices are
-interleaved by group of four so that the value $A^l_{col\_id[k]}$ of
+interleaved by groups of four so that the value $A^l_{col\_id[k]}$ of
 the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.
 (In other words, the first 4 entries are from $A^{1}$ and the next 4 are from $A^2$.) The vectors {\tt x} are
 interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
@@ -665,7 +665,6 @@ the compiler through intrinsics.
 
 \subsection{Bandwidth}
 
-
 \begin{figure}[bth]
   \centering
   \includegraphics[width=.9\linewidth]{figures/bandwidth_read_write.pdf}
@@ -677,15 +676,15 @@ the compiler through intrinsics.
   \label{fig:band_rw_MIC}
 \end{figure}
 
-Figure~\ref{fig:bandwidth} gives some benchmark that compute the
+Figure~\ref{fig:bandwidth} gives some benchmark that computes the
 bandwidth achieved when reading and/or writing large arrays on both
 the MIC card and the CPU architecture. The read benchmark performs a
-simple sum of the array. The write benchmark sets whole the elemtns of
-the array to 0. While the read/write benchmarks copies the array into
+simple sum of the array. The write benchmark sets all the elemnts of
+the array to zero, while the read/write benchmarks copies the array into
 another one. We also investigate the difference between a straight C++
 implementation (compiled with -O3 with proper tagging to inform the
-compiler of memory alignments) and a simple implementation using
-vector register explicitly.
+compiler of memory alignments) and a simple implementation with
+explicit use of the vector registers.
 
 When using the MIC card (Figure~\ref{fig:band_rw_MIC}), the {\tt
   read\_cpp} implementation reaches a performance of 168~GB/s
@@ -695,7 +694,7 @@ is explained by the compiler adding loop unrolling and software
 prefetching in the assembly code in the {\tt read\_cpp} case, which is
 not added in the {\tt read} case. On the other hand, the {\tt write}
 case reaches a performance of 158~GB/s while the
-{\tt write\_cpp} implementation never passes 58~GB/s. 
+{\tt write\_cpp} implementation never exceeds 58~GB/s. 
 This difference is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction, 
 which bypasses the Read For Ownership protocol and allows the writes
 to be performed in any order. The compiler can not use this
@@ -715,9 +714,9 @@ operations depends in which order the array is read. If the indices
 are ordered ({\tt compact}) then a performance of 140~GB/s is
 reached. If the indices are completely randomized, the performance
 drops below 5~GB/s. We can see that implementing the
-indirection mechanism without vector instructions makes the
-performance drop significantly. (In the {\tt compact} case, it never
-passes 100~GB/s and is close to 50~GB/s most of the time.)
+indirection mechanism without vector instructions lowers the
+performance significantly. (In the {\tt compact} case, it never
+surpasses 100~GB/s and is close to 50~GB/s most of the time.)
 
 \begin{figure}
   \centering
@@ -727,10 +726,10 @@ passes 100~GB/s and is close to 50~GB/s most of the time.)
 \end{figure}
 %
 
-To summarize, using vector instruction seems mandatory to reach the
-highest bandwidth on the MIC architecture. For the instructions used
+To summarize, using vector instructions appears necessary in order
+toreach the highest bandwidth on the MIC architecture. For the instructions used
 in a typical SpMV computation, one can expect a bandwidth between
-140~GB/s to 160~GB/s. That is why we set in our estimation a best
+140~GB/s to 160~GB/s. That is why we use in our estimations a best
 achievable bandwidth of 150~GB/s despite the fact that a 
 carefully crafted code to maximize bandwidth can reach higher
 values~\cite{Saule13-ARXIV}. 
@@ -827,8 +826,8 @@ size of the matrix increases.
 Figure~\ref{fig:perf_realistic} gives the results on the {\tt compact}
 case, which represents the best realistic matrix one could find with very
 structured grids and a
-{\tt RBF} matrix extracted from a real application. In the {\tt
-  compact} case, the performance can be as high as 195~Gflop/s being
+{\tt RBF} derivative matrix extracted from a real 3D application. In the {\tt
+  compact} case, the performance can be as high as 195~Gflop/s, which is
 within 15\% of the peak predicted performance. The performance of the
 {\tt RBF} case varies between 100~Gflop/s and 140~Gflop/s. Most of the
 time, the RCM ordering provides an improvement which can be as high as
@@ -851,11 +850,11 @@ time, the RCM ordering provides an improvement which can be as high as
 
 We finally investigate the central questions of this paper. Do we gain
 actual performance by transforming classical SpMV computation into the
-multiplication of 4 vectors by 4 matrices for the computation of the
+multiplication of four vectors by four matrices for the computation of the
 derivative of RBFs? Does using manual vectorization improve actual
 application performance? Figure~\ref{fig:comparison_spmv} compares the
 performance achieved by a classical SpMV and by the multiplication of
-4 vectors by 4 matrices using either standard C++ code and our
+four vectors by four matrices using either standard C++ code and our
 optimized implementation. The
 classical SpMV computation reaches 14~Gflop/s. 
 The standard C++ implementation reaches a performance of 38~Gflop/s while our
