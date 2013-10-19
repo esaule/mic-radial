@@ -117,7 +117,7 @@ improvement. (The state-of-the-art techniques in OSKI~\cite{Vuduc05}
 provide some useful yet limited improvements). Register blocking~\cite{conf/ppsc/Toledo97} does
 not apply well to most the matrix at hand (despite it can be applied
 with virtually no overhead in all cases thanks to compressed
-representation~\cite{Buluc11}). There is about 8 bytes of the matrix to move
+representation~\cite{Buluc11}). Indeed, there is about 8 bytes of the matrix to move
 in per nonzero (assuming single precision); each nonzero requires two
 floating point operations leading to a flop-to-byte ratio of at most
 $\frac{1}{4}$. This limits the obtained performance to at most a
