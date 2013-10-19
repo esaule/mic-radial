@@ -491,7 +491,7 @@ In this work, we use an Intel Xeon Phi 5110P coprocessor. This card
 has 8 memory controllers that can each execute 5 billion
 transactions per second. Each has two 32-bit channels, achieving a total
 bandwidth of 320~GB/s aggregated across all the memory
-controllers. There are 60 cores clocked at 1.05GHz. Their memory
+controllers. There are 60 cores clocked at 1.05~GHz. Their memory
 interfaces are 32-bit wide with two channels and the total bandwidth
 is 8.4~GB/s per core. Thus, the cores should be able to consume 504~GB/s
 at most. However, the bandwidth between the cores and the memory
@@ -860,7 +860,7 @@ performance achieved by a classical SpMV and by the multiplication of
 optimized implementation. The
 classical SpMV computation reaches 14~Gflop/s\todo{check? 14 on 244 nodes}. 
 The standard C++ implementation reaches a performance of 38~Gflop/s while our
-optimized implementation reaches 140~Gflop/s\todo{check 140 for $64^3$, 135 for $96^3$ on 61 nodes}. 
+optimized implementation reaches 140~Gflop/s\todo{check 140 for $64^3$, 135 for $96^3$ on 61 cores}. 
 Notice that \todo{I do not know that I ran host and mic on the same grid, but your 
 numbers are approximately correct. The numbers are a function of resolution} 
 RCM ordering has no impact in the standard C++ implementation while it
@@ -882,38 +882,6 @@ manual implementation using AVX instruction reaches a performance of
 architectures than the Intel MIC architecture. \todo{albeit with less 
 impressive results given that swizzling is often not available. Swizzling
 will become available in a new version of the host: enhanced AVX.}
-
-%% Scaling results as a function of the number of processors, on the MIC
-%% and on the host. The host calculations are performed for reference
-%% only, to bring out the dominance of the MIC due to its advanced
-%% swizzling and channel operations, not available on the host. The
-%% performance on the host is 3x slower than on the MIC. The large cache
-%% of the host alleviates somewhat the lower memory bandwidth, but this
-%% only reduces the cost of transfer {\tt x}.  The cost memory cost for
-%% {\tt A} and {\tt col\_id} is unaffected by the larger cache size.
-
-%% The performance on the MIC scales linearly with the number of
-%% threads. We compare three cases, each with and without bandwidth
-%% reduction using Reverse Cuthil-McKee (RCM). There are $96^3$ RBF
-%% nodes, leading to a matrix with 884,736 rows. The four source vectors
-%% occupy more than 14M bytes, which exceeds the aggregate L2 cache of 31
-%% Mbytes (7.8 Mfloats.)
-
-%% \todo{Is the host architecture described? Problem: I had to change
-%%   hosts a few weeks ago, and it has different characteristics}.
-%% %----------------------
-
-%% Derivatives in an RBFFD formulation are expressed as a sparse
-%% matrix/vector multiplication (SpMV). Using the full 61 nodes of a MIC
-%% processor, and all four threads of each node, we achieve lowly 18
-%% Gflops when calculating a single vector of a single
-%% function. Bandwidth reduction has minimal effect since the cache is
-%% large enough to store both the derivative matrix and the solution
-%% vector. We increase the number of computations per byte transferred by
-%% calculating four different derivatives of four different
-%% functions. With bandwidth reduction, we speed the calculation by a
-%% factor of 8, and achieve upwards of 140 Gflops.
-
 
 \section{Conclusion}
 \label{sec:ccl}
