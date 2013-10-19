@@ -81,14 +81,15 @@ format. We increase the number of operations relative to memory
 bandwidth by calculating four derivatives of four different functions,
 or 16 different derivatives. We demonstrate a novel implementation on
 the MIC architecture, taking into account its advanced swizzling and
-channel interchange features. We present benchmarks that show an
-almost order of magnitude increase in speed compared to efficient
-implementations of a single derivative. We explain the results through
+channel interchange features. We present benchmarks on a real data
+set that show an almost eightfold increase in speed compared to
+efficient implementations of a single derivative, reaching a
+performance of almost 140~Gflop/s. We explain the results through
 consideration of operation count versus memory bandwidth.
 \end{abstract}
 
 \begin{IEEEkeywords}
-OpenMP; MIC; spmv; sparse matrix; Radial Basis Function;
+MIC; SIMD; SpMV; SpMM; Sparse Matrix; Radial Basis Function;
 \end{IEEEkeywords}
 
 \IEEEpeerreviewmaketitle
@@ -96,17 +97,15 @@ OpenMP; MIC; spmv; sparse matrix; Radial Basis Function;
 \section{Introduction}
 The multiplication of sparse matrix by a dense vector (SpMV) is an
 important kernel in many applied fields such as fluid dynamics 
-\cite{journals/tog/BolzFGS03} 
-to graph analysis (recommender systems~\cite{Brin98}, graph
-drawing~\cite{Koren05}). So improving the performance of SpMV has
-captured the interest of many researcher; including the development of
-various implementations for multi-core
+\cite{journals/tog/BolzFGS03}, recommendation systems~\cite{Brin98} and graph
+drawing~\cite{Koren05}). Naturally, improving the performance of SpMV has
+captured the interest of many researchers; including the development of
+various implementations for 
 CPUs~\cite{Buluc2009SPAA,Williams07} and GPUs~\cite{Bell08,
   conf/ipps/KreutzerHWFBB12,
   journals/concurrency/VazquezFG11,kumar2012accelerating}. The main
-challenge that is faced to obtain good performance for SpMV is that
-the operation are conducted using memory location that are irregular
-and often unpredictible. That makes the kernels mostly memory
+challenge  to obtain good performance for SpMV is that
+the operations are conducted using memory location that are irregular. This makes the kernels mostly memory
 bound and there is a significant instruction overhead per flop.
 
 Common improvement techniques such as register blocking, bandwidth
