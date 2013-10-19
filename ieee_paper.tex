@@ -647,7 +647,7 @@ Order hint to optimize write traffic on the memory bus.
 \section{Experimental Validation}
 \label{sec:expe}
 
-\begin{figure}[tbh]
+\begin{figure}[t]
   \centering
   \includegraphics[width=.9\linewidth]{figures/bandwidth_read_write.pdf}
   
@@ -658,6 +658,7 @@ Order hint to optimize write traffic on the memory bus.
   \label{fig:band_rw_MIC}
 \end{figure}
 
+
 In this section, we describe a series of numerical experiments to
 confirm the performance predictions of Section~\ref{sec:model}. To
 better understand our results, we first perform some bandwidth
@@ -667,6 +668,14 @@ are compiled with the Intel C Compiler version 13 and
 the compiler through intrinsics.
 
 \subsection{Bandwidth}
+
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=.9\linewidth]{figures/bandwidth_gather_unpack.pdf}
+  \caption{Performance of {\tt gather} and {\tt unpack} operations.}
+  \label{fig:band_gather} 
+\end{figure}
 
 
 Figure~\ref{fig:bandwidth} shows a benchmark that computes the
@@ -710,27 +719,8 @@ drops below 5~GB/s. We can see that implementing the
 indirection mechanism without vector instructions lowers the
 performance significantly. (In the {\tt compact} case, it never
 surpasses 100~GB/s and is close to 50~GB/s most of the time.)
-
-\begin{figure}
-  \centering
-  \includegraphics[width=.9\linewidth]{figures/bandwidth_gather_unpack.pdf}
-  \caption{Performance of {\tt gather} and {\tt unpack} operations.}
-  \label{fig:band_gather} 
-\end{figure}
-%
-
-To summarize, using vector instructions appears necessary in order
-to reach the highest bandwidth on the MIC architecture. For the instructions used
-in a typical SpMV computation, one can expect a bandwidth between
-140~GB/s to 160~GB/s. That is why we use in our estimations a best
-achievable bandwidth of 150~GB/s despite the fact that a 
- code carefully crafted to maximize bandwidth can reach higher
-values~\cite{Saule13-ARXIV}. 
-
-\subsection{Instances}
-
 \def\ww{.19\textwidth}
-\begin{figure*}[tbh]
+\begin{figure*}[t]
   \begin{center}
     \subfigure[Supercompact.]{%
       \label{fig:supercompact}
@@ -762,6 +752,16 @@ values~\cite{Saule13-ARXIV}.
   \label{fig:spy_plots}
 \end{figure*}
 
+To summarize, using vector instructions appears necessary in order
+to reach the highest bandwidth on the MIC architecture. For the instructions used
+in a typical SpMV computation, one can expect a bandwidth between
+140~GB/s to 160~GB/s. That is why we use in our estimations a best
+achievable bandwidth of 150~GB/s despite the fact that a 
+ code carefully crafted to maximize bandwidth can reach higher
+values~\cite{Saule13-ARXIV}. 
+
+\subsection{Instances}
+
 The different matrices used to perform our experiments and analysis
 are presented in Figure~\ref{fig:spy_plots}. The
 Supercompact matrices (Figure~\ref{fig:supercompact}) have been
@@ -787,7 +787,7 @@ distance between the nonzeros and the diagonal, hopefully allowing a
 better cache reutilisation. The reordered version of the matrix can be
 seen in Figure~\ref{fig:rbf3drcm}.
 
-
+\vspace{-0.3em}
 \subsection{Computations}
 
 \begin{figure*}[t]
@@ -825,7 +825,7 @@ within 15\% of the predicted  peak performance. The performance of the
 time, the RCM ordering provides an improvement which can be as high as
 30~Gflop/s.
 
-\begin{figure}
+\begin{figure}[t]
   \centering 
   
   \includegraphics[width=.9\linewidth]{figures/mic_performance_nb_threads.pdf}
@@ -870,6 +870,7 @@ manual implementation using AVX instruction reaches a performance of
 42~Gflop/s. This confirms that our method is sound and generalizes to
 architectures other than the Intel MIC architecture.
 
+\vspace{-0.5em}
 \section{Conclusion}
 \label{sec:ccl}
 
