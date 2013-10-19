@@ -501,7 +501,7 @@ believed to be between 200~GB/s and 250~GB/s.
 Each core in the architecture has a 32kB L1 data cache, a 32kB L1
 instruction cache, and a 512kB L2 cache. The architecture of a core is
 based on the traditional Pentium architecture, which has been extended to
-64-bit. A core can hold four hardware contexts at any given time. At each
+64-bit. A core can hold four hardware contexts at any given time (240 threads in total). At each
 clock cycle, instructions from a single thread are executed. Due to
 some hardware constraints, two hardware contexts must be used to reach
 the peak instruction throughput in that architecture. Similar to the
@@ -527,6 +527,20 @@ achieved.
 
 
 \subsection{Bringing the data into the vector register}
+
+\begin{figure*}
+  \centering
+\subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{code.pdf}}%
+\subfigure[Content of the vector registers]{\hspace{-0.07\linewidth}\includegraphics[width=.5\linewidth]{figures/code-annote.pdf}}
+
+\caption{Code snippet of the multiplication of 4 vectors with 4
+  matrices. When a line changes the content of a vector register its
+  new content is shown on the right. The effects of swizzling and
+  permutations are highlighted using a color code.}
+\label{code:mat_mul}
+\end{figure*}
+
+
 
 As explained in Section~\ref{sec:model}, we expect to achieve a performance of
 about 210~Gflop/s in single precision in the best case. We will focus
@@ -568,22 +582,10 @@ and the vector entries $x_m^1,x_m^2,x_m^3,x_m^4$ in two vector registers and
 apply Fused Multiply-Add on them, which is depicted in the {\tt accu} line of 
 Figure~\ref{code:mat_mul}. Bringing the data into the vector
 register as depicted in the figure is the difficult component of our 
-proposed algorith, which we proceed to explain further. 
+proposed algorithm, which we proceed to explain further. 
 A thread will perform the multiplications one row at a time,
-and parallelism is achieved by giving blocks of rows to each core
+and parallelism is achieved by giving blocks of rows to each thread
 using an OpenMP construct.
-
-\begin{figure*}
-  \centering
-\subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{code.pdf}}%
-\subfigure[Content of the vector registers]{\hspace{-0.07\linewidth}\includegraphics[width=.5\linewidth]{figures/code-annote.pdf}}
-
-\caption{Code snippet of the multiplication of 4 vectors with 4
-  matrices. When a line changes the content of a vector register its
-  new content is shown on the right. The effects of swizzling and
-  permutations are highlighted using a color code.}
-\label{code:mat_mul}
-\end{figure*}
 
 
 The core of the technique is the use of swizzling and permutation
@@ -611,11 +613,9 @@ uses 4 floats from the matrix and 4 floats from the {\tt x} vector. So
 we would like to execute a single instruction to load the data for four 
 nonzeros in the matrix, and another instruction to load the data for
 four nonzeros from the vectors.  
-%representing 16 floats from the matrix and 16 floats from the vectors at once. 
 (The number of nonzeros on a row in our application is
 always a multiple of 4; if it weren't, we would add some explicit
 zeroes in the data structure for padding.)
-\todo{Erik, I rewrote the paragraph. Please reread.}
 
 The values from the nonzero elements in the matrix are the simplest to
 load. One can load the 16 floating point values for four nonzeroes of
@@ -629,9 +629,9 @@ Loading the entries from the {\tt x} vector is a little bit more
 involved. First, the columns pointers of four different nonzeros are
 loaded into a vector register and the values are distributed one per
 lane of the vector register using an {\tt unpack}
-operation\footnote{Notice that there are two calls to unpack for the
-  LSB and MSB. Both are mandatory even if one is known not to be
-  useful according the documentation of the hardware}. (The column
+operation\footnote{Notice that there are two calls to {\tt unpack} for the
+  LSB and MSB. Both are mandatory even if one is known to be
+  nilpotent according the documentation of the hardware}. (The column
 pointers are named $j,k,l,m$ in Figure~\ref{code:mat_mul}.) They
 are replicated so that each value fills an single vector lane 
 using a swizzle operation. Then each value is multiplied by 4 
@@ -660,7 +660,7 @@ confirm the performance predictions of Section~\ref{sec:model}. To
 better understand our results, we first perform some bandwidth
 measurements, followed by the actual SpMV computations. All the codes
 are compiled with the Intel C Compiler version 13 and
--O3 optimization. The MIC codes use the IMCI instructions exposed by
+-O3 optimization. The codes use the IMCI instructions exposed by
 the compiler through intrinsics.
 
 \subsection{Bandwidth}
@@ -676,7 +676,8 @@ the compiler through intrinsics.
   \label{fig:band_rw_MIC}
 \end{figure}
 
-Figure~\ref{fig:bandwidth} gives some benchmark that computes the
+<<<<<<< HEAD
+Figure~\ref{fig:bandwidth} shows a benchmark that computes the
 bandwidth achieved when reading and/or writing large arrays on both
 the MIC card and the CPU architecture. The read benchmark performs a
 simple sum of the array. The write benchmark sets all the elemnts of
