@@ -139,27 +139,28 @@ recommendation~\cite{Kucuktunc13-SNAM}, eigensolving~\cite{LOBPCG} and the compu
 derivatives of Radial Basis Functions (RBF)~\cite{FLBWSC12} can use multiple
 SpMVs simultaneously. In this paper in particular, we investigate the
 case of the derivative of RBFs where four derivatives of four
-different functions is expressed as the multiplication of four vectors
+different functions are expressed as the multiplication of four vectors
 by four matrices with identical sparsity patterns leading to the
 simultaneous execution of 16 SpMVs at a time. Using multiple vectors
 at a time has been investigated before to densify the
-computations~\cite{Im01} but this is the first time that the
+computations~\cite{Im01} but this is the first time, to the 
+best of our knowledge, that the
 densification comes from adding both vectors and matrices.
 
 To perform our analysis, we focus our attention on the improvement
-that we can achieve on the Intel Xeon Phi processor. It follow the
+that can be achieved on the Intel Xeon Phi processor. It follows the
 Many Integrated Core (MIC) architecture, which has a significant
 memory bandwidth and peak flop throughput thanks to its 512-bit large
 SIMD registers. The Xeon Phi processor has been shown to be promising
 for sparse linear algebra compared to more classical CPU or GPU
-architecture~\cite{Saule13-ARXIV, Liu:2013:ESM:2464996.2465013, cramer2012openmp}.
+architectures~\cite{Saule13-ARXIV, Liu:2013:ESM:2464996.2465013, cramer2012openmp}.
 
-In Section~\ref{sec:rbf} we present the computation of RBFs and how it
+In Section~\ref{sec:rbf}, we present the computation of RBFs and how it
 can be expressed as sixteen multiplications of four vectors by four sparse matrices
 with identical sparsity patterns. Section~\ref{sec:model} presents an
 estimation of the instruction intensity of various forms of the
-computations and we show that a sixfold improvement can be
-expected when computing the sixteen multiplications simultaneously and
+computations. We show that a sixfold improvement can be
+expected when computing the sixteen multiplications simultaneously to
 reach a total of about 210~Gflop/s. This performance represents
 approximately 10\% of the available flop/s of a Xeon Phi
 coprocessor. Therefore, it is necessary to have an implementation that
@@ -170,9 +171,9 @@ permutation instructions to efficiently bring the data in the vector
 registers to be processed. Section~\ref{sec:expe} gives some
 experimental results about the amount of bandwidth that can be achieved
 depending on how the SpMV kernel is written. It also provides the actual performance
-of the various kernel on multiple classes of matrices, some generated
-for analysis purpose, and some extracted from an RBF application. A
-performance of 135~Gflop/s is achieved on real scenario. Concluding
+of the various kernels on multiple classes of matrices, some generated
+for purpose of analysis, and some extracted from an RBF application. A
+performance of 135~Gflop/s is achieved using RBF-generated matrices. Concluding
 remarks and perspectives are provided in Section~\ref{sec:ccl}.\looseness=-1
 
 \section{Derivatives of Radial Basis Functions}
@@ -187,8 +188,8 @@ distinct point locations, $x_j$, by linearly combining translates of a
 single radially symmetric function $\phi(r)$, where $r =
 \|\rvec-\rvec_{j}\|$ denotes the Euclidean distance %(e.g., in 2-D
 %$\sqrt{(x-x_j)^2+(y-y_j)^2}$) 
-between where the function is evaluated
-$\rvec$ and where the RBF is centered at $\rvec_{j}$. That is, the
+between $\rvec$, where the function is evaluated
+and and $\rvec_j$,  where the RBF is centered. That is, the
 interpolant is $s(\rvec) = \sum_{j=1}^{N} w_j
 \phi_i(\|\rvec-\rvec_{j}\|)$. The weights $w_j$ are obtained by
 inverting the system
@@ -210,7 +211,7 @@ desired analytic derivative operator $L$ to the RBF interpolant
 $s(\rvec)$ above and evaluating it at the point locations. For very
 large problems, this is a computationally expensive since the matrix
 in (\ref{eq:rbf}) is full and inversion requires O$(N^3)$
-operations. To alleviate the cost of this global approach (i.e. using
+operations. To alleviate the cost of this global approach (i.e., using
 every node in the domain to calculate the derivative at a given node
 $\rvec_i$), RBF-generated finite differences (RBFFD) have been
 derived \cite{TAI1,TAI2,SDY02,WrFo06,FoL11,FLBWSC12}. RBFFD uses only
@@ -221,8 +222,8 @@ $Lf(\rvec_i)=\sum_{j=1}^{n_z}a_jf(\rvec_j)$. The differentiation
 weights, $a_j$, are calculated by enforcing that this linear
 combination should be exact for RBFs,
 $\{\phi(\|\rvec-\rvec_{j}\|)\}_{j=1}^{n_z}$, centered at each of the
-node locations $\{\rvec_j\}_{j=1}^{n_z}$ (classical finite differences
-(FD) would enforce that it be exact for polynomials instead). Similar
+node locations $\{\rvec_j\}_{j=1}^{n_z}$ (classical finite-differences
+(FD) would enforce that it be exact for polynomials instead.) Similar
 to FD, as the stencil size $n_z$ increases so does the order of the
 method.
 
@@ -237,14 +238,14 @@ $$
 $$
 The computation of a single derivative has been reduced to a SpMV, 
 where each row has $n_z$ nonzeros\footnote{We use non-conventional 
-symbology for differentiation matrix, source and destination vectors
+symbology for the differentiation matrix, source and destination vectors, 
 anticipating what follows.}. 
 In practice, $n_z=32$ in two-dimensional flows and 64 or 100 for
 three-dimensional flows. These numbers are on par with what is used in
 finite-element codes. Notice that the nonzero elements of the matrix
 correspond to a relationship of closeness in the physical domain. 
 This relationship is not
-necessarily symmetric as shown in Figure~\ref{fig:rbf_stencils} which
+necessarily symmetric as shown in Figure~\ref{fig:rbf_stencils}, which
 implies a non-symmetric sparsity pattern in the derivative matrix. 
 
 \begin{figure}[tbh]
@@ -274,21 +275,20 @@ multiple source vectors. Further improvements are possible by
 recognizing that different derivative matrices (e.g., gradient and 
 Laplacian operators), 
 have the same sparsity distribution as long as the derivative stencils
-remain unchanged; only the values in the sparse matrix change. 
+remain unchanged; only the values in the sparse matrix vary. 
 Thus, rather than computing a derivative of multiple
 functions, one can calculate multiple derivatives of a single
 function. The increased memory bandwidth due to an increase in the
 number of derivative matrices is offset by better cache utilization,
 leading to an overall performance benefit. In practice however, the number of 
-vectors whose derivatives are required is limited, limiting the 
+vectors whose derivatives are required is limited, capping the 
 performance of the matrix/vector multiplication. Similarly, the number
-of different derivatives in a particular computation is limited. It is 
+of different derivatives in a particular computation is finite. It is 
 for this reason that we seek to combine the benefits of multiple
 vectors and multiple matrices simultaneously. We limit this initial 
 study to four vectors and four matrices. 
 
-
-In discrete form, Equation (\ref{eq:Q}) takes the form
+In discrete form, Equation (\ref{eq:Q}) becomes
 $$
   y^{i,j} = A^i x^j 
 $$ where $j$ ranges over the number of source vectors, $i$ ranges of
@@ -325,7 +325,7 @@ We saw in the previous section that one can express the RBF problem as
 a multiplication of four matrices by four vectors. We present here an
 estimation of the variation on the flop intensity of the computation
 and its impact on the expected performance of the
-application. Relevant notations are given in Figure~\ref{tab:not}.
+application. Relevant notation are given in Figure~\ref{tab:not}.
 
 \begin{figure}[t]
   \begin{center}
@@ -408,7 +408,7 @@ it assumes that either the cache of the architecture can store the full
 to cause no cache trashing. If using multiple cores, this assumes that
 no element of the {\tt x} vectors will be used by multiple
 cores. \cite{Saule13-ARXIV} showed that there is very little cache trashing
-in practice, but it showed that having elements of the vectors used by
+in practice; however having elements of the vectors used by
 multiple cores can have a significant impact on the performance
 (growing with $n_v$).
 
@@ -438,7 +438,7 @@ $$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{(b_i+b_x n_m) + n_v n_m b_x n_z^{-1} + 
 
 Figure~\ref{fig:ratio_bytes_flops} presents the flop to byte ratios
 for single precision computation in the best and the worst case on a
-classical cache based architecture ($cl = 64$) and assuming $cl=1$. We
+classical cache-based architecture ($cl = 64$) and assuming $cl=1$. We
 can easily see the potential improvement in the computational
 intensity when the number of matrices or vectors increases. There is a
 significant difference between the best and the worst case: there is a
@@ -450,8 +450,7 @@ The ratios computed with $cl = 1$ are mostly
 similar to the one with $cl=64$ when the number of vectors is
 large. But the differences are important when the number of vectors is
 low: this highlights that accessing the memory with a granularity of one cache
-line
-is the main problem faced when performing a standard SpMV computation.
+line is the main problem faced when performing a standard SpMV computation.
 
 Figure~\ref{fig:perf_predict} shows how these ratios translate
 into actual performance. This figure provides projected best and worst
@@ -489,7 +488,7 @@ interfaces are 32-bit wide with two channels and the total bandwidth
 is 8.4~GB/s per core. Thus, the cores should be able to consume 504~GB/s
 at most. However, the bandwidth between the cores and the memory
 controllers is limited by the ring network that connects the cores and
-the memory controller. Its precise bandwidth 
+the memory controller. Its precise bandwidth is
 believed to be between 200~GB/s and 250~GB/s.
 
 Each core in the architecture has a 32kB L1 data cache, a 32kB L1
@@ -894,7 +893,7 @@ faster than the best possible performance achievable for a single
 vector and a single derivative and more than 7 times faster than a
 practical implementation.
 
-In a future work, we will examine the effect of larger stencil sizes,
+In future work, we will examine the effect of larger stencil sizes and
 double precision. The presented performance do not reach the predicted
 peak and we believe that common techniques from SpMV such as cache
 partitioning can be successfully applied. We will also integrate the
