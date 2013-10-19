@@ -619,7 +619,7 @@ swizzle operation to broadcast the four elements of a single matrix to
 fill the whole register. (The broadcast of $A_h^1,A_h^2,A_h^3,A_h^4$ is
 shown in Figure~\ref{code:mat_mul}.)
 
-Loading the entries from the {\tt x} vector is a little bit more
+Loading the entries from the {\tt x} vector is  more
 involved. First, the column pointers of four different nonzeros are
 loaded into a vector register and the values are distributed one per
 lane of the vector register using an {\tt unpack}
