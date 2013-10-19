@@ -56,14 +56,10 @@ Finite-Differences on the MIC Architecture}
 Erik Saule\IEEEauthorrefmark{2}, Natasha Flyer\IEEEauthorrefmark{3}, 
 and Evan Bollig\IEEEauthorrefmark{1}}
 \IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Scientific Computing, 
-Florida State University\\ %, Tallahassee %FL 32306-4120\\
-Email: gerlebacher@fsu.edu, bollig@gmail.com}
-\IEEEauthorblockA{\IEEEauthorrefmark{2}Department of Computer Science, University of North Carolina at Charlotte\\
-Email: erik.saule@uncc.edu}
-\IEEEauthorblockA{\IEEEauthorrefmark{3}Computational and Information Systems Laboratory, UCAR \\
-Email: flyer@ucar.edu}}
-%\IEEEauthorblockA{\IEEEauthorrefmark{4}Department of Scientific Computing, Florida State University\\
-%Email: bollig@gmail.com}\todo{check affiliation fsu's are strange.}}
+Florida State University}
+\IEEEauthorblockA{\IEEEauthorrefmark{2}Department of Computer Science, University of North Carolina at Charlotte}
+\IEEEauthorblockA{\IEEEauthorrefmark{3}Computational and Information Systems Laboratory, UCAR}
+Email: gerlebacher@fsu.edu, esaule@uncc.edu, flyer@ucar.edu, bollig@gmail.com}
 \maketitle
 
 
@@ -498,7 +494,7 @@ controllers. There are 60 cores clocked at 1.05~GHz. Their memory
 interfaces are 32-bit wide with two channels and the total bandwidth
 is 8.4~GB/s per core. Thus, the cores should be able to consume 504~GB/s
 at most. However, the bandwidth between the cores and the memory
-controllers is limited by the ring network that connect the cores and
+controllers is limited by the ring network that connects the cores and
 the memory controller. Its precise bandwidth is unknown but it is
 believed to be between 200~GB/s and 250~GB/s.
 
@@ -537,7 +533,7 @@ about 210~Gflop/s in single precision in the best case. We will focus
 on the single precision case with four vectors and four matrices. 
 Similar techniques apply for other matrix/vector combinations. This target
 performance represents 10\% of the peak performance of the
-architecture which is impossible without an efficient vectorization of
+architecture which is impossible to reach without an efficient vectorization of
 the kernel. Indeed, to reach such a performance, a Fused Multiply-Add
 instruction on fully loaded registers must be executed at most every
 10 cycles.
@@ -551,7 +547,7 @@ of $n_z$ entries that label the column index of each nonzero in
 $A$. The other array is the {\tt data} array that gives the values of
 the nonzeros in the four matrices. The values of the matrices are
 interleaved by group of four so that the value $A^l_{col\_id[k]}$ of
-the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.\todo{check that formula}
+the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.
 (In other words, the first 4 entries are from $A^{1}$ and the next 4 are from $A^2$.) The vectors {\tt x} are
 interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
 consecutive in memory. The vector {\tt y} is similarly interleaved,
