@@ -1,0 +1,6 @@
+----------------------------------------------------------------------
+python sparse.py
+
+will generate the matrices for Supercompact, Compact and Random. 
+----------------------------------------------------------------------
+The plots for matrices from RBF files: I forget how they were generated. 

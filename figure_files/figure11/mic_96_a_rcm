@@ -1,0 +1,2104 @@
+argv[0]= ./linux/release/spmv_openmp_mic
+argv[1]= matrix/ell_kd-tree_rcm_sym_1_x_weights_direct__no_hv_stsize_32_3d_96x_96y_96z.bmtx
+argv[2]= 1
+filename= matrix/ell_kd-tree_rcm_sym_1_x_weights_direct__no_hv_stsize_32_3d_96x_96y_96z.bmtx
+choice= 1
+argv[0]= 1
+[ProjectSettings]   Reading config file: test.conf
+[Project Settings] 	asci_binary = binary
+asci_binary= binary
+[Project Settings] 	in_format = ELL
+filename = matrix/ell_kd-tree_rcm_sym_1_x_weights_direct__no_hv_stsize_32_3d_96x_96y_96z.bmtx
+choice= 1
+spmv in ell format using OpenNP in Native mode
+[ProjectSettings]   Reading config file: test.conf
+[Project Settings] 	asci_binary = binary
+[Project Settings] 	sparsity = NONE
+[Project Settings] 	diag_sep = 80000
+[Project Settings] 	inner_bandwidth = 2000
+[Project Settings] 	sort_col_indices = 0
+[Project Settings] 	n3d = 128
+[Project Settings] 	random_seed = 1
+seed: 1378455333
+[Project Settings] 	use_subdomains = 0
+sparsity = NONE
+[Project Settings] 	in_format = ELL
+
+Read ELLPACK file
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+Inside empty ProjectSettings destructor
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+-3.473637 gflops, -260.812988 (ms)
+-3.470085 gflops, -261.079987 (ms)
+-3.477383 gflops, -260.532013 (ms)
+1.227141 gflops, 738.276978 (ms)
+-3.475769 gflops, -260.653015 (ms)
+-3.470922 gflops, -261.016998 (ms)
+-3.472332 gflops, -260.911011 (ms)
+method_8a_multi_cpp, threads: 1, Max Gflops: 1.227141, min time: 738.276978 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4394.389648
+method_8a, l2norm[1]=of omp version: 4392.934082
+method_8a, l2norm[2]=of omp version: 4391.241699
+method_8a, l2norm[3]=of omp version: 4392.627441
+method_8a, l2norm[4]=of omp version: 4395.511719
+method_8a, l2norm[5]=of omp version: 4393.754395
+method_8a, l2norm[6]=of omp version: 4392.403320
+method_8a, l2norm[7]=of omp version: 4394.152832
+method_8a, l2norm[8]=of omp version: 4393.890137
+method_8a, l2norm[9]=of omp version: 4393.124512
+method_8a, l2norm[10]=of omp version: 4391.416504
+method_8a, l2norm[11]=of omp version: 4393.089844
+method_8a, l2norm[12]=of omp version: 4394.733887
+method_8a, l2norm[13]=of omp version: 4394.789062
+method_8a, l2norm[14]=of omp version: 4391.916992
+method_8a, l2norm[15]=of omp version: 4393.478027
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4394.389648
+method_8a, l2norm of serial vec/mat= 1/0, 4392.935059
+method_8a, l2norm of serial vec/mat= 2/0, 4391.242188
+method_8a, l2norm of serial vec/mat= 3/0, 4392.627441
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4395.511719
+method_8a, l2norm of serial vec/mat= 1/1, 4393.754395
+method_8a, l2norm of serial vec/mat= 2/1, 4392.403320
+method_8a, l2norm of serial vec/mat= 3/1, 4394.152832
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4393.890137
+method_8a, l2norm of serial vec/mat= 1/2, 4393.124512
+method_8a, l2norm of serial vec/mat= 2/2, 4391.416504
+method_8a, l2norm of serial vec/mat= 3/2, 4393.089355
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4394.734375
+method_8a, l2norm of serial vec/mat= 1/3, 4394.788574
+method_8a, l2norm of serial vec/mat= 2/3, 4391.916992
+method_8a, l2norm of serial vec/mat= 3/3, 4393.478027
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+-2.150522 gflops, -421.278992 (ms)
+1.566094 gflops, 578.489990 (ms)
+-2.146013 gflops, -422.164001 (ms)
+1.567530 gflops, 577.960022 (ms)
+-2.150032 gflops, -421.375000 (ms)
+-2.147769 gflops, -421.819000 (ms)
+1.569643 gflops, 577.182007 (ms)
+method_8a_multi_cpp, threads: 2, Max Gflops: 1.569643, min time: 577.182007 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4393.700195
+method_8a, l2norm[1]=of omp version: 4390.632324
+method_8a, l2norm[2]=of omp version: 4394.510742
+method_8a, l2norm[3]=of omp version: 4403.254883
+method_8a, l2norm[4]=of omp version: 4393.534180
+method_8a, l2norm[5]=of omp version: 4390.597168
+method_8a, l2norm[6]=of omp version: 4394.656738
+method_8a, l2norm[7]=of omp version: 4402.769043
+method_8a, l2norm[8]=of omp version: 4394.325195
+method_8a, l2norm[9]=of omp version: 4389.637695
+method_8a, l2norm[10]=of omp version: 4393.449219
+method_8a, l2norm[11]=of omp version: 4402.232910
+method_8a, l2norm[12]=of omp version: 4393.936523
+method_8a, l2norm[13]=of omp version: 4391.058594
+method_8a, l2norm[14]=of omp version: 4395.158203
+method_8a, l2norm[15]=of omp version: 4402.798828
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4393.700195
+method_8a, l2norm of serial vec/mat= 1/0, 4390.632324
+method_8a, l2norm of serial vec/mat= 2/0, 4394.510742
+method_8a, l2norm of serial vec/mat= 3/0, 4403.254883
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4393.534180
+method_8a, l2norm of serial vec/mat= 1/1, 4390.597168
+method_8a, l2norm of serial vec/mat= 2/1, 4394.656738
+method_8a, l2norm of serial vec/mat= 3/1, 4402.769043
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4394.325195
+method_8a, l2norm of serial vec/mat= 1/2, 4389.637207
+method_8a, l2norm of serial vec/mat= 2/2, 4393.449219
+method_8a, l2norm of serial vec/mat= 3/2, 4402.232910
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4393.936035
+method_8a, l2norm of serial vec/mat= 1/3, 4391.058594
+method_8a, l2norm of serial vec/mat= 2/3, 4395.158203
+method_8a, l2norm of serial vec/mat= 3/3, 4402.798340
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+-2.630276 gflops, -344.438995 (ms)
+1.386292 gflops, 653.520020 (ms)
+-2.626395 gflops, -344.947998 (ms)
+-2.629658 gflops, -344.519989 (ms)
+1.384274 gflops, 654.473022 (ms)
+-2.627027 gflops, -344.864990 (ms)
+-2.628994 gflops, -344.606995 (ms)
+method_8a_multi_cpp, threads: 4, Max Gflops: 1.386292, min time: 653.520020 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4395.382812
+method_8a, l2norm[1]=of omp version: 4398.999023
+method_8a, l2norm[2]=of omp version: 4395.157715
+method_8a, l2norm[3]=of omp version: 4398.661133
+method_8a, l2norm[4]=of omp version: 4394.323242
+method_8a, l2norm[5]=of omp version: 4397.946289
+method_8a, l2norm[6]=of omp version: 4393.399902
+method_8a, l2norm[7]=of omp version: 4397.781250
+method_8a, l2norm[8]=of omp version: 4395.379883
+method_8a, l2norm[9]=of omp version: 4399.220703
+method_8a, l2norm[10]=of omp version: 4394.270508
+method_8a, l2norm[11]=of omp version: 4397.930176
+method_8a, l2norm[12]=of omp version: 4395.333984
+method_8a, l2norm[13]=of omp version: 4399.778809
+method_8a, l2norm[14]=of omp version: 4394.770508
+method_8a, l2norm[15]=of omp version: 4398.441406
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4395.382812
+method_8a, l2norm of serial vec/mat= 1/0, 4398.999023
+method_8a, l2norm of serial vec/mat= 2/0, 4395.158203
+method_8a, l2norm of serial vec/mat= 3/0, 4398.661621
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4394.323242
+method_8a, l2norm of serial vec/mat= 1/1, 4397.946289
+method_8a, l2norm of serial vec/mat= 2/1, 4393.399902
+method_8a, l2norm of serial vec/mat= 3/1, 4397.781250
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4395.379883
+method_8a, l2norm of serial vec/mat= 1/2, 4399.220703
+method_8a, l2norm of serial vec/mat= 2/2, 4394.270996
+method_8a, l2norm of serial vec/mat= 3/2, 4397.930176
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4395.333984
+method_8a, l2norm of serial vec/mat= 1/3, 4399.778809
+method_8a, l2norm of serial vec/mat= 2/3, 4394.770508
+method_8a, l2norm of serial vec/mat= 3/3, 4398.441406
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+-5.119485 gflops, -176.964996 (ms)
+-5.124959 gflops, -176.776001 (ms)
+1.102087 gflops, 822.049011 (ms)
+-5.126002 gflops, -176.740005 (ms)
+-5.121018 gflops, -176.912003 (ms)
+-5.122206 gflops, -176.871002 (ms)
+-5.125046 gflops, -176.772995 (ms)
+method_8a_multi_cpp, threads: 8, Max Gflops: 1.102087, min time: 822.049011 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4405.478027
+method_8a, l2norm[1]=of omp version: 4396.839355
+method_8a, l2norm[2]=of omp version: 4390.995605
+method_8a, l2norm[3]=of omp version: 4390.907715
+method_8a, l2norm[4]=of omp version: 4404.388672
+method_8a, l2norm[5]=of omp version: 4395.458984
+method_8a, l2norm[6]=of omp version: 4389.667480
+method_8a, l2norm[7]=of omp version: 4390.377930
+method_8a, l2norm[8]=of omp version: 4405.096680
+method_8a, l2norm[9]=of omp version: 4397.401855
+method_8a, l2norm[10]=of omp version: 4390.542969
+method_8a, l2norm[11]=of omp version: 4391.217773
+method_8a, l2norm[12]=of omp version: 4404.636719
+method_8a, l2norm[13]=of omp version: 4397.057617
+method_8a, l2norm[14]=of omp version: 4390.418457
+method_8a, l2norm[15]=of omp version: 4392.201172
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4405.478027
+method_8a, l2norm of serial vec/mat= 1/0, 4396.839844
+method_8a, l2norm of serial vec/mat= 2/0, 4390.996094
+method_8a, l2norm of serial vec/mat= 3/0, 4390.908203
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4404.388672
+method_8a, l2norm of serial vec/mat= 1/1, 4395.458984
+method_8a, l2norm of serial vec/mat= 2/1, 4389.667969
+method_8a, l2norm of serial vec/mat= 3/1, 4390.377930
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4405.096680
+method_8a, l2norm of serial vec/mat= 1/2, 4397.401855
+method_8a, l2norm of serial vec/mat= 2/2, 4390.542969
+method_8a, l2norm of serial vec/mat= 3/2, 4391.217773
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4404.636719
+method_8a, l2norm of serial vec/mat= 1/3, 4397.057617
+method_8a, l2norm of serial vec/mat= 2/3, 4390.418457
+method_8a, l2norm of serial vec/mat= 3/3, 4392.201172
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+2.349360 gflops, 385.623993 (ms)
+-1.476839 gflops, -613.452026 (ms)
+2.350110 gflops, 385.501007 (ms)
+2.349439 gflops, 385.610992 (ms)
+-1.476800 gflops, -613.468018 (ms)
+2.349701 gflops, 385.567993 (ms)
+2.349257 gflops, 385.640991 (ms)
+method_8a_multi_cpp, threads: 16, Max Gflops: 2.350110, min time: 385.501007 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4392.127441
+method_8a, l2norm[1]=of omp version: 4391.936035
+method_8a, l2norm[2]=of omp version: 4393.041992
+method_8a, l2norm[3]=of omp version: 4396.397949
+method_8a, l2norm[4]=of omp version: 4392.045898
+method_8a, l2norm[5]=of omp version: 4392.999512
+method_8a, l2norm[6]=of omp version: 4393.664062
+method_8a, l2norm[7]=of omp version: 4395.930664
+method_8a, l2norm[8]=of omp version: 4393.375977
+method_8a, l2norm[9]=of omp version: 4394.215820
+method_8a, l2norm[10]=of omp version: 4394.354980
+method_8a, l2norm[11]=of omp version: 4396.650879
+method_8a, l2norm[12]=of omp version: 4391.426270
+method_8a, l2norm[13]=of omp version: 4392.051758
+method_8a, l2norm[14]=of omp version: 4392.431152
+method_8a, l2norm[15]=of omp version: 4395.665039
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4392.127930
+method_8a, l2norm of serial vec/mat= 1/0, 4391.936035
+method_8a, l2norm of serial vec/mat= 2/0, 4393.041016
+method_8a, l2norm of serial vec/mat= 3/0, 4396.397949
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4392.045410
+method_8a, l2norm of serial vec/mat= 1/1, 4392.999512
+method_8a, l2norm of serial vec/mat= 2/1, 4393.664062
+method_8a, l2norm of serial vec/mat= 3/1, 4395.930664
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4393.375977
+method_8a, l2norm of serial vec/mat= 1/2, 4394.216309
+method_8a, l2norm of serial vec/mat= 2/2, 4394.354492
+method_8a, l2norm of serial vec/mat= 3/2, 4396.650879
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4391.426758
+method_8a, l2norm of serial vec/mat= 1/3, 4392.051758
+method_8a, l2norm of serial vec/mat= 2/3, 4392.431152
+method_8a, l2norm of serial vec/mat= 3/3, 4395.664551
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+4.786526 gflops, 189.274994 (ms)
+4.787133 gflops, 189.251007 (ms)
+4.787461 gflops, 189.238007 (ms)
+-1.118937 gflops, -809.669983 (ms)
+4.783746 gflops, 189.384995 (ms)
+4.786804 gflops, 189.264008 (ms)
+4.786475 gflops, 189.276993 (ms)
+method_8a_multi_cpp, threads: 32, Max Gflops: 4.787461, min time: 189.238007 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4392.568359
+method_8a, l2norm[1]=of omp version: 4390.241211
+method_8a, l2norm[2]=of omp version: 4397.260742
+method_8a, l2norm[3]=of omp version: 4394.061523
+method_8a, l2norm[4]=of omp version: 4392.316406
+method_8a, l2norm[5]=of omp version: 4388.843750
+method_8a, l2norm[6]=of omp version: 4396.501953
+method_8a, l2norm[7]=of omp version: 4393.517578
+method_8a, l2norm[8]=of omp version: 4392.652832
+method_8a, l2norm[9]=of omp version: 4389.710938
+method_8a, l2norm[10]=of omp version: 4396.768066
+method_8a, l2norm[11]=of omp version: 4394.381348
+method_8a, l2norm[12]=of omp version: 4394.036621
+method_8a, l2norm[13]=of omp version: 4390.236328
+method_8a, l2norm[14]=of omp version: 4397.916504
+method_8a, l2norm[15]=of omp version: 4395.467285
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4392.568359
+method_8a, l2norm of serial vec/mat= 1/0, 4390.241211
+method_8a, l2norm of serial vec/mat= 2/0, 4397.260742
+method_8a, l2norm of serial vec/mat= 3/0, 4394.061523
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4392.316406
+method_8a, l2norm of serial vec/mat= 1/1, 4388.843750
+method_8a, l2norm of serial vec/mat= 2/1, 4396.501953
+method_8a, l2norm of serial vec/mat= 3/1, 4393.517578
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4392.652832
+method_8a, l2norm of serial vec/mat= 1/2, 4389.710938
+method_8a, l2norm of serial vec/mat= 2/2, 4396.768066
+method_8a, l2norm of serial vec/mat= 3/2, 4394.381836
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4394.036621
+method_8a, l2norm of serial vec/mat= 1/3, 4390.236328
+method_8a, l2norm of serial vec/mat= 2/3, 4397.916016
+method_8a, l2norm of serial vec/mat= 3/3, 4395.467285
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+9.789081 gflops, 92.549004 (ms)
+-0.999649 gflops, -906.288025 (ms)
+9.763551 gflops, 92.791000 (ms)
+9.762709 gflops, 92.799004 (ms)
+9.764604 gflops, 92.780998 (ms)
+9.767762 gflops, 92.750999 (ms)
+9.764604 gflops, 92.780998 (ms)
+method_8a_multi_cpp, threads: 64, Max Gflops: 9.789081, min time: 92.549004 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4400.057129
+method_8a, l2norm[1]=of omp version: 4398.982910
+method_8a, l2norm[2]=of omp version: 4397.330566
+method_8a, l2norm[3]=of omp version: 4402.268066
+method_8a, l2norm[4]=of omp version: 4399.949219
+method_8a, l2norm[5]=of omp version: 4398.407715
+method_8a, l2norm[6]=of omp version: 4396.294434
+method_8a, l2norm[7]=of omp version: 4401.623535
+method_8a, l2norm[8]=of omp version: 4399.213379
+method_8a, l2norm[9]=of omp version: 4397.627930
+method_8a, l2norm[10]=of omp version: 4396.289062
+method_8a, l2norm[11]=of omp version: 4400.410156
+method_8a, l2norm[12]=of omp version: 4399.920410
+method_8a, l2norm[13]=of omp version: 4398.415039
+method_8a, l2norm[14]=of omp version: 4397.758789
+method_8a, l2norm[15]=of omp version: 4402.089355
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4400.057617
+method_8a, l2norm of serial vec/mat= 1/0, 4398.982910
+method_8a, l2norm of serial vec/mat= 2/0, 4397.330078
+method_8a, l2norm of serial vec/mat= 3/0, 4402.268066
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4399.948730
+method_8a, l2norm of serial vec/mat= 1/1, 4398.407715
+method_8a, l2norm of serial vec/mat= 2/1, 4396.293945
+method_8a, l2norm of serial vec/mat= 3/1, 4401.623047
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4399.212891
+method_8a, l2norm of serial vec/mat= 1/2, 4397.627930
+method_8a, l2norm of serial vec/mat= 2/2, 4396.289062
+method_8a, l2norm of serial vec/mat= 3/2, 4400.410156
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4399.920410
+method_8a, l2norm of serial vec/mat= 1/3, 4398.415039
+method_8a, l2norm of serial vec/mat= 2/3, 4397.758789
+method_8a, l2norm of serial vec/mat= 3/3, 4402.089355
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+14.443978 gflops, 62.723000 (ms)
+14.431094 gflops, 62.778999 (ms)
+14.448586 gflops, 62.702999 (ms)
+14.455271 gflops, 62.674000 (ms)
+14.443287 gflops, 62.726002 (ms)
+14.454810 gflops, 62.675999 (ms)
+-0.967565 gflops, -936.340027 (ms)
+method_8a_multi_cpp, threads: 96, Max Gflops: 14.455271, min time: 62.674000 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4398.344238
+method_8a, l2norm[1]=of omp version: 4393.842773
+method_8a, l2norm[2]=of omp version: 4395.222168
+method_8a, l2norm[3]=of omp version: 4399.068359
+method_8a, l2norm[4]=of omp version: 4398.330566
+method_8a, l2norm[5]=of omp version: 4392.703125
+method_8a, l2norm[6]=of omp version: 4394.885254
+method_8a, l2norm[7]=of omp version: 4398.791504
+method_8a, l2norm[8]=of omp version: 4398.391113
+method_8a, l2norm[9]=of omp version: 4393.372559
+method_8a, l2norm[10]=of omp version: 4395.238281
+method_8a, l2norm[11]=of omp version: 4398.709961
+method_8a, l2norm[12]=of omp version: 4399.372070
+method_8a, l2norm[13]=of omp version: 4393.893066
+method_8a, l2norm[14]=of omp version: 4395.933105
+method_8a, l2norm[15]=of omp version: 4399.290527
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4398.344238
+method_8a, l2norm of serial vec/mat= 1/0, 4393.842773
+method_8a, l2norm of serial vec/mat= 2/0, 4395.222168
+method_8a, l2norm of serial vec/mat= 3/0, 4399.068848
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4398.330078
+method_8a, l2norm of serial vec/mat= 1/1, 4392.703613
+method_8a, l2norm of serial vec/mat= 2/1, 4394.884766
+method_8a, l2norm of serial vec/mat= 3/1, 4398.791504
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4398.391113
+method_8a, l2norm of serial vec/mat= 1/2, 4393.372070
+method_8a, l2norm of serial vec/mat= 2/2, 4395.237793
+method_8a, l2norm of serial vec/mat= 3/2, 4398.709961
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4399.372070
+method_8a, l2norm of serial vec/mat= 1/3, 4393.893066
+method_8a, l2norm of serial vec/mat= 2/3, 4395.933105
+method_8a, l2norm of serial vec/mat= 3/3, 4399.290527
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+19.433903 gflops, 46.618000 (ms)
+19.401855 gflops, 46.695000 (ms)
+19.399778 gflops, 46.700001 (ms)
+19.404764 gflops, 46.688000 (ms)
+19.378616 gflops, 46.750999 (ms)
+19.403517 gflops, 46.691002 (ms)
+19.435152 gflops, 46.615002 (ms)
+method_8a_multi_cpp, threads: 128, Max Gflops: 19.435152, min time: 46.615002 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4395.853027
+method_8a, l2norm[1]=of omp version: 4395.799805
+method_8a, l2norm[2]=of omp version: 4396.466797
+method_8a, l2norm[3]=of omp version: 4397.132324
+method_8a, l2norm[4]=of omp version: 4394.197266
+method_8a, l2norm[5]=of omp version: 4394.420898
+method_8a, l2norm[6]=of omp version: 4395.258301
+method_8a, l2norm[7]=of omp version: 4394.366699
+method_8a, l2norm[8]=of omp version: 4395.921875
+method_8a, l2norm[9]=of omp version: 4396.005859
+method_8a, l2norm[10]=of omp version: 4396.025391
+method_8a, l2norm[11]=of omp version: 4395.698242
+method_8a, l2norm[12]=of omp version: 4394.307129
+method_8a, l2norm[13]=of omp version: 4394.273438
+method_8a, l2norm[14]=of omp version: 4395.403320
+method_8a, l2norm[15]=of omp version: 4395.599609
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4395.852539
+method_8a, l2norm of serial vec/mat= 1/0, 4395.799316
+method_8a, l2norm of serial vec/mat= 2/0, 4396.466797
+method_8a, l2norm of serial vec/mat= 3/0, 4397.132324
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4394.196777
+method_8a, l2norm of serial vec/mat= 1/1, 4394.421387
+method_8a, l2norm of serial vec/mat= 2/1, 4395.258301
+method_8a, l2norm of serial vec/mat= 3/1, 4394.367188
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4395.922363
+method_8a, l2norm of serial vec/mat= 1/2, 4396.006836
+method_8a, l2norm of serial vec/mat= 2/2, 4396.024902
+method_8a, l2norm of serial vec/mat= 3/2, 4395.697754
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4394.307129
+method_8a, l2norm of serial vec/mat= 1/3, 4394.273926
+method_8a, l2norm of serial vec/mat= 2/3, 4395.402832
+method_8a, l2norm of serial vec/mat= 3/3, 4395.599609
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+23.259811 gflops, 38.950001 (ms)
+23.340712 gflops, 38.814999 (ms)
+23.312483 gflops, 38.862000 (ms)
+23.315483 gflops, 38.856998 (ms)
+23.322683 gflops, 38.845001 (ms)
+23.318481 gflops, 38.852001 (ms)
+23.320284 gflops, 38.848999 (ms)
+method_8a_multi_cpp, threads: 160, Max Gflops: 23.340712, min time: 38.814999 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4394.250977
+method_8a, l2norm[1]=of omp version: 4397.226562
+method_8a, l2norm[2]=of omp version: 4397.198242
+method_8a, l2norm[3]=of omp version: 4397.094238
+method_8a, l2norm[4]=of omp version: 4395.696289
+method_8a, l2norm[5]=of omp version: 4398.579102
+method_8a, l2norm[6]=of omp version: 4398.600586
+method_8a, l2norm[7]=of omp version: 4397.604980
+method_8a, l2norm[8]=of omp version: 4393.242676
+method_8a, l2norm[9]=of omp version: 4397.683105
+method_8a, l2norm[10]=of omp version: 4398.784180
+method_8a, l2norm[11]=of omp version: 4396.586426
+method_8a, l2norm[12]=of omp version: 4394.256836
+method_8a, l2norm[13]=of omp version: 4398.830078
+method_8a, l2norm[14]=of omp version: 4398.442383
+method_8a, l2norm[15]=of omp version: 4397.419922
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4394.250977
+method_8a, l2norm of serial vec/mat= 1/0, 4397.226562
+method_8a, l2norm of serial vec/mat= 2/0, 4397.197754
+method_8a, l2norm of serial vec/mat= 3/0, 4397.093750
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4395.696289
+method_8a, l2norm of serial vec/mat= 1/1, 4398.579102
+method_8a, l2norm of serial vec/mat= 2/1, 4398.600586
+method_8a, l2norm of serial vec/mat= 3/1, 4397.605469
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4393.242676
+method_8a, l2norm of serial vec/mat= 1/2, 4397.683105
+method_8a, l2norm of serial vec/mat= 2/2, 4398.784668
+method_8a, l2norm of serial vec/mat= 3/2, 4396.586426
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4394.256836
+method_8a, l2norm of serial vec/mat= 1/3, 4398.830078
+method_8a, l2norm of serial vec/mat= 2/3, 4398.442383
+method_8a, l2norm of serial vec/mat= 3/3, 4397.419922
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+29.195633 gflops, 31.031000 (ms)
+29.203161 gflops, 31.023001 (ms)
+29.206928 gflops, 31.018999 (ms)
+29.205984 gflops, 31.020000 (ms)
+29.146790 gflops, 31.083000 (ms)
+29.172131 gflops, 31.056000 (ms)
+29.196573 gflops, 31.030001 (ms)
+method_8a_multi_cpp, threads: 192, Max Gflops: 29.206928, min time: 31.018999 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4391.361328
+method_8a, l2norm[1]=of omp version: 4395.090332
+method_8a, l2norm[2]=of omp version: 4392.227539
+method_8a, l2norm[3]=of omp version: 4388.122070
+method_8a, l2norm[4]=of omp version: 4390.798340
+method_8a, l2norm[5]=of omp version: 4393.816895
+method_8a, l2norm[6]=of omp version: 4391.571289
+method_8a, l2norm[7]=of omp version: 4386.362793
+method_8a, l2norm[8]=of omp version: 4390.756836
+method_8a, l2norm[9]=of omp version: 4394.817383
+method_8a, l2norm[10]=of omp version: 4391.833008
+method_8a, l2norm[11]=of omp version: 4387.599609
+method_8a, l2norm[12]=of omp version: 4391.213867
+method_8a, l2norm[13]=of omp version: 4394.925781
+method_8a, l2norm[14]=of omp version: 4391.443848
+method_8a, l2norm[15]=of omp version: 4387.369141
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4391.360840
+method_8a, l2norm of serial vec/mat= 1/0, 4395.090332
+method_8a, l2norm of serial vec/mat= 2/0, 4392.227539
+method_8a, l2norm of serial vec/mat= 3/0, 4388.122559
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4390.798828
+method_8a, l2norm of serial vec/mat= 1/1, 4393.816895
+method_8a, l2norm of serial vec/mat= 2/1, 4391.571289
+method_8a, l2norm of serial vec/mat= 3/1, 4386.362793
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4390.756348
+method_8a, l2norm of serial vec/mat= 1/2, 4394.817871
+method_8a, l2norm of serial vec/mat= 2/2, 4391.833008
+method_8a, l2norm of serial vec/mat= 3/2, 4387.599609
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4391.213867
+method_8a, l2norm of serial vec/mat= 1/3, 4394.925293
+method_8a, l2norm of serial vec/mat= 2/3, 4391.443848
+method_8a, l2norm of serial vec/mat= 3/3, 4387.369141
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+33.162621 gflops, 27.319000 (ms)
+33.271011 gflops, 27.230000 (ms)
+33.169907 gflops, 27.313000 (ms)
+33.161407 gflops, 27.320000 (ms)
+33.053730 gflops, 27.409000 (ms)
+33.245373 gflops, 27.250999 (ms)
+33.173550 gflops, 27.309999 (ms)
+method_8a_multi_cpp, threads: 224, Max Gflops: 33.271011, min time: 27.230000 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4394.721191
+method_8a, l2norm[1]=of omp version: 4396.692383
+method_8a, l2norm[2]=of omp version: 4403.690430
+method_8a, l2norm[3]=of omp version: 4395.232422
+method_8a, l2norm[4]=of omp version: 4393.877930
+method_8a, l2norm[5]=of omp version: 4397.197754
+method_8a, l2norm[6]=of omp version: 4403.865723
+method_8a, l2norm[7]=of omp version: 4395.849609
+method_8a, l2norm[8]=of omp version: 4395.562500
+method_8a, l2norm[9]=of omp version: 4397.647461
+method_8a, l2norm[10]=of omp version: 4403.593262
+method_8a, l2norm[11]=of omp version: 4396.322266
+method_8a, l2norm[12]=of omp version: 4394.797852
+method_8a, l2norm[13]=of omp version: 4397.740723
+method_8a, l2norm[14]=of omp version: 4403.594727
+method_8a, l2norm[15]=of omp version: 4395.828613
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4394.721191
+method_8a, l2norm of serial vec/mat= 1/0, 4396.692383
+method_8a, l2norm of serial vec/mat= 2/0, 4403.691406
+method_8a, l2norm of serial vec/mat= 3/0, 4395.232422
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4393.877930
+method_8a, l2norm of serial vec/mat= 1/1, 4397.197754
+method_8a, l2norm of serial vec/mat= 2/1, 4403.865723
+method_8a, l2norm of serial vec/mat= 3/1, 4395.850098
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4395.562500
+method_8a, l2norm of serial vec/mat= 1/2, 4397.647461
+method_8a, l2norm of serial vec/mat= 2/2, 4403.593750
+method_8a, l2norm of serial vec/mat= 3/2, 4396.322266
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4394.797852
+method_8a, l2norm of serial vec/mat= 1/3, 4397.740723
+method_8a, l2norm of serial vec/mat= 2/3, 4403.595215
+method_8a, l2norm of serial vec/mat= 3/3, 4395.828613
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi NoVec, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+nb_rows= 884736
+nb_vec= 4
+nb_mat= 4
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+*** nb_subdomains: 1
+nz= 32
+38.122017 gflops, 23.764999 (ms)
+38.241089 gflops, 23.691000 (ms)
+38.265316 gflops, 23.676001 (ms)
+38.096367 gflops, 23.781000 (ms)
+38.220116 gflops, 23.704000 (ms)
+38.134850 gflops, 23.757000 (ms)
+-0.928933 gflops, -975.280029 (ms)
+method_8a_multi_cpp, threads: 244, Max Gflops: 38.265316, min time: 23.676001 (ms)
+before checkSolutions
+before solutionsNoVec
+method_8a, l2norm[0]=of omp version: 4393.685059
+method_8a, l2norm[1]=of omp version: 4398.263672
+method_8a, l2norm[2]=of omp version: 4392.396973
+method_8a, l2norm[3]=of omp version: 4397.853516
+method_8a, l2norm[4]=of omp version: 4394.297852
+method_8a, l2norm[5]=of omp version: 4399.200684
+method_8a, l2norm[6]=of omp version: 4392.857422
+method_8a, l2norm[7]=of omp version: 4397.821777
+method_8a, l2norm[8]=of omp version: 4393.442383
+method_8a, l2norm[9]=of omp version: 4398.951172
+method_8a, l2norm[10]=of omp version: 4392.015137
+method_8a, l2norm[11]=of omp version: 4397.135254
+method_8a, l2norm[12]=of omp version: 4393.187988
+method_8a, l2norm[13]=of omp version: 4398.557617
+method_8a, l2norm[14]=of omp version: 4392.454590
+method_8a, l2norm[15]=of omp version: 4397.902832
+Enter checkAllSerialSolutionsNoVec
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4393.685059
+method_8a, l2norm of serial vec/mat= 1/0, 4398.263184
+method_8a, l2norm of serial vec/mat= 2/0, 4392.396973
+method_8a, l2norm of serial vec/mat= 3/0, 4397.854004
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4394.297852
+method_8a, l2norm of serial vec/mat= 1/1, 4399.200684
+method_8a, l2norm of serial vec/mat= 2/1, 4392.857422
+method_8a, l2norm of serial vec/mat= 3/1, 4397.821777
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4393.442871
+method_8a, l2norm of serial vec/mat= 1/2, 4398.951172
+method_8a, l2norm of serial vec/mat= 2/2, 4392.015137
+method_8a, l2norm of serial vec/mat= 3/2, 4397.135254
+retrieve data novec: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4393.188477
+method_8a, l2norm of serial vec/mat= 1/3, 4398.557617
+method_8a, l2norm of serial vec/mat= 2/3, 4392.455078
+method_8a, l2norm of serial vec/mat= 3/3, 4397.902832
+after checkSolutions
+after free matrices
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+-5.148169 gflops, -175.979004 (ms)
+1.101315 gflops, 822.625000 (ms)
+-5.131548 gflops, -176.548996 (ms)
+-5.138737 gflops, -176.302002 (ms)
+-5.139699 gflops, -176.268997 (ms)
+-5.150364 gflops, -175.904007 (ms)
+1.100937 gflops, 822.908020 (ms)
+method_8a_multi, threads: 1, Max Gflops: 1.101315, min time: 822.625000 (ms)
+method_8a, l2norm[0]=of omp version: 4393.925293
+method_8a, l2norm[1]=of omp version: 4390.797852
+method_8a, l2norm[2]=of omp version: 4398.831055
+method_8a, l2norm[3]=of omp version: 4396.814453
+method_8a, l2norm[4]=of omp version: 4393.531250
+method_8a, l2norm[5]=of omp version: 4390.217773
+method_8a, l2norm[6]=of omp version: 4398.141602
+method_8a, l2norm[7]=of omp version: 4396.438965
+method_8a, l2norm[8]=of omp version: 4391.877930
+method_8a, l2norm[9]=of omp version: 4388.686523
+method_8a, l2norm[10]=of omp version: 4397.128906
+method_8a, l2norm[11]=of omp version: 4395.251465
+method_8a, l2norm[12]=of omp version: 4393.881348
+method_8a, l2norm[13]=of omp version: 4390.363281
+method_8a, l2norm[14]=of omp version: 4398.962891
+method_8a, l2norm[15]=of omp version: 4396.764648
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4393.925293
+method_8a, l2norm of serial vec/mat= 1/0, 4390.797852
+method_8a, l2norm of serial vec/mat= 2/0, 4398.831055
+method_8a, l2norm of serial vec/mat= 3/0, 4396.815430
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4393.530762
+method_8a, l2norm of serial vec/mat= 1/1, 4390.216797
+method_8a, l2norm of serial vec/mat= 2/1, 4398.142090
+method_8a, l2norm of serial vec/mat= 3/1, 4396.438965
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4391.877930
+method_8a, l2norm of serial vec/mat= 1/2, 4388.686523
+method_8a, l2norm of serial vec/mat= 2/2, 4397.128906
+method_8a, l2norm of serial vec/mat= 3/2, 4395.251953
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4393.880859
+method_8a, l2norm of serial vec/mat= 1/3, 4390.363281
+method_8a, l2norm of serial vec/mat= 2/3, 4398.962891
+method_8a, l2norm of serial vec/mat= 3/3, 4396.764160
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+1.703636 gflops, 531.786011 (ms)
+-1.937688 gflops, -467.552002 (ms)
+1.703597 gflops, 531.797974 (ms)
+-1.936718 gflops, -467.786011 (ms)
+1.704530 gflops, 531.507019 (ms)
+-1.939305 gflops, -467.161987 (ms)
+-1.939280 gflops, -467.167999 (ms)
+method_8a_multi, threads: 2, Max Gflops: 1.704530, min time: 531.507019 (ms)
+method_8a, l2norm[0]=of omp version: 4400.362305
+method_8a, l2norm[1]=of omp version: 4397.280762
+method_8a, l2norm[2]=of omp version: 4396.291992
+method_8a, l2norm[3]=of omp version: 4396.867676
+method_8a, l2norm[4]=of omp version: 4399.336914
+method_8a, l2norm[5]=of omp version: 4397.352539
+method_8a, l2norm[6]=of omp version: 4396.635742
+method_8a, l2norm[7]=of omp version: 4396.536133
+method_8a, l2norm[8]=of omp version: 4399.760254
+method_8a, l2norm[9]=of omp version: 4396.995117
+method_8a, l2norm[10]=of omp version: 4396.167969
+method_8a, l2norm[11]=of omp version: 4396.408203
+method_8a, l2norm[12]=of omp version: 4397.676758
+method_8a, l2norm[13]=of omp version: 4394.061523
+method_8a, l2norm[14]=of omp version: 4394.941895
+method_8a, l2norm[15]=of omp version: 4393.509766
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4400.362793
+method_8a, l2norm of serial vec/mat= 1/0, 4397.280273
+method_8a, l2norm of serial vec/mat= 2/0, 4396.291992
+method_8a, l2norm of serial vec/mat= 3/0, 4396.867188
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4399.336426
+method_8a, l2norm of serial vec/mat= 1/1, 4397.352051
+method_8a, l2norm of serial vec/mat= 2/1, 4396.635742
+method_8a, l2norm of serial vec/mat= 3/1, 4396.536133
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4399.760254
+method_8a, l2norm of serial vec/mat= 1/2, 4396.995117
+method_8a, l2norm of serial vec/mat= 2/2, 4396.168457
+method_8a, l2norm of serial vec/mat= 3/2, 4396.408203
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4397.676758
+method_8a, l2norm of serial vec/mat= 1/3, 4394.061035
+method_8a, l2norm of serial vec/mat= 2/3, 4394.941406
+method_8a, l2norm of serial vec/mat= 3/3, 4393.509766
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+2.229267 gflops, 406.398010 (ms)
+2.226402 gflops, 406.920990 (ms)
+-1.529514 gflops, -592.325012 (ms)
+2.227157 gflops, 406.782990 (ms)
+-1.528062 gflops, -592.888000 (ms)
+2.227508 gflops, 406.718994 (ms)
+2.227579 gflops, 406.705994 (ms)
+method_8a_multi, threads: 4, Max Gflops: 2.229267, min time: 406.398010 (ms)
+method_8a, l2norm[0]=of omp version: 4394.923828
+method_8a, l2norm[1]=of omp version: 4393.574219
+method_8a, l2norm[2]=of omp version: 4398.310059
+method_8a, l2norm[3]=of omp version: 4397.477051
+method_8a, l2norm[4]=of omp version: 4394.611328
+method_8a, l2norm[5]=of omp version: 4393.602539
+method_8a, l2norm[6]=of omp version: 4396.694824
+method_8a, l2norm[7]=of omp version: 4398.281738
+method_8a, l2norm[8]=of omp version: 4394.328613
+method_8a, l2norm[9]=of omp version: 4392.943848
+method_8a, l2norm[10]=of omp version: 4397.415039
+method_8a, l2norm[11]=of omp version: 4396.943359
+method_8a, l2norm[12]=of omp version: 4392.943359
+method_8a, l2norm[13]=of omp version: 4391.900391
+method_8a, l2norm[14]=of omp version: 4396.361328
+method_8a, l2norm[15]=of omp version: 4396.888184
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4394.923828
+method_8a, l2norm of serial vec/mat= 1/0, 4393.574219
+method_8a, l2norm of serial vec/mat= 2/0, 4398.309570
+method_8a, l2norm of serial vec/mat= 3/0, 4397.477539
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4394.611328
+method_8a, l2norm of serial vec/mat= 1/1, 4393.603027
+method_8a, l2norm of serial vec/mat= 2/1, 4396.694824
+method_8a, l2norm of serial vec/mat= 3/1, 4398.281738
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4394.328613
+method_8a, l2norm of serial vec/mat= 1/2, 4392.943848
+method_8a, l2norm of serial vec/mat= 2/2, 4397.415039
+method_8a, l2norm of serial vec/mat= 3/2, 4396.943359
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4392.943359
+method_8a, l2norm of serial vec/mat= 1/3, 4391.900391
+method_8a, l2norm of serial vec/mat= 2/3, 4396.361328
+method_8a, l2norm of serial vec/mat= 3/3, 4396.888184
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+4.453121 gflops, 203.445999 (ms)
+4.450233 gflops, 203.578003 (ms)
+-1.139129 gflops, -795.317993 (ms)
+4.454325 gflops, 203.391006 (ms)
+4.452618 gflops, 203.468994 (ms)
+4.448988 gflops, 203.634995 (ms)
+4.452377 gflops, 203.479996 (ms)
+method_8a_multi, threads: 8, Max Gflops: 4.454325, min time: 203.391006 (ms)
+method_8a, l2norm[0]=of omp version: 4394.103516
+method_8a, l2norm[1]=of omp version: 4399.601074
+method_8a, l2norm[2]=of omp version: 4398.967285
+method_8a, l2norm[3]=of omp version: 4396.687012
+method_8a, l2norm[4]=of omp version: 4394.312012
+method_8a, l2norm[5]=of omp version: 4398.968262
+method_8a, l2norm[6]=of omp version: 4398.500000
+method_8a, l2norm[7]=of omp version: 4396.553223
+method_8a, l2norm[8]=of omp version: 4393.913574
+method_8a, l2norm[9]=of omp version: 4398.167480
+method_8a, l2norm[10]=of omp version: 4398.878906
+method_8a, l2norm[11]=of omp version: 4396.666504
+method_8a, l2norm[12]=of omp version: 4393.579590
+method_8a, l2norm[13]=of omp version: 4398.477051
+method_8a, l2norm[14]=of omp version: 4397.515625
+method_8a, l2norm[15]=of omp version: 4396.515137
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4394.104004
+method_8a, l2norm of serial vec/mat= 1/0, 4399.601074
+method_8a, l2norm of serial vec/mat= 2/0, 4398.966797
+method_8a, l2norm of serial vec/mat= 3/0, 4396.686523
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4394.312012
+method_8a, l2norm of serial vec/mat= 1/1, 4398.968262
+method_8a, l2norm of serial vec/mat= 2/1, 4398.500000
+method_8a, l2norm of serial vec/mat= 3/1, 4396.553223
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4393.913574
+method_8a, l2norm of serial vec/mat= 1/2, 4398.167480
+method_8a, l2norm of serial vec/mat= 2/2, 4398.878906
+method_8a, l2norm of serial vec/mat= 3/2, 4396.666992
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4393.579102
+method_8a, l2norm of serial vec/mat= 1/3, 4398.477051
+method_8a, l2norm of serial vec/mat= 2/3, 4397.515625
+method_8a, l2norm of serial vec/mat= 3/3, 4396.515137
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+-1.009022 gflops, -897.869019 (ms)
+8.958023 gflops, 101.135002 (ms)
+8.949616 gflops, 101.230003 (ms)
+8.958200 gflops, 101.133003 (ms)
+8.947053 gflops, 101.259003 (ms)
+8.951827 gflops, 101.205002 (ms)
+8.954747 gflops, 101.171997 (ms)
+method_8a_multi, threads: 16, Max Gflops: 8.958200, min time: 101.133003 (ms)
+method_8a, l2norm[0]=of omp version: 4397.014160
+method_8a, l2norm[1]=of omp version: 4397.018555
+method_8a, l2norm[2]=of omp version: 4397.668457
+method_8a, l2norm[3]=of omp version: 4392.474121
+method_8a, l2norm[4]=of omp version: 4397.776367
+method_8a, l2norm[5]=of omp version: 4397.485840
+method_8a, l2norm[6]=of omp version: 4397.929688
+method_8a, l2norm[7]=of omp version: 4392.393066
+method_8a, l2norm[8]=of omp version: 4398.592773
+method_8a, l2norm[9]=of omp version: 4398.360352
+method_8a, l2norm[10]=of omp version: 4399.219238
+method_8a, l2norm[11]=of omp version: 4393.723145
+method_8a, l2norm[12]=of omp version: 4397.591309
+method_8a, l2norm[13]=of omp version: 4398.255371
+method_8a, l2norm[14]=of omp version: 4398.188477
+method_8a, l2norm[15]=of omp version: 4394.008789
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4397.013672
+method_8a, l2norm of serial vec/mat= 1/0, 4397.018555
+method_8a, l2norm of serial vec/mat= 2/0, 4397.668457
+method_8a, l2norm of serial vec/mat= 3/0, 4392.474609
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4397.776367
+method_8a, l2norm of serial vec/mat= 1/1, 4397.485840
+method_8a, l2norm of serial vec/mat= 2/1, 4397.929199
+method_8a, l2norm of serial vec/mat= 3/1, 4392.393066
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4398.592773
+method_8a, l2norm of serial vec/mat= 1/2, 4398.360352
+method_8a, l2norm of serial vec/mat= 2/2, 4399.218750
+method_8a, l2norm of serial vec/mat= 3/2, 4393.723145
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4397.591309
+method_8a, l2norm of serial vec/mat= 1/3, 4398.254883
+method_8a, l2norm of serial vec/mat= 2/3, 4398.188477
+method_8a, l2norm of serial vec/mat= 3/3, 4394.008789
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+17.583109 gflops, 51.525002 (ms)
+17.605659 gflops, 51.459000 (ms)
+17.603266 gflops, 51.466000 (ms)
+17.614902 gflops, 51.431999 (ms)
+17.623812 gflops, 51.405998 (ms)
+17.598478 gflops, 51.480000 (ms)
+-0.956143 gflops, -947.525024 (ms)
+method_8a_multi, threads: 32, Max Gflops: 17.623812, min time: 51.405998 (ms)
+method_8a, l2norm[0]=of omp version: 4396.976074
+method_8a, l2norm[1]=of omp version: 4391.028320
+method_8a, l2norm[2]=of omp version: 4395.184570
+method_8a, l2norm[3]=of omp version: 4398.113281
+method_8a, l2norm[4]=of omp version: 4397.869629
+method_8a, l2norm[5]=of omp version: 4392.098633
+method_8a, l2norm[6]=of omp version: 4395.135742
+method_8a, l2norm[7]=of omp version: 4398.795898
+method_8a, l2norm[8]=of omp version: 4397.403809
+method_8a, l2norm[9]=of omp version: 4391.960938
+method_8a, l2norm[10]=of omp version: 4394.504883
+method_8a, l2norm[11]=of omp version: 4398.879883
+method_8a, l2norm[12]=of omp version: 4396.883301
+method_8a, l2norm[13]=of omp version: 4391.144531
+method_8a, l2norm[14]=of omp version: 4393.447266
+method_8a, l2norm[15]=of omp version: 4397.543945
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4396.976074
+method_8a, l2norm of serial vec/mat= 1/0, 4391.028320
+method_8a, l2norm of serial vec/mat= 2/0, 4395.184570
+method_8a, l2norm of serial vec/mat= 3/0, 4398.113281
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4397.869629
+method_8a, l2norm of serial vec/mat= 1/1, 4392.098633
+method_8a, l2norm of serial vec/mat= 2/1, 4395.136230
+method_8a, l2norm of serial vec/mat= 3/1, 4398.795898
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4397.403809
+method_8a, l2norm of serial vec/mat= 1/2, 4391.960938
+method_8a, l2norm of serial vec/mat= 2/2, 4394.504883
+method_8a, l2norm of serial vec/mat= 3/2, 4398.879883
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4396.883301
+method_8a, l2norm of serial vec/mat= 1/3, 4391.144043
+method_8a, l2norm of serial vec/mat= 2/3, 4393.447266
+method_8a, l2norm of serial vec/mat= 3/3, 4397.544434
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+36.024082 gflops, 25.149000 (ms)
+35.922668 gflops, 25.219999 (ms)
+-0.930217 gflops, -973.934021 (ms)
+36.028381 gflops, 25.146000 (ms)
+36.088657 gflops, 25.104000 (ms)
+35.936916 gflops, 25.209999 (ms)
+36.113113 gflops, 25.087000 (ms)
+method_8a_multi, threads: 64, Max Gflops: 36.113113, min time: 25.087000 (ms)
+method_8a, l2norm[0]=of omp version: 4401.135254
+method_8a, l2norm[1]=of omp version: 4402.739258
+method_8a, l2norm[2]=of omp version: 4399.138672
+method_8a, l2norm[3]=of omp version: 4395.606445
+method_8a, l2norm[4]=of omp version: 4399.704102
+method_8a, l2norm[5]=of omp version: 4401.929199
+method_8a, l2norm[6]=of omp version: 4397.893555
+method_8a, l2norm[7]=of omp version: 4394.679688
+method_8a, l2norm[8]=of omp version: 4400.390137
+method_8a, l2norm[9]=of omp version: 4402.031738
+method_8a, l2norm[10]=of omp version: 4398.795410
+method_8a, l2norm[11]=of omp version: 4395.356445
+method_8a, l2norm[12]=of omp version: 4399.711426
+method_8a, l2norm[13]=of omp version: 4401.415527
+method_8a, l2norm[14]=of omp version: 4398.017578
+method_8a, l2norm[15]=of omp version: 4394.873047
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4401.135254
+method_8a, l2norm of serial vec/mat= 1/0, 4402.739258
+method_8a, l2norm of serial vec/mat= 2/0, 4399.138672
+method_8a, l2norm of serial vec/mat= 3/0, 4395.606445
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4399.703613
+method_8a, l2norm of serial vec/mat= 1/1, 4401.929199
+method_8a, l2norm of serial vec/mat= 2/1, 4397.893555
+method_8a, l2norm of serial vec/mat= 3/1, 4394.679688
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4400.390137
+method_8a, l2norm of serial vec/mat= 1/2, 4402.031738
+method_8a, l2norm of serial vec/mat= 2/2, 4398.795410
+method_8a, l2norm of serial vec/mat= 3/2, 4395.356445
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4399.710938
+method_8a, l2norm of serial vec/mat= 1/3, 4401.415039
+method_8a, l2norm of serial vec/mat= 2/3, 4398.018066
+method_8a, l2norm of serial vec/mat= 3/3, 4394.873047
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+-0.922508 gflops, -982.072021 (ms)
+53.311150 gflops, 16.993999 (ms)
+53.201580 gflops, 17.028999 (ms)
+53.891476 gflops, 16.811001 (ms)
+53.264133 gflops, 17.009001 (ms)
+53.455845 gflops, 16.948000 (ms)
+53.490562 gflops, 16.937000 (ms)
+method_8a_multi, threads: 96, Max Gflops: 53.891476, min time: 16.811001 (ms)
+method_8a, l2norm[0]=of omp version: 4391.224121
+method_8a, l2norm[1]=of omp version: 4394.006348
+method_8a, l2norm[2]=of omp version: 4389.617676
+method_8a, l2norm[3]=of omp version: 4389.533203
+method_8a, l2norm[4]=of omp version: 4393.532227
+method_8a, l2norm[5]=of omp version: 4395.322754
+method_8a, l2norm[6]=of omp version: 4390.972168
+method_8a, l2norm[7]=of omp version: 4390.795410
+method_8a, l2norm[8]=of omp version: 4392.691406
+method_8a, l2norm[9]=of omp version: 4395.644043
+method_8a, l2norm[10]=of omp version: 4391.277344
+method_8a, l2norm[11]=of omp version: 4391.321289
+method_8a, l2norm[12]=of omp version: 4392.919434
+method_8a, l2norm[13]=of omp version: 4395.721191
+method_8a, l2norm[14]=of omp version: 4391.461914
+method_8a, l2norm[15]=of omp version: 4390.445312
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4391.224121
+method_8a, l2norm of serial vec/mat= 1/0, 4394.006348
+method_8a, l2norm of serial vec/mat= 2/0, 4389.617676
+method_8a, l2norm of serial vec/mat= 3/0, 4389.533203
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4393.531738
+method_8a, l2norm of serial vec/mat= 1/1, 4395.323242
+method_8a, l2norm of serial vec/mat= 2/1, 4390.972168
+method_8a, l2norm of serial vec/mat= 3/1, 4390.795410
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4392.691406
+method_8a, l2norm of serial vec/mat= 1/2, 4395.644043
+method_8a, l2norm of serial vec/mat= 2/2, 4391.277832
+method_8a, l2norm of serial vec/mat= 3/2, 4391.321289
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4392.919434
+method_8a, l2norm of serial vec/mat= 1/3, 4395.721191
+method_8a, l2norm of serial vec/mat= 2/3, 4391.461914
+method_8a, l2norm of serial vec/mat= 3/3, 4390.444824
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+-0.918733 gflops, -986.107971 (ms)
+70.514450 gflops, 12.848000 (ms)
+70.273788 gflops, 12.892000 (ms)
+70.503471 gflops, 12.850000 (ms)
+70.094360 gflops, 12.925000 (ms)
+70.317421 gflops, 12.884000 (ms)
+70.045593 gflops, 12.934000 (ms)
+method_8a_multi, threads: 128, Max Gflops: 70.514450, min time: 12.848000 (ms)
+method_8a, l2norm[0]=of omp version: 4394.100586
+method_8a, l2norm[1]=of omp version: 4400.985840
+method_8a, l2norm[2]=of omp version: 4396.722656
+method_8a, l2norm[3]=of omp version: 4395.944824
+method_8a, l2norm[4]=of omp version: 4392.880371
+method_8a, l2norm[5]=of omp version: 4400.078125
+method_8a, l2norm[6]=of omp version: 4395.988281
+method_8a, l2norm[7]=of omp version: 4395.216797
+method_8a, l2norm[8]=of omp version: 4395.062500
+method_8a, l2norm[9]=of omp version: 4401.358887
+method_8a, l2norm[10]=of omp version: 4398.093262
+method_8a, l2norm[11]=of omp version: 4396.757812
+method_8a, l2norm[12]=of omp version: 4395.094238
+method_8a, l2norm[13]=of omp version: 4401.432129
+method_8a, l2norm[14]=of omp version: 4397.812500
+method_8a, l2norm[15]=of omp version: 4396.226562
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4394.100098
+method_8a, l2norm of serial vec/mat= 1/0, 4400.986328
+method_8a, l2norm of serial vec/mat= 2/0, 4396.722656
+method_8a, l2norm of serial vec/mat= 3/0, 4395.944824
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4392.880371
+method_8a, l2norm of serial vec/mat= 1/1, 4400.077637
+method_8a, l2norm of serial vec/mat= 2/1, 4395.988281
+method_8a, l2norm of serial vec/mat= 3/1, 4395.216309
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4395.062500
+method_8a, l2norm of serial vec/mat= 1/2, 4401.358887
+method_8a, l2norm of serial vec/mat= 2/2, 4398.093262
+method_8a, l2norm of serial vec/mat= 3/2, 4396.757812
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4395.093750
+method_8a, l2norm of serial vec/mat= 1/3, 4401.432617
+method_8a, l2norm of serial vec/mat= 2/3, 4397.812500
+method_8a, l2norm of serial vec/mat= 3/3, 4396.227051
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+87.864388 gflops, 10.311000 (ms)
+87.499481 gflops, 10.354000 (ms)
+86.961952 gflops, 10.418000 (ms)
+87.634903 gflops, 10.338000 (ms)
+88.069374 gflops, 10.287000 (ms)
+-0.916400 gflops, -988.617981 (ms)
+88.052261 gflops, 10.289000 (ms)
+method_8a_multi, threads: 160, Max Gflops: 88.069374, min time: 10.287000 (ms)
+method_8a, l2norm[0]=of omp version: 4400.435547
+method_8a, l2norm[1]=of omp version: 4394.971191
+method_8a, l2norm[2]=of omp version: 4400.995117
+method_8a, l2norm[3]=of omp version: 4399.007812
+method_8a, l2norm[4]=of omp version: 4401.216309
+method_8a, l2norm[5]=of omp version: 4395.178711
+method_8a, l2norm[6]=of omp version: 4401.865234
+method_8a, l2norm[7]=of omp version: 4399.231445
+method_8a, l2norm[8]=of omp version: 4399.158203
+method_8a, l2norm[9]=of omp version: 4393.986816
+method_8a, l2norm[10]=of omp version: 4400.096191
+method_8a, l2norm[11]=of omp version: 4396.720703
+method_8a, l2norm[12]=of omp version: 4399.267090
+method_8a, l2norm[13]=of omp version: 4393.638672
+method_8a, l2norm[14]=of omp version: 4400.329590
+method_8a, l2norm[15]=of omp version: 4398.219727
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4400.435547
+method_8a, l2norm of serial vec/mat= 1/0, 4394.971680
+method_8a, l2norm of serial vec/mat= 2/0, 4400.995117
+method_8a, l2norm of serial vec/mat= 3/0, 4399.007812
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4401.216309
+method_8a, l2norm of serial vec/mat= 1/1, 4395.178223
+method_8a, l2norm of serial vec/mat= 2/1, 4401.865234
+method_8a, l2norm of serial vec/mat= 3/1, 4399.231445
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4399.158203
+method_8a, l2norm of serial vec/mat= 1/2, 4393.986328
+method_8a, l2norm of serial vec/mat= 2/2, 4400.096191
+method_8a, l2norm of serial vec/mat= 3/2, 4396.720703
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4399.267090
+method_8a, l2norm of serial vec/mat= 1/3, 4393.638672
+method_8a, l2norm of serial vec/mat= 2/3, 4400.329590
+method_8a, l2norm of serial vec/mat= 3/3, 4398.220215
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+105.333061 gflops, 8.601000 (ms)
+105.027779 gflops, 8.626000 (ms)
+106.222260 gflops, 8.529000 (ms)
+106.048187 gflops, 8.543000 (ms)
+105.467941 gflops, 8.590000 (ms)
+105.369820 gflops, 8.598000 (ms)
+104.784836 gflops, 8.646000 (ms)
+method_8a_multi, threads: 192, Max Gflops: 106.222260, min time: 8.529000 (ms)
+method_8a, l2norm[0]=of omp version: 4389.965820
+method_8a, l2norm[1]=of omp version: 4396.145508
+method_8a, l2norm[2]=of omp version: 4394.701660
+method_8a, l2norm[3]=of omp version: 4390.667969
+method_8a, l2norm[4]=of omp version: 4390.436035
+method_8a, l2norm[5]=of omp version: 4397.401855
+method_8a, l2norm[6]=of omp version: 4395.794434
+method_8a, l2norm[7]=of omp version: 4392.677734
+method_8a, l2norm[8]=of omp version: 4390.373535
+method_8a, l2norm[9]=of omp version: 4395.899414
+method_8a, l2norm[10]=of omp version: 4394.984863
+method_8a, l2norm[11]=of omp version: 4392.229004
+method_8a, l2norm[12]=of omp version: 4390.732910
+method_8a, l2norm[13]=of omp version: 4396.510742
+method_8a, l2norm[14]=of omp version: 4394.487793
+method_8a, l2norm[15]=of omp version: 4391.329102
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4389.965820
+method_8a, l2norm of serial vec/mat= 1/0, 4396.145508
+method_8a, l2norm of serial vec/mat= 2/0, 4394.701660
+method_8a, l2norm of serial vec/mat= 3/0, 4390.667480
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4390.436035
+method_8a, l2norm of serial vec/mat= 1/1, 4397.401855
+method_8a, l2norm of serial vec/mat= 2/1, 4395.794434
+method_8a, l2norm of serial vec/mat= 3/1, 4392.677734
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4390.373047
+method_8a, l2norm of serial vec/mat= 1/2, 4395.898926
+method_8a, l2norm of serial vec/mat= 2/2, 4394.984863
+method_8a, l2norm of serial vec/mat= 3/2, 4392.229004
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4390.732910
+method_8a, l2norm of serial vec/mat= 1/3, 4396.510742
+method_8a, l2norm of serial vec/mat= 2/3, 4394.487793
+method_8a, l2norm of serial vec/mat= 3/3, 4391.329102
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+121.541412 gflops, 7.454000 (ms)
+122.677002 gflops, 7.385000 (ms)
+120.892670 gflops, 7.494000 (ms)
+121.135132 gflops, 7.479000 (ms)
+120.699394 gflops, 7.506000 (ms)
+121.950424 gflops, 7.429000 (ms)
+120.876541 gflops, 7.495000 (ms)
+method_8a_multi, threads: 224, Max Gflops: 122.677002, min time: 7.385000 (ms)
+method_8a, l2norm[0]=of omp version: 4392.666504
+method_8a, l2norm[1]=of omp version: 4397.798828
+method_8a, l2norm[2]=of omp version: 4395.314941
+method_8a, l2norm[3]=of omp version: 4393.964355
+method_8a, l2norm[4]=of omp version: 4391.564453
+method_8a, l2norm[5]=of omp version: 4396.374512
+method_8a, l2norm[6]=of omp version: 4394.936035
+method_8a, l2norm[7]=of omp version: 4394.125000
+method_8a, l2norm[8]=of omp version: 4393.163086
+method_8a, l2norm[9]=of omp version: 4398.419434
+method_8a, l2norm[10]=of omp version: 4395.091309
+method_8a, l2norm[11]=of omp version: 4395.387207
+method_8a, l2norm[12]=of omp version: 4392.457520
+method_8a, l2norm[13]=of omp version: 4398.414551
+method_8a, l2norm[14]=of omp version: 4395.960938
+method_8a, l2norm[15]=of omp version: 4395.572266
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4392.666504
+method_8a, l2norm of serial vec/mat= 1/0, 4397.798828
+method_8a, l2norm of serial vec/mat= 2/0, 4395.315918
+method_8a, l2norm of serial vec/mat= 3/0, 4393.964355
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4391.564453
+method_8a, l2norm of serial vec/mat= 1/1, 4396.375000
+method_8a, l2norm of serial vec/mat= 2/1, 4394.936035
+method_8a, l2norm of serial vec/mat= 3/1, 4394.125488
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4393.163086
+method_8a, l2norm of serial vec/mat= 1/2, 4398.419434
+method_8a, l2norm of serial vec/mat= 2/2, 4395.091309
+method_8a, l2norm of serial vec/mat= 3/2, 4395.387695
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4392.457520
+method_8a, l2norm of serial vec/mat= 1/3, 4398.414551
+method_8a, l2norm of serial vec/mat= 2/3, 4395.960938
+method_8a, l2norm of serial vec/mat= 3/3, 4395.572266
+============== METHOD 8a Multi, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+inside generate Multi
+generate: nb_subdomains = 1
+subdomain 0
+nb_rows= 884736
+vec_size= 884736
+nb nonzeros per row= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+*** nb_subdomains: 1
+134.337143 gflops, 6.744000 (ms)
+135.847900 gflops, 6.669000 (ms)
+133.860764 gflops, 6.768000 (ms)
+132.996140 gflops, 6.812000 (ms)
+135.118515 gflops, 6.705000 (ms)
+133.781708 gflops, 6.772000 (ms)
+134.257507 gflops, 6.748000 (ms)
+method_8a_multi, threads: 244, Max Gflops: 135.847900, min time: 6.669000 (ms)
+method_8a, l2norm[0]=of omp version: 4396.612793
+method_8a, l2norm[1]=of omp version: 4393.237793
+method_8a, l2norm[2]=of omp version: 4396.539551
+method_8a, l2norm[3]=of omp version: 4397.369629
+method_8a, l2norm[4]=of omp version: 4395.752441
+method_8a, l2norm[5]=of omp version: 4392.990234
+method_8a, l2norm[6]=of omp version: 4397.166992
+method_8a, l2norm[7]=of omp version: 4397.531250
+method_8a, l2norm[8]=of omp version: 4395.823242
+method_8a, l2norm[9]=of omp version: 4392.803223
+method_8a, l2norm[10]=of omp version: 4397.170898
+method_8a, l2norm[11]=of omp version: 4397.592773
+method_8a, l2norm[12]=of omp version: 4395.340820
+method_8a, l2norm[13]=of omp version: 4392.154297
+method_8a, l2norm[14]=of omp version: 4397.252441
+method_8a, l2norm[15]=of omp version: 4396.771973
+Enter checkAllSerialSolutions
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/0, 4396.612793
+method_8a, l2norm of serial vec/mat= 1/0, 4393.237793
+method_8a, l2norm of serial vec/mat= 2/0, 4396.539551
+method_8a, l2norm of serial vec/mat= 3/0, 4397.369629
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/1, 4395.752441
+method_8a, l2norm of serial vec/mat= 1/1, 4392.990234
+method_8a, l2norm of serial vec/mat= 2/1, 4397.167480
+method_8a, l2norm of serial vec/mat= 3/1, 4397.531250
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/2, 4395.823242
+method_8a, l2norm of serial vec/mat= 1/2, 4392.803223
+method_8a, l2norm of serial vec/mat= 2/2, 4397.170898
+method_8a, l2norm of serial vec/mat= 3/2, 4397.592773
+retrieve data: nb_mat: 4
+method_8a, l2norm of serial vec/mat= 0/3, 4395.340820
+method_8a, l2norm of serial vec/mat= 1/3, 4392.154297
+method_8a, l2norm of serial vec/mat= 2/3, 4397.252930
+method_8a, l2norm of serial vec/mat= 3/3, 4396.771973
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+0.124811 gflops, 453.669006 (ms)
+-0.103783 gflops, -545.593018 (ms)
+0.124858 gflops, 453.498993 (ms)
+-0.103818 gflops, -545.408020 (ms)
+0.124820 gflops, 453.636993 (ms)
+-0.103836 gflops, -545.312012 (ms)
+0.124953 gflops, 453.154999 (ms)
+method_8a_base, threads: 1, Max Gflops: 0.124953, min time: 453.154999 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4404.679199
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4404.679199
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+-0.088880 gflops, -637.072998 (ms)
+0.156385 gflops, 362.075012 (ms)
+0.156302 gflops, 362.268005 (ms)
+-0.088893 gflops, -636.979980 (ms)
+0.156452 gflops, 361.920990 (ms)
+0.156538 gflops, 361.720001 (ms)
+-0.088875 gflops, -637.107971 (ms)
+method_8a_base, threads: 2, Max Gflops: 0.156538, min time: 361.720001 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4397.729492
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4397.729980
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+0.173283 gflops, 326.765991 (ms)
+-0.084358 gflops, -671.223022 (ms)
+0.173565 gflops, 326.234985 (ms)
+0.172806 gflops, 327.667999 (ms)
+-0.084219 gflops, -672.333984 (ms)
+0.172981 gflops, 327.337006 (ms)
+0.173541 gflops, 326.281006 (ms)
+method_8a_base, threads: 4, Max Gflops: 0.173565, min time: 326.234985 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4395.281250
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4395.281250
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+0.392717 gflops, 144.182999 (ms)
+0.391195 gflops, 144.744003 (ms)
+-0.066267 gflops, -854.463989 (ms)
+0.390666 gflops, 144.940002 (ms)
+0.391693 gflops, 144.559998 (ms)
+0.390623 gflops, 144.955994 (ms)
+0.391509 gflops, 144.628006 (ms)
+method_8a_base, threads: 8, Max Gflops: 0.392717, min time: 144.182999 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4393.551270
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4393.550781
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+0.881609 gflops, 64.226997 (ms)
+0.883342 gflops, 64.100998 (ms)
+0.887857 gflops, 63.775002 (ms)
+0.886148 gflops, 63.897999 (ms)
+0.883976 gflops, 64.055000 (ms)
+0.882722 gflops, 64.146004 (ms)
+0.884322 gflops, 64.029999 (ms)
+method_8a_base, threads: 16, Max Gflops: 0.887857, min time: 63.775002 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4388.578613
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4388.579102
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+1.887814 gflops, 29.993999 (ms)
+1.896413 gflops, 29.858000 (ms)
+1.896286 gflops, 29.860001 (ms)
+1.893496 gflops, 29.903999 (ms)
+1.885740 gflops, 30.027000 (ms)
+1.882730 gflops, 30.075001 (ms)
+1.896985 gflops, 29.849001 (ms)
+method_8a_base, threads: 32, Max Gflops: 1.896985, min time: 29.849001 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4399.548340
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4399.548340
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+3.902888 gflops, 14.508000 (ms)
+3.869813 gflops, 14.632000 (ms)
+3.907467 gflops, 14.491000 (ms)
+3.855059 gflops, 14.688000 (ms)
+3.868491 gflops, 14.637000 (ms)
+3.846417 gflops, 14.721000 (ms)
+3.886014 gflops, 14.571000 (ms)
+method_8a_base, threads: 64, Max Gflops: 3.907467, min time: 14.491000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4396.773926
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4396.773926
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+5.827221 gflops, 9.717000 (ms)
+5.840444 gflops, 9.695000 (ms)
+5.796203 gflops, 9.769000 (ms)
+5.849494 gflops, 9.680000 (ms)
+5.820033 gflops, 9.729000 (ms)
+5.859179 gflops, 9.664000 (ms)
+5.809881 gflops, 9.746000 (ms)
+method_8a_base, threads: 96, Max Gflops: 5.859179, min time: 9.664000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4389.159180
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4389.159180
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+7.785385 gflops, 7.273000 (ms)
+7.815474 gflops, 7.245000 (ms)
+7.693357 gflops, 7.360000 (ms)
+7.667313 gflops, 7.385000 (ms)
+7.861044 gflops, 7.203000 (ms)
+7.718526 gflops, 7.336000 (ms)
+7.692311 gflops, 7.361000 (ms)
+method_8a_base, threads: 128, Max Gflops: 7.861044, min time: 7.203000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4398.993652
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4398.993652
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+9.558255 gflops, 5.924000 (ms)
+9.577656 gflops, 5.912000 (ms)
+9.674202 gflops, 5.853000 (ms)
+9.516488 gflops, 5.950000 (ms)
+9.633057 gflops, 5.878000 (ms)
+9.513290 gflops, 5.952000 (ms)
+9.434039 gflops, 6.002000 (ms)
+method_8a_base, threads: 160, Max Gflops: 9.674202, min time: 5.853000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4397.186035
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4397.186035
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+11.295253 gflops, 5.013000 (ms)
+11.130942 gflops, 5.087000 (ms)
+11.315568 gflops, 5.004000 (ms)
+11.183705 gflops, 5.063000 (ms)
+11.261557 gflops, 5.028000 (ms)
+11.185916 gflops, 5.062000 (ms)
+11.333688 gflops, 4.996000 (ms)
+method_8a_base, threads: 192, Max Gflops: 11.333688, min time: 4.996000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4395.104980
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4395.104492
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+12.972075 gflops, 4.365000 (ms)
+12.830977 gflops, 4.413000 (ms)
+13.004847 gflops, 4.354000 (ms)
+12.712866 gflops, 4.454000 (ms)
+13.052814 gflops, 4.338000 (ms)
+13.137611 gflops, 4.310000 (ms)
+12.656035 gflops, 4.474000 (ms)
+method_8a_base, threads: 224, Max Gflops: 13.137611, min time: 4.310000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4395.489746
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4395.489746
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+13.932850 gflops, 4.064000 (ms)
+13.683689 gflops, 4.138000 (ms)
+13.710195 gflops, 4.130000 (ms)
+13.386077 gflops, 4.230000 (ms)
+13.740137 gflops, 4.121000 (ms)
+13.823999 gflops, 4.096000 (ms)
+13.840896 gflops, 4.091000 (ms)
+method_8a_base, threads: 244, Max Gflops: 13.932850, min time: 4.064000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4395.654785
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 801099808
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4395.654785
+====================================
+Timers [All times in ms (1/1000 s)]: 
+====================================
+
+[Timer] [method_0] Matrix-Vector multiply         |  avg:   -13.6055  |  tot: -5265.3384  |  count=   387
+Inside empty ProjectSettings destructor

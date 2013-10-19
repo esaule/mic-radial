@@ -1,0 +1,10 @@
+Each of supercompact_matrix/performance.py outputs the data in a files 
+supercompact.data, etc. and stored in the directory curve_data.
+-----------------------------------------
+2D and 3D RBF data on reduced grids of 8x8x8 and 23x23x23 with 32 nodes per stencil. 
+figure9/ell_kd-tree_rcm_sym_0_x_weights_direct__no_hv_stsize_32_2d_23x_23y_1z.bmtx.asc
+figure9/ell_kd-tree_rcm_sym_1_x_weights_direct__no_hv_stsize_32_3d_8x_8y_8z.bmtx.asc
+figure9/ell_kd-tree_x_weights_direct__no_hv_stsize_32_2d_23x_23y_1z.bmtx.asc
+figure9/ell_kd-tree_x_weights_direct__no_hv_stsize_32_3d_8x_8y_8z.bmtx.asc
+
+I cannot find python that generated the matrix plots. 

@@ -1,0 +1,6 @@
+# figure 10(a)
+python performance_compact_rbf.py  
+
+# figure 10(b)
+python performance_super_random.py
+

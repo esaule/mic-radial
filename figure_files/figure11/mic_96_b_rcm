@@ -1,0 +1,531 @@
+argv[0]= ./linux/release/spmv_openmp_mic
+argv[1]= matrix/ell_kd-tree_rcm_sym_1_x_weights_direct__no_hv_stsize_32_3d_96x_96y_96z.bmtx
+argv[2]= 1
+filename= matrix/ell_kd-tree_rcm_sym_1_x_weights_direct__no_hv_stsize_32_3d_96x_96y_96z.bmtx
+choice= 1
+argv[0]= 1
+[ProjectSettings]   Reading config file: test.conf
+[Project Settings] 	asci_binary = binary
+asci_binary= binary
+[Project Settings] 	in_format = ELL
+filename = matrix/ell_kd-tree_rcm_sym_1_x_weights_direct__no_hv_stsize_32_3d_96x_96y_96z.bmtx
+choice= 1
+spmv in ell format using OpenNP in Native mode
+[ProjectSettings]   Reading config file: test.conf
+[Project Settings] 	asci_binary = binary
+[Project Settings] 	sparsity = NONE
+[Project Settings] 	diag_sep = 80000
+[Project Settings] 	inner_bandwidth = 2000
+[Project Settings] 	sort_col_indices = 0
+[Project Settings] 	n3d = 128
+[Project Settings] 	random_seed = 1
+seed: 1378456605
+[Project Settings] 	use_subdomains = 0
+sparsity = NONE
+[Project Settings] 	in_format = ELL
+
+Read ELLPACK file
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 45029
+Inside empty ProjectSettings destructor
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+-0.102609 gflops, -551.831970 (ms)
+0.126680 gflops, 446.977997 (ms)
+0.126572 gflops, 447.359985 (ms)
+-0.102566 gflops, -552.067017 (ms)
+0.126548 gflops, 447.442993 (ms)
+-0.102617 gflops, -551.793030 (ms)
+0.126641 gflops, 447.115997 (ms)
+method_8a_base, threads: 1, Max Gflops: 0.126680, min time: 446.977997 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4395.796387
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4395.796387
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+-0.088024 gflops, -643.268005 (ms)
+0.159041 gflops, 356.028015 (ms)
+-0.087988 gflops, -643.530029 (ms)
+0.159161 gflops, 355.760010 (ms)
+0.159144 gflops, 355.799011 (ms)
+-0.088072 gflops, -642.914978 (ms)
+0.159165 gflops, 355.752014 (ms)
+method_8a_base, threads: 2, Max Gflops: 0.159165, min time: 355.752014 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4396.875977
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4396.875977
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+-0.082353 gflops, -687.567017 (ms)
+0.181382 gflops, 312.175995 (ms)
+0.182577 gflops, 310.131989 (ms)
+-0.082204 gflops, -688.809998 (ms)
+0.182325 gflops, 310.562012 (ms)
+0.182045 gflops, 311.039001 (ms)
+-0.082245 gflops, -688.471985 (ms)
+method_8a_base, threads: 4, Max Gflops: 0.182577, min time: 310.131989 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4397.566406
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4397.566406
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+0.399615 gflops, 141.694000 (ms)
+0.401104 gflops, 141.167999 (ms)
+-0.065987 gflops, -858.098999 (ms)
+0.400716 gflops, 141.304993 (ms)
+0.401599 gflops, 140.994003 (ms)
+0.402024 gflops, 140.845001 (ms)
+0.402253 gflops, 140.764999 (ms)
+method_8a_base, threads: 8, Max Gflops: 0.402253, min time: 140.764999 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4396.554688
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4396.554688
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+0.903195 gflops, 62.692001 (ms)
+0.908120 gflops, 62.352001 (ms)
+0.908324 gflops, 62.338001 (ms)
+0.907873 gflops, 62.368999 (ms)
+0.910837 gflops, 62.166000 (ms)
+0.904999 gflops, 62.567001 (ms)
+0.904494 gflops, 62.602001 (ms)
+method_8a_base, threads: 16, Max Gflops: 0.910837, min time: 62.166000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4395.286133
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4395.286133
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+1.917218 gflops, 29.534000 (ms)
+-0.058407 gflops, -969.460022 (ms)
+1.933651 gflops, 29.283001 (ms)
+1.928383 gflops, 29.363001 (ms)
+1.926087 gflops, 29.398001 (ms)
+1.924908 gflops, 29.416000 (ms)
+1.921772 gflops, 29.464001 (ms)
+method_8a_base, threads: 32, Max Gflops: 1.933651, min time: 29.283001 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4396.937988
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4396.937988
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+3.881485 gflops, 14.588000 (ms)
+3.919910 gflops, 14.445000 (ms)
+3.895103 gflops, 14.537000 (ms)
+3.912056 gflops, 14.474000 (ms)
+3.898589 gflops, 14.524000 (ms)
+3.918554 gflops, 14.450000 (ms)
+3.861895 gflops, 14.662000 (ms)
+method_8a_base, threads: 64, Max Gflops: 3.919910, min time: 14.445000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4391.618652
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4391.618652
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+5.860392 gflops, 9.662000 (ms)
+5.867680 gflops, 9.650000 (ms)
+5.925398 gflops, 9.556000 (ms)
+5.932848 gflops, 9.544000 (ms)
+5.913023 gflops, 9.576000 (ms)
+5.913023 gflops, 9.576000 (ms)
+-0.057226 gflops, -989.461975 (ms)
+method_8a_base, threads: 96, Max Gflops: 5.932848, min time: 9.544000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4401.478027
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4401.478027
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+7.927076 gflops, 7.143000 (ms)
+7.890622 gflops, 7.176000 (ms)
+8.007792 gflops, 7.071000 (ms)
+7.950449 gflops, 7.122000 (ms)
+7.966109 gflops, 7.108000 (ms)
+7.866505 gflops, 7.198000 (ms)
+8.014593 gflops, 7.065000 (ms)
+method_8a_base, threads: 128, Max Gflops: 8.014593, min time: 7.065000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4397.833008
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4397.833008
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+9.451361 gflops, 5.991000 (ms)
+9.538933 gflops, 5.936000 (ms)
+9.644542 gflops, 5.871000 (ms)
+9.600391 gflops, 5.898000 (ms)
+9.637975 gflops, 5.875000 (ms)
+9.551805 gflops, 5.928000 (ms)
+9.460835 gflops, 5.985000 (ms)
+method_8a_base, threads: 160, Max Gflops: 9.644542, min time: 5.871000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4392.520020
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4392.520020
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+11.324621 gflops, 5.000000 (ms)
+11.501748 gflops, 4.923000 (ms)
+11.223608 gflops, 5.045000 (ms)
+11.506422 gflops, 4.921000 (ms)
+11.236973 gflops, 5.039000 (ms)
+11.581736 gflops, 4.889000 (ms)
+11.302016 gflops, 5.010000 (ms)
+method_8a_base, threads: 192, Max Gflops: 11.581736, min time: 4.889000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4395.716309
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4395.716309
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+13.313686 gflops, 4.253000 (ms)
+12.957232 gflops, 4.370000 (ms)
+13.376591 gflops, 4.233000 (ms)
+13.162042 gflops, 4.302000 (ms)
+13.273114 gflops, 4.266000 (ms)
+13.436901 gflops, 4.214000 (ms)
+13.158983 gflops, 4.303000 (ms)
+method_8a_base, threads: 224, Max Gflops: 13.436901, min time: 4.214000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4397.614258
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4397.614258
+============== METHOD 8a Base, 1 domain  ===================
+nb subdomains= 1
+nb_rows_multi = 884736
+before generate
+generateBase:: offsets_multi: 0, 28311552
+nb_rows= 884736
+nb_vec= 1
+nb_mat= 1
+nz= 32
+inside generate_vector: = 
+======= Reconstruct col_id matrix for special effects =====
+inside generate_ell_matrix_data_novec: = getRandf()
+Two transposes in generate_solution, Base
+inside transpose1
+inside transpose1
+before bandwidth
+col_id, nb rows: 884736
+
+bandwidth::max bandwidth: 39934
+after bandwidth
+after bandwidthQ
+*** nb_subdomains: 1
+14.452043 gflops, 3.918000 (ms)
+13.994836 gflops, 4.046000 (ms)
+14.371346 gflops, 3.940000 (ms)
+14.345859 gflops, 3.947000 (ms)
+14.120474 gflops, 4.010000 (ms)
+14.533651 gflops, 3.896000 (ms)
+13.953450 gflops, 4.058000 (ms)
+method_8a_base, threads: 244, Max Gflops: 14.533651, min time: 3.896000 (ms)
+inside transpose1
+inside transpose1
+method_8a, l2norm=of omp version: 4402.154785
+checkSolutionsBase, nb_rows: 884736, stencil_size: 32
+Enter checkAllSerialSolutionsBase
+retrieve data base: 1606406176
+retreieve_data_base: identity operator
+method_8a, l2norm of serial vec/mat= 0/0, 4402.155273
+====================================
+Timers [All times in ms (1/1000 s)]: 
+====================================
+
+[Timer] [method_0] Matrix-Vector multiply         |  avg:   -17.6334  |  tot: -2239.4438  |  count=   127
+Inside empty ProjectSettings destructor
