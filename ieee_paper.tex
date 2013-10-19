@@ -503,7 +503,7 @@ believed to be between 200~GB/s and 250~GB/s.
 
 Each core in the architecture has a 32kB L1 data cache, a 32kB L1
 instruction cache, and a 512kB L2 cache. The architecture of a core is
-based the traditional Pentium architecture, which has been extended to
+based on the traditional Pentium architecture, which has been extended to
 64-bit. A core can hold four hardware contexts at any given time. At each
 clock cycle, instructions from a single thread are executed. Due to
 some hardware constraints, two hardware contexts must be used to reach
@@ -519,7 +519,7 @@ used for double or single precision, that is, either as a vector of 8
 64-bit values or as a vector of 16 32-bit values, respectively. The
 vector processing unit can perform many basic instructions, such as
 addition or division, and mathematical operations, such as {\tt sin} and
-{\tt sqrt}, making it possible to reach 8 double precision (or 16 singe precision)
+{\tt sqrt}, making it possible to reach 16 single precision (or 8 double precision)
 operations per cycle.  
 The unit also supports Fused Multiply-Add (FMA)
 operations, which are typically counted as two operations for
