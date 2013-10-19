@@ -526,6 +526,20 @@ achieved.
 
 \subsection{Bringing the data into the vector register}
 
+\begin{figure*}
+  \centering
+\subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{code.pdf}}%
+\subfigure[Content of the vector registers]{\hspace{-0.07\linewidth}\includegraphics[width=.5\linewidth]{figures/code-annote.pdf}}
+
+\caption{Code snippet of the multiplication of 4 vectors with 4
+  matrices. When a line changes the content of a vector register its
+  new content is shown on the right. The effects of swizzling and
+  permutations are highlighted using a color code.}
+\label{code:mat_mul}
+\end{figure*}
+
+
+
 As explained in Section~\ref{sec:model}, we expect to achieve a performance of
 about 210~Gflop/s in single precision in the best case. We will focus
 on the single precision case with four vectors and four matrices. 
@@ -570,18 +584,6 @@ proposed algorithm, which we proceed to explain further.
 A thread will perform the multiplications one row at a time,
 and parallelism is achieved by giving blocks of rows to each thread
 using an OpenMP construct.
-
-\begin{figure*}
-  \centering
-\subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{code.pdf}}%
-\subfigure[Content of the vector registers]{\hspace{-0.07\linewidth}\includegraphics[width=.5\linewidth]{figures/code-annote.pdf}}
-
-\caption{Code snippet of the multiplication of 4 vectors with 4
-  matrices. When a line changes the content of a vector register its
-  new content is shown on the right. The effects of swizzling and
-  permutations are highlighted using a color code.}
-\label{code:mat_mul}
-\end{figure*}
 
 
 The core of the technique is the use of swizzling and permutation
@@ -674,9 +676,8 @@ the compiler through intrinsics.
 \end{figure}
 
 Figure~\ref{fig:bandwidth} gives some benchmark that compute the
-bandwidth achieved when reading and/or writing large arrays on both
-the MIC card and the CPU architecture. The read benchmark performs a
-simple sum of the array. The write benchmark sets whole the elemtns of
+bandwidth achieved when reading and/or writing large arrays. The read benchmark performs a
+simple sum of the array. The write benchmark sets all the elements of
 the array to 0. While the read/write benchmarks copies the array into
 another one. We also investigate the difference between a straight C++
 implementation (compiled with -O3 with proper tagging to inform the
