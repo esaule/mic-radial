@@ -46,8 +46,10 @@
 
 
 \begin{document}
-\title{Sparse Matrix Vector Multiplication with Multiple vectors and
-  Multiple Matrices on the MIC Architecture \todo{? more application oriented''}}
+\title{Acceleration of Derivative Calculations with Application to Radial Basis Function --
+Finite-Differences on the Intel MIC Architecture}
+%\title{Sparse Matrix Vector Multiplication with Multiple vectors and
+  %Multiple Matrices on the MIC Architecture \todo{? more application oriented''}}
 
 
 \author{\IEEEauthorblockN{Gordon Erlebacher\IEEEauthorrefmark{1},
@@ -76,7 +78,7 @@ of nodes at each point and encode the sparse matrix in ELLPACK
 format. We increase the number of operations relative to memory
 bandwidth by calculating four derivatives of four different functions,
 or 16 different derivatives. We demonstrate a novel implementation on
-the MIC architecture, taking into account its advanced swizzling and
+the Intel MIC architecture, taking into account its advanced swizzling and
 channel interchange features. We present benchmarks on a real data
 set that show an almost eightfold increase in speed compared to
 efficient implementations of a single derivative, reaching a
@@ -558,7 +560,7 @@ sparsity structure of the matrix. Each row of {\tt col\_id} consists
 of $n_z$ entries that label the column index of each nonzero in
 $A$. The other array is the {\tt data} array that gives the values of
 the nonzeros in the four matrices. The values of the matrices are
-interleaved by group of four so that the value $A^l_{col\_id[k]}$ of
+interleaved by groups of four so that the value $A^l_{col\_id[k]}$ of
 the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.
 (In other words, the first 4 entries are from $A^{1}$ and the next 4 are from $A^2$.) The vectors {\tt x} are
 interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
@@ -602,7 +604,7 @@ integers and therefore in place typecasts are necessary to convert to
 a vector to/from the integer type.  (Note that we prefer swizzling to
 permutation if possible because we believe it is cheaper. Many
 instructions have swizzling capability, while permuation is its own
-instruction.)
+instruction. 
 
 Every operation that loads data from memory into a register
 transfers 512 bits, or 16 floats at a time. A single nonzero
@@ -663,7 +665,6 @@ the compiler through intrinsics.
 
 \subsection{Bandwidth}
 
-
 \begin{figure}[bth]
   \centering
   \includegraphics[width=.9\linewidth]{figures/bandwidth_read_write.pdf}
@@ -675,14 +676,15 @@ the compiler through intrinsics.
   \label{fig:band_rw_MIC}
 \end{figure}
 
-Figure~\ref{fig:bandwidth} gives some benchmark that compute the
-bandwidth achieved when reading and/or writing large arrays. The read benchmark performs a
-simple sum of the array. The write benchmark sets all the elements of
-the array to 0. While the read/write benchmarks copies the array into
+Figure~\ref{fig:bandwidth} shows a benchmark that computes the
+bandwidth achieved when reading and/or writing large arrays on both
+the MIC card and the CPU architecture. The read benchmark performs a
+simple sum of the array. The write benchmark sets all the elemnts of
+the array to zero, while the read/write benchmarks copies the array into
 another one. We also investigate the difference between a straight C++
 implementation (compiled with -O3 with proper tagging to inform the
-compiler of memory alignments) and a simple implementation using
-vector register explicitly.
+compiler of memory alignments) and a simple implementation with
+explicit use of the vector registers.
 
 The {\tt
   read, cpp} implementation reaches a performance of 168~GB/s
@@ -692,7 +694,7 @@ is explained by the compiler adding loop unrolling and software
 prefetching in the assembly code in the {\tt read, cpp} case, which is
 not added in the {\tt read} case. On the other hand, the {\tt write}
 case reaches a performance of 158~GB/s while the
-{\tt write, cpp} implementation never passes 58~GB/s. 
+{\tt write, cpp} implementation never exceeds 58~GB/s. 
 This difference is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction, 
 which bypasses the Read For Ownership protocol and allows the writes
 to be performed in any order. The compiler can not use this
@@ -712,9 +714,9 @@ operations depends in which order the array is read. If the indices
 are ordered ({\tt compact}) then a performance of 140~GB/s is
 reached. If the indices are completely randomized, the performance
 drops below 5~GB/s. We can see that implementing the
-indirection mechanism without vector instructions makes the
-performance drop significantly. (In the {\tt compact} case, it never
-passes 100~GB/s and is close to 50~GB/s most of the time.)
+indirection mechanism without vector instructions lowers the
+performance significantly. (In the {\tt compact} case, it never
+surpasses 100~GB/s and is close to 50~GB/s most of the time.)
 
 \begin{figure}
   \centering
@@ -724,10 +726,10 @@ passes 100~GB/s and is close to 50~GB/s most of the time.)
 \end{figure}
 %
 
-To summarize, using vector instruction seems mandatory to reach the
-highest bandwidth on the MIC architecture. For the instructions used
+To summarize, using vector instructions appears necessary in order
+toreach the highest bandwidth on the MIC architecture. For the instructions used
 in a typical SpMV computation, one can expect a bandwidth between
-140~GB/s to 160~GB/s. That is why we set in our estimation a best
+140~GB/s to 160~GB/s. That is why we use in our estimations a best
 achievable bandwidth of 150~GB/s despite the fact that a 
  code carefully crafted to maximize bandwidth can reach higher
 values~\cite{Saule13-ARXIV}. 
@@ -772,10 +774,8 @@ are presented in Figure~\ref{fig:spy_plots}. The
 Supercompact matrices (Figure~\ref{fig:supercompact}) have been
 generated to only have nonzero elements in the first 32 columns of
 the matrix. As a result, only 32 values of {\tt x} are read
-from memory, and the expense associated with cache misses and gather
-operations is removed from consideration. The cost associated with 
-{\tt A} remains.   \todo{reread the above. Reread by Gordon}
-The Compact matrices
+from memory, and the expense associated with cache misses is removed from consideration. The cost associated with 
+{\tt A} remains. The Compact matrices
 (Figure~\ref{fig:compact}) are generated to have 32 nonzeros per row
 centered around the diagonal and it represents the ideal case for many
 applications that rely on sparse matrix vector multiplication. The nonzero
@@ -784,11 +784,12 @@ matrices (Figure~\ref{fig:compact}) see their nonzero elements
 randomly (uniformly) distributed in the matrix; they represent the
 worst case scenario for a cache based architecture where the cache
 reutilisation is the lowest from one row to the next.
-
-The other two types of matrices are used in derivative stencils in 3D
+The other type of matrix is used in derivative stencils in 3D
 RBF-FD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-points
-stencil of a 3D $8^3$ grid). We also apply a Cuthill-Mckee reordering to
-all the matrices.  This ordering technique is designed to reduce the
+stencil of a 3D $8^3$ grid).
+
+We also apply a Reverse Cuthill-Mckee reordering to
+all the matrices.  This ordering technique aims to reduce the
 distance between the nonzeros and the diagonal, hopefully allowing a
 better cache reutilisation. The reordered version of the matrix can be
 seen in Figure~\ref{fig:rbf3drcm}.
@@ -802,7 +803,7 @@ seen in Figure~\ref{fig:rbf3drcm}.
   \subfigure[Compact and RBF-FD.]{\includegraphics[width=.48\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
-    horizontal lines depict the worst and the best predicted performances. \todo{font size}}
+    horizontal lines depict the worst and the best predicted performances.}
   \label{fig:expe_types}
 \end{figure*}
 
@@ -814,7 +815,7 @@ predicted in Section~\ref{sec:model}. Figure~\ref{fig:perf_ideal}
 gives the results for the {\tt supercompact} and {\tt random} matrices
 that represent both the best and the worst case for such a practical 
 computation. The {\tt supercompact} case peaks at
-208~Gflop/s being very close to the predicted peak
+208~Gflop/s which is very close to the predicted peak
 performance of 213~Gflop/s. Conversely the performance of the {\tt
   random} case decreases to 56~Gflop/s which is close to
 the lowest predicted performance of 55~Gflop/s. One can see that RCM
@@ -824,9 +825,9 @@ size of the matrix increases.
 Figure~\ref{fig:perf_realistic} gives the results on the {\tt compact}
 case, which represents the best realistic matrix one could find with very
 structured grids and a
-{\tt RBF} matrix extracted from a real application. In the {\tt
-  compact} case, the performance can be as high as 195~Gflop/s being
-within 15\% of the peak predicted performance. The performance of the
+{\tt RBF} derivative matrix extracted from a real 3D application. In the {\tt
+  compact} case, the performance can be as high as 195~Gflop/s, which is
+within 15\% of the predicted  peak performance. The performance of the
 {\tt RBF} case varies between 100~Gflop/s and 140~Gflop/s. Most of the
 time, the RCM ordering provides an improvement which can be as high as
 30~Gflop/s.
@@ -848,17 +849,16 @@ time, the RCM ordering provides an improvement which can be as high as
 
 We finally investigate the central questions of this paper. Do we gain
 actual performance by transforming classical SpMV computation into the
-multiplication of 4 vectors by 4 matrices for the computation of the
+multiplication of four vectors by four matrices for the computation of the
 derivative of RBFs? Does using manual vectorization improve actual
 application performance? Figure~\ref{fig:comparison_spmv} compares the
 performance achieved by a classical SpMV and by the multiplication of
-4 vectors by 4 matrices using either standard C++ code and our
+four vectors by four matrices using either standard C++ code and our
 optimized implementation. The
 classical SpMV computation reaches 14~Gflop/s. 
 The standard C++ implementation reaches a performance of 38~Gflop/s while our
-optimized implementation reaches 140~Gflop/s. 
-Notice that \todo{I do not know that I ran host and mic on the same grid, but your 
-numbers are approximately correct. The numbers are a function of resolution} 
+optimized implementation almost reaches 140~Gflop/s. 
+Notice that 
 RCM ordering has no impact in the standard C++ implementation while it
 provides a significant improvement in our manually vectorized
 version. This highlights that the C++ implementation is instruction-bound
@@ -875,9 +875,7 @@ implementation of the multiplication of four vectors with four matrices on
 the {\tt RBF} matrix reaches a performance of 27~Gflop/s; while a
 manual implementation using AVX instruction reaches a performance of
 42~Gflop/s. This confirms that our method is sound and generalizes to
-architectures than the Intel MIC architecture. \todo{albeit with less 
-impressive results given that swizzling is often not available. Swizzling
-will become available in a new version of the host: enhanced AVX.}
+architectures other than the Intel MIC architecture.
 
 \section{Conclusion}
 \label{sec:ccl}
