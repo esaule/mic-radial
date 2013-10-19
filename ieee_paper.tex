@@ -160,7 +160,7 @@ estimation of the instruction intensity of various forms of the
 computations and we show that a sixfold improvement can be
 expected when computing the sixteen multiplications simultaneously and
 reach a total of about 210~Gflop/s. This performance represents
-approximatively 10\% of the available flop/s of a Knight Corner
+approximatively 10\% of the available flop/s of a Xeon Phi
 coprocessor. Therefore, it is necessary to have an implementation that
 performs the computation in as few instructions as
 possible. We describe in Section~\ref{sec:impl} the details of the MIC
@@ -172,7 +172,7 @@ depending on how the SpMV kernel is written. It also provides the actual perform
 of the various kernel on multiple classes of matrices, some generated
 for analysis purpose, and some extracted from an RBF application. A
 performance of 135~Gflop/s is achieved on real scenario. Concluding
-remarks and perspectives are provided in Section~\ref{sec:ccl}.
+remarks and perspectives are provided in Section~\ref{sec:ccl}.\looseness=-1
 
 \section{Derivatives of Radial Basis Functions}
 \label{sec:rbf}
@@ -484,7 +484,7 @@ peak of the classical SpMV case.
 \section{Efficient Implementation on the Intel Xeon Phi processor}
 \label{sec:impl}
 
-\subsection{Knights Corner}
+\subsection{Intel Xeon Phi}
 
 In this work, we use an Intel Xeon Phi 5110P coprocessor. This card
 has 8 memory controllers that can each execute 5 billion
