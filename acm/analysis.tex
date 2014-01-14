@@ -1,0 +1,52 @@
+\section{Analysis}
+In this section, we perform some simple analysis. 
+
+Under the best scenarios, the peak floating point performance is 2 Tflops and the peak measured bandwidth, (read: 
+!80 GB/sec, write: 160 GB/sec. We seek to answer the question as to whether our algorithm is limited by the bandwidth or the floating point j
+performance. 
+
+Under the best of circumstances, read occurs in $n_{rT}10^{-6}/180$ ms, writes occur in $n_{wT}10^{-6}/160$ sec. 
+The calculation takes $n_F 10^{-9}/2$ ms. Many more bytes are read in than are written. Thus, we ignore the difference between the read and write 
+performance. 
+
+Consider stencils of size 32, 4 vectors and 4 matrices, 
+
+The ratio of times taken by floating point operations to memory transfers is
+$$
+R = \frac{n_F}{n_{wT}+n_{rT}} = \frac{8}{b_x+1} \frac{10^{-6}}{160} \; \frac{2}{10^{-9}}
+$$
+$$
+R = \frac{8}{b_x+1}  \; 10^3 80
+$$
+
+Assume $N=64$, stencils of size 32. Thus there are $250000*2*32\times 16=256 \times 10^6$ operations. At a speed of $2\times 10^{12}$ operations per sec, 
+the calculation should take a minimum of $128\times 10^{-6}$ sec = 0.128 ms. Reading/writing all the data requires a transfer of 
+$250000\times (32 \times 4 + 4 + 4) = 34\times 10^6$ bytes, which takes $\frac{34\times 10^6}{200\times 10^9}=0.17$ ms. 
+Thus, calculation and computation take on the same order. 
+Rato of calculation to transfer time is $.128/0.17=0.75 = 1/1.33$. 
+
+Now, consider the 1 vector and 1 matrix case. There are $16\times 10^6$ flops taking $8\times 10^{-6}$ sec, and a transfer of 
+$250000\times (32+1+1) =8.5\times 10^6$ bytes, which takes $\frac{8.5\times 10^6}{200\times 10^9}=4.25=0.04$ ms. 
+Ratio of calculation to transfer time is $.008/.04=0.2=1/5$. 
+
+Conclusion: a gain of a factor of 3.7 flops per byte, approximately 4. 
+
+If instead, one had 32 vectors, the gain would be much higher. I should implement a BENCHMARK to calculate a matrix/matrix multiplication, 
+and execute it 10 times, AND make sure all elements stay in cache, to measure an idealized flop rate. 
+
+Consider A * (v,v,v,v,v,....) . Measure the performance as a function of the number of cores. The Gflop rate will measure optimum performance. 
+In reality, one must take into account the cost of loop index calculations, loop indexing, etc. The hope of course, is that this cost is 
+insignificant. It can be measured via loop unrolling. 
+
+
+
+TODO: need practical Gflop rate.
+Use supercompact. Given 64^3 grid, as #threads increases, available cache increases, so performance shoudl go up. With low number of processors, 
+I should not have enough cache (at least if using random). Using supercompact, and in addition, eliinating gather and load_epi32 so I am executing 
+summation of $v_i^2$, I should get good measurement of GFlops rate. Cache will be sufficient. All I want is to avoid loads. 
+
+\subsection{measure theoretical speedup}
+\subsection{measure measured speedup}
+\begin{itemize}
+\item register density effect: would affect flop rate
+\end{itemize}

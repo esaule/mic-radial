@@ -1,0 +1,28 @@
+
+\begin{figure}
+\begin{center}
+	\centering
+	\begin{subfigure}[t]{0.75in}
+	\centering
+	\includegraphics[width=1.0\textwidth]{../figures/appendices/direct_vs_indirect_weights/compare_weight_generation/xsfc_vs_xsfc_alt_on_sph32_times_sine_20x/sph32_times_sin20x-eps-converted-to.pdf}
+	\caption{Test function:  \\ $Y_{3}^{2} \sin(20 x) $.  }
+		\label{fig:direct_vs_indirect_manufactured_base}
+	\end{subfigure}
+	
+	\begin{subfigure}[h]{0.75in}
+		\centering
+	\includegraphics[width=1.0\textwidth]{../figures/appendices/direct_vs_indirect_weights/compare_weight_generation/xsfc_vs_xsfc_alt_on_sph32_times_sine_20x/pdx_sph32_times_sin20x-eps-converted-to.pdf}
+	\caption{$\mathbf{p}_{x} \cdot \nabla ( Y_{3}^{2} \sin(20 x))$ }
+			\label{fig:direct_vs_indirect_manufactured_xsfc}
+	\end{subfigure}
+	\begin{subfigure}[h]{.75in}
+		\centering
+	\includegraphics[width=1.0\textwidth]{../figures/appendices/direct_vs_indirect_weights/compare_weight_generation/lsfc_vs_px_grad_dot_px_grad/lsfc_sph32_times_sin20x-eps-converted-to.pdf}
+	\caption{Surface Laplacian: \\ $\LaplaceBeltrami ( Y_{3}^{2} \sin(20 x) )$  }
+				\label{fig:direct_vs_indirect_manufactured_lsfc}
+	\end{subfigure}
+	\caption{Test function and its projected derivatives on the surface of the unit sphere. }
+				\label{fig:direct_vs_indirect_manufactured_solution}
+	\end{center}
+\end{figure}
+

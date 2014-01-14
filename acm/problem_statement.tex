@@ -1,0 +1,86 @@
+\section{Problem Statement}
+%Introduction: RBFs -> derivatives -> spmv -> multiple derivatives of multiple functions --> our approach
+
+Sparse Matrix-Vector Multiplication (SpMV) is an integral component of a very large
+number of computer algorithms designed to solve practical problems in most scientific disciplines. Unfortunately, the SpMV kernel is bandwidth limited, and can only achieve a small fraction of peak performance on current and post computer architectures. Deeper memory hierarchies, wider memory lanes, larger registers, are all designed to increase throughput and computational efficiency for problems where data is accessed sequentially from memory. However, in SpMV, not only are there insufficient number of floating point operations relative to the number of bytes transfered, but the the uneven access pattern of the source vector lead to cache misses, which are detrimental to high performance. As a result, a wide range 
+strategies have been devised to decrease memory bandwidth through compressed matrix
+formats)\cite{}, decrease the number of cache misses\cite{} %(register and cache 
+blocking\cite{}) and multiple source vectors\cite{}. 
+
+%In the theory of Radial Basis Functions Finite-Difference (RBFFD), derivatives of a function $f(\rvec)$ at node $i$ are expressed as a linear combination of the function values at the stencil center and the nodes connected to node $i$ (Figure~\ref{fig:rbf_stencils}). Thus $y$ is a discrete derivative of the vector $x$. 
+
+In this paper, we propose yet a new idea, that is applicable to the world of 
+Finite-Difference Radial Basis functions (RBF-FD). A radial basis functions refers
+to a set of shifted radially symmetric functions $\phi_i(r) =\phi{||\xvec-\xvec_i||}$ centered at $\xvec_i$\cite{}. Any function $f(\xvec)$ defined in a domain $\Omega$ can be expanded in this basis according to
+\begin{equation}
+f(\xvec) =  \sum_i w_i \phi_i(\xvec) \label{eq:rbf}
+\end{equation}
+% Wrong label eq:rbf in document 
+Given function values at a set of discrete points $x_i$, one inverts linear system 
+(\ref{eq:rbf})  to obtain a set of weights $w_j$. Given a set of $N$ RBF nodes, the matrix to invert is dense. Derivatives of $f(\xvec)$ result from the differentiation of Eq. (\ref{eq:rbf}). For very large problems, this is an computationally expensive since the RBFs do not form an orthogonal basis, nor are they amenable to tensor decomposition in the three coordinate directions. Rather, their strength is the ability to randomly distribute nodes across complex physical domains, and have an implementation that is independent of dimensionality. %(???)
+
+To alleviate the cost of a global approach, researchers \cite{} expand $f(\xvec)$ in a local region of $x_i$. Thus, 
+$$
+f(\xvec) =  \sum_{i=0}^{n_s} w_i \phi_i(\xvec) \label{eq:rbf}
+$$
+where one only considers a local set of $n_s$ neighbors of of point $x_j$. 
+Finite-difference RBF expresses the derivative of $f(\xvec)$ at $x_j$ as a linear
+combination of $f(\xvec)$ at the $n_s$ neighbors. Thus, 
+$$
+f = A w
+$$
+where $f$ is the vector of function values at the $n_s$ stencil points (including the center point $x_j$. The matrix $A$ is a function of 
+$\phi_{ij}(\xvec) =\phi(||x_i-x_j||)$. This leads to the $n_s$ weight values 
+$w = A^{-1} f$. The derivative of Eq. \ref{eq:rbf} evaluated at $x_j$ gives
+$$
+   f'_j = \sum_{i=0}^{n_s} w_i \phi'_{ij}
+$$
+Substituting the vector of weights $w$ leads to 
+$$
+  f'_j = \sum_{i=0}^{n_s} \alpha_i f_i
+$$
+The derivative evaluation at all points of the domain $\Omega$, notwithstanding boundary conditions, takes the form
+$$
+  y = A x
+$$
+where $x$ is the souce vector of function values, and $y$ is the vector of derivative values. The matrix $A$ is called a derivative matrix. In the current litterature, the number of stencil points is 
+a fixed value, independent of the node under consideration\cite{}. The computation of a single derivative has been reduced to a SpMV, where each row has $n_s$ nonzeros. Because the sparsity of each row is constant, ELLPACK~\cite{} becoes the most appropriate matrix compression scheme\cite{}. In practice, $n_s=32$ in two-dimensional flows and 64 or 100 for three-dimensional flows. These numbers are similar to what is used in finite-element codes. 
+
+As we will discuss in later sections, the performance of SpMV is severely constrained by both the high number of load/store operations and the irregular access patterns of $x$. Thus, we seek to increase the number of operations per floats transfered from memory, increase register usage, and decrease cache misses. 
+To this end, we consider a combination of two appraoches: increase the number of source vectors, and increase the number of derivative matrices. 
+
+Many problems in fluid dynamics and in the geosciences require the solution to
+transport equations of the form
+$$
+\pf{Q}{t} = f(Q,Q_x, Q_y, Q_z, \Laplacian{Q})
+$$
+where $Q$ is a vector of unknowns (3 components of velocity, pressure, temperature). Thus, it is often necessary to compute the $x$ derivative of 
+multiple functions, typically four for the Euler equations, or five for the Navier-Stokes equations. Multiple right-hand sides transform a SpMV into a SpMM (Sparse Matrix/dense Matrix multiplication), which improves register utilization and decreases cache misses by vectorizing over the multiple source vectors. Further improvements are possible by recognizing that different derivative matrices (x,y,z and Laplacian for example), have the same sparsity distribution; only the weight
+change.  Thus, alternative to computing a derivative of multiple functions, we
+can calculate multiple derivatives of a single functions. The increased memory bandwidth due to an increase in the number of derivaive matrices is offset by 
+better cache utilization, leading to an overall benefit. 
+
+In this paper, we examine the possible improvements in efficiency of SpMV for
+the case of four source vectors and four derivative matrices. We benchmark
+performance on a Knights Corner card\cite{}, using OpenMP. The paper 
+is developed as follows. In Section 2, we describe some of the previous work, 
+relevant to this paper. This is followed by a brief description of the MIC
+architecture in Section 3, the matrices we consider in Section 4 together 
+with operation and bandwidth counts, description of our benchmarks in Section 5, 
+followed by our conclusions. 
+
+
+
+%There has been much work on the problem of efficient sparse matrix/vector (spmv) and sparse matrix  (spmm) multiplication over the years \cite{} specialized for a range of computer architectures \cite{}. In the past 10 years, researchers have addressed implementations on the GPU using mostly CUDA \cite{}, and on multicore sytems, exemplified by the chips produced by Intel~\cite{}. In general, spvm consists of multiplying the matrix $A$ of size $N\times N$ by a vector $x$ of size $N\times 1$ to produce a vector $y$ of size $N\times 1$. More succinctly, $ y = A x $ .
+
+
+**** PUT ELSEWHERE OR ELIMINATE? ****
+
+When solving a one dimensional system of PDEs, one might require an $x$ derivative of multiple functions. For example, the Euler equations require the $x$ derivative of the three components of velocity and pressure. In this case, there are $n_v=4$ vectors $x^k$, $k=0,\cdots,3$. 
+
+Thus for each vector element $y_i$, we compute $y_i = \sum_j A_{ij} x_j$. If $A_i$ is row $i$ of $A$, $y_i$ is simply the dot product $A_i x$. The next level of generality is to consider $n_v$ vectors $x^k$, $k=0,\cdots,n_v-1$. Whatever the spmv implementation, one achieves improved performance if the matrix formed from the columns $x^k$ are stored in row major order. Thus, $x^0_0,x^1_0,\cdots,x^{n_v-1}_0$, are stored in consecutive memory location. The random access of the elements of $x$ is thus reduced. Maximum efficiency is achieved when $n_v=16$ floats or $8$ doubles, given that cache lines take 64 bytes. We will benchmark this case, labeled $Svn$, where $n$ refers to the number of vectors (Iv4 uses four vectors). The $S$ refers to singe precision. A double precision run is labelled $Dvn$. 
+
+Alternatively, when solving a PDE, one might require derivatives of a given scalar function with respect to coordinate directions $x$, $y$, $z$. Second order operators of often required, such as a second derivative with respect to $x$ or a Laplacian operator. In the RBFFD formulation, on can compute different derivatives using the same stencil, but with different weights. In other words, the adjacency matrix that corresponds to $A$ remains constant, but the matrix elements of $A$ change with the particular derivative. 
+In this case, label with a superscript $l$ the particular matrix $A^k$. Since the adjacency matrix is assumed invariant, there is only need for a single matrix \ttt{C{ij}}. In Ellpack format, each row is of constant size (the number of nonzeros per row of $A$. $C_{ij}$ is the column number that locates the $j^{th}$ nonzero in row $i$ of $A$.
+
+\ge{Must rewrite the above.}
