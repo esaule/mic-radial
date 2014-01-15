@@ -10,8 +10,8 @@
 \def\blue#1{\textbf{\textcolor{blue}{#1}}}
 \def\qes#1{{\blue{*** For Erik: #1 ***}}}
 \def\es#1{{\blue{*** For Erik: #1 ***}}}
-\def\ge#1{{\red{#1}}}
-\def\NOTE#1{{\red{*** NOTEGordon: #1 ***}}}
+\def\ge#1{{\blue{#1}}}
+\def\NOTE#1{{\red{NOTE: #1}}}
 \def\ttt#1{{\tt #1}}
 \def\bold#1{{\bf #1}}
 
@@ -224,12 +224,15 @@ approximately 10\% of the available flop/s of a Xeon Phi
 coprocessor. \ge{Therefore, it is necessary to have an implementation that
 performs the computation in as few instructions as
 possible.} \NOTE{I DO NOT FOLLOW the Therefore in the previous sentence.}
-We describe in Section~\ref{sec:impl} the details of the MIC
+\ge{We describe in Section~\ref{sec:impl} the details of the MIC
 architecture and how to use specialized load, store, swizzle and
 permutation instructions to efficiently bring the data from memory into the vector
-registers to be processed. Section~\ref{sec:expe} gives some
-experimental results about the amount of bandwidth that can be achieved
-depending on how the SpMV kernel is written. 
+registers to be processed. Section~\ref{sec:expe} presents results on 
+memory access and computational speed and their relation to choices made in the 
+SpMV kernels.}
+%experimental results  discussing the relationship between the structure of $A$ and 
+%the ; specifcally on the amount of bandwidth that can be achieved
+%depending on how the SpMV kernel is written. 
 It also provides the actual performance of the various kernels on multiple classes of matrices, 
 some generated for purpose of analysis, and some extracted from an application of RBF-FD. 
 A performance of 135~Gflop/s is achieved using RBF-FD differentiation matrices. Concluding remarks and perspectives are provided in Section~\ref{sec:ccl}.\looseness=-1
