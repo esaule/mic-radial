@@ -20,25 +20,28 @@ To obtain a RBF derivative approximation at a node location that will result in 
 \end{figure}
 
 Due to the above attributes and its simplicity of implementation, the RBF-FD is gaining popularity in modeling systems of PDEs in a variety of fields in fluid dynamics (e.g., geosciences, combustion, aerodynamics \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). For example, the full shallow water equations in a 3D Cartesian coordinate system for a rotating fluid are as follows:
+{
+\small
 \begin{eqnarray}
-\dfrac{\partial u}{\partial t} &=& - \left( u\dfrac{\partial u}{\partial x} + v\dfrac{\partial u}{\partial y} + w\dfrac{\partial u}{\partial z} + f(yw - zv) + g\dfrac{\partial h}{\partial x} \right)
-\\
+\dfrac{\partial u}{\partial t} &=& - \left( u\dfrac{\partial u}{\partial x} + v\dfrac{\partial u}{\partial y} + w\dfrac{\partial u}{\partial z} + f(yw - zv) + g\dfrac{\partial h}{\partial x} \right) 
+\nonumber \\
 \dfrac{\partial v}{\partial t} &=& - \left( u\dfrac{\partial v}{\partial x} + v\dfrac{\partial v}{\partial y} + w\dfrac{\partial v}{\partial z} + f(zu - xw) + g\dfrac{\partial h}{\partial x} \right)
-\\
+\nonumber\\
 \dfrac{\partial w}{\partial t} &=& - \left( u\dfrac{\partial w}{\partial x} + v\dfrac{\partial w}{\partial y} + w\dfrac{\partial w}{\partial z} + f(xv - yu) + g\dfrac{\partial h}{\partial x} \right)
-\\
-\frac{\partial h}{\partial t}& =&-\left(\dfrac{\partial (uh)}{\partial x} + \dfrac{\partial (vh)}{\partial y} + h\dfrac{\partial (wh)}{\partial z}\right) , \label{height}
+\nonumber\\
+\frac{\partial h}{\partial t}& =&-\left(\dfrac{\partial (uh)}{\partial x} + \dfrac{\partial (vh)}{\partial y} + h\dfrac{\partial (wh)}{\partial z}\right) , \label{height} \nonumber
 \end{eqnarray}
-where $f$ is the Coriolis force, $\{u,v,w\}$ are the components of the velocity vector in the respective $\{x,y,z\}$ directions, and $h$ is the geopotential height (analogous to pressure). Thus, we have four variables $\{u,v,w,h\}$ and three DMs, $D_x, D_y, D_z$ representing $\dfrac{\partial}{\partial x}, \dfrac{\partial}{\partial y},\dfrac{\partial w}{\partial z}$, respectively. However, in order to stably time step the equations with an explicit time-stepping scheme, most numerical methods (including RBF-FD) require a fourth operator, hyperviscosity, to be added to the each equation. Hyperviscosity takes the form of $\triangle^p$ ($\triangle$ denotes the Laplacian operator), where $p\geq3$, which is approximated by the matrix $D_{hyp}$. Therefore, in order to solve this system of PDEs, the application of 4 DM to 4 unknowns, i.e. 16 SpMV is required every time step. Due to the fact that RBFs are independent of a coordinate system, taking into account only distances to nearest neighbors, the DMs have the following properties:
+} where $f$ is the Coriolis force, $\{u,v,w\}$ are the components of the velocity vector in the respective $\{x,y,z\}$ directions, and $h$ is the geopotential height (analogous to pressure). Thus, we have four variables $\{u,v,w,h\}$ and three DMs, $D_x, D_y, D_z$ representing $\dfrac{\partial}{\partial x}, \dfrac{\partial}{\partial y},\dfrac{\partial w}{\partial z}$, respectively. However, in order to stably time step the equations with an explicit time-stepping scheme, most numerical methods (including RBF-FD) require a fourth operator, hyperviscosity, to be added to the each equation. Hyperviscosity takes the form of $\triangle^p$ ($\triangle$ denotes the Laplacian operator), where $p\geq3$, which is approximated by the matrix $D_{hyp}$. Therefore, in order to solve this system of PDEs, the application of 4 DM to 4 unknowns, i.e. 16 SpMV is required every time step. Due to the fact that RBFs are independent of a coordinate system, taking into account only distances to nearest neighbors, the DMs have the following properties:
 \begin{itemize}
 \item For a given $n$, regardless of what operator is approximated, e.g. $\dfrac{\partial}{\partial x}$ or the Laplacian, RBF-FD DMs will have the same number of nonzeros per row.
 \item Also, for a given $n$ and $N$, regardless of what operator is approximated, the DMs will have the same sparsity pattern. Examples of an RBF-FD DM can be seen in Figure \ref{fig:spy_plots}d and e.
 \end{itemize}
 
 Multiple variables transform a SpMV into a SpMM (Sparse Matrix/dense Matrix multiplication), which improves register utilization and decreases cache
-misses by vectorizing over the multiple source vectors. Furthermore, due to the properties just mentioned, multiple derivatives of a single function can be calculated rather than computing a derivative of multiple functions. Using the PDE system above as an example, the block structure of the SpMM for computing all derivatives needed can be seen in Figure \ref{fig:struct_comp}.
-\begin{figure}
+misses by vectorizing over the multiple source vectors. Furthermore, due to the properties just mentioned, multiple derivatives of a single function can be calculated rather than computing a derivative of multiple functions. Using the PDE system above as an example, the block structure of the SpMM for computing all derivatives needed can be seen in Figure \ref{fig:struct_comp}, 
+\begin{figure}[h]
   \centering
+ {\small
   \[ \left( \begin{array}{cccc}
     \underline{u}_x     & \underline{v}_x     & \underline{w}_x     & \underline{h}_x \\
     \underline{u}_y     & \underline{v}_y     & \underline{w}_y     & \underline{h}_y \\
@@ -47,12 +50,11 @@ misses by vectorizing over the multiple source vectors. Furthermore, due to the 
   \end{array} \right)
   = \left(
   \begin{array}{c}
-    D_{x}\\
-    D_{y}\\
-    D_{z}\\
-    D_{hyp}
+    D_{x}\\ D_{y}\\ D_{z}\\ D_{hyp}
   \end{array}\right)
   \times \left(\underline{u} \,\, \underline{v} \,\, \underline{w} \,\, \underline{h} \,\,\right) \]
+ }
+  \vspace{-1ex}
   \caption{Block structure of the computation.}
   \label{fig:struct_comp}
 \end{figure}
