@@ -10,7 +10,8 @@
 \def\blue#1{\textbf{\textcolor{blue}{#1}}}
 \def\qes#1{{\blue{*** For Erik: #1 ***}}}
 \def\es#1{{\blue{*** For Erik: #1 ***}}}
-\def\ge#1{{\red{*** For Gordon: #1 ***}}}
+\def\ge#1{{\red{#1}}}
+\def\NOTE#1{{\red{*** NOTEGordon: #1 ***}}}
 \def\ttt#1{{\tt #1}}
 \def\bold#1{{\bf #1}}
 
@@ -101,7 +102,7 @@ Finite-Differences on the Intel MIC Architecture}
 In this paper, we develop an efficient scheme for the calculation of
 derivatives within the context of Radial Basis Function
 Finite-Difference (RBFFD). RBF methods express functions as a linear
-combination of radial basis functions on an arbitrary set of
+combination of \ge{spherically} symmetric basis functions on an arbitrary set of
 nodes. The Finite-Difference component expresses this combination over
 a local set of nodes neighboring the point where the derivative is
 sought.  The derivative at all points takes the form of a sparse
@@ -110,7 +111,8 @@ matrix/vector multiplication (SpMV).
 In this paper, we consider the case of local stencils with a fixed number
 of nodes at each point and encode the sparse matrix in ELLPACK
 format. We increase the number of operations relative to memory
-bandwidth by calculating four derivatives of four different functions,
+bandwidth by \ge{interleaving} the calculation of  four derivatives 
+of four different functions,
 or 16 different derivatives. We demonstrate a novel implementation on
 the Intel MIC architecture, taking into account its advanced swizzling and
 channel interchange features. We present benchmarks on a real data
@@ -137,7 +139,7 @@ consideration of operation count versus memory bandwidth.
 %\IEEEpeerreviewmaketitle
 
 \section{Introduction}
-The multiplication of sparse matrix by a dense vector (SpMV) is an
+The multiplication of a sparse matrix by a dense vector (SpMV) is an
 important kernel in many applied fields such as fluid dynamics 
 \cite{journals/tog/BolzFGS03}, recommendation systems~\cite{Brin98} and graph
 drawing~\cite{Koren05}). Naturally, improving the performance of SpMV has
@@ -145,15 +147,25 @@ captured the interest of many researchers; including the development of
 various implementations for 
 CPUs~\cite{Buluc2009SPAA,Williams07} and GPUs~\cite{Bell08,
   conf/ipps/KreutzerHWFBB12,
-  journals/concurrency/VazquezFG11,kumar2012accelerating}. The main
-challenge  to obtain good performance for SpMV is that
-the operations are conducted using memory location that are irregular. This makes the kernels mostly memory
-bound and there is a significant instruction overhead per flop.
+  journals/concurrency/VazquezFG11,kumar2012accelerating}. \ge{The main
+challenge  to obtain good performance for matrix vector multiplication in general, and 
+sparse matrix vector multiplication in particular, is the low ratio of floating point operations
+to memory bandwidth. When the matrix is not dense, the problem is exacerbated due to non-uniform 
+access patterns.}
+%{SpMV is that
+%the operations are conducted using memory locations that are irregularly spaced. 
+%This makes the kernels mostly memory bound
+% and there is a significant instruction overhead per flop.
+
+% REMOVED by GE
+%This makes the kernels strongly memory bound.  There is also a 
+%significant instruction overhead per flop.
+\NOTE{I rewrote last few sentences: write more precisely? Blas 2 is Matrix/vector, and that is still somewhat memory bound.}
 
 Common improvement techniques such as register blocking, bandwidth
 reduction (matrix reordering~\cite{Cuthill69}), partitioning to fit in
 cache or TLB~\cite{Nishtala07,Temam:1992:CBS:147877.148091,conf/ppsc/Toledo97},
-unrolling~\cite{Mellor-Crummey04} have impacts which are very
+unrolling~\cite{Mellor-Crummey04} have impacts that are very
 dependent on the matrix and overall do not lead to dramatic
 improvement. (The state-of-the-art techniques in OSKI~\cite{Vuduc05}
 provide some useful yet limited improvements). Register blocking~\cite{conf/ppsc/Toledo97} does
@@ -175,7 +187,20 @@ such as HyperThreading, to reduce the cycle wastage. However, most of
 the applications that use SpMV do not typically have an 
 instruction-intensive kernel to run simultaneously.
 
-Another solution, pursued in this paper, is to compute multiple SpMVs at once on matrices that have the same sparsity pattern. Obviously not all the applications have such a property. However, important classes of applications such as graph recommendation~\cite{Kucuktunc13-SNAM}, eigensolving~\cite{LOBPCG} and the computation of derivatives for solving systems of PDEs using Radial Basis Function-generated Finite Differences (RBF-FD)~\cite{FLBWSC12} can use multiple SpMVs simultaneously. Since RBF-FD is a mesh-less method, easily handling irregular geometries and local refinement with algorithmic complexity not increasing with dimension as well as high-order derivative approximations, they are rapidly gaining ground in science and engineering modeling communities \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). As a result, it is of interest to develop an efficient implementation on novel computer platforms for the calculation of derivatives within the context of RBF-FD. This paper investigates the case of approximating four different derivatives, using RBF-FD, for four different functions (a common scenario in 3D fluid dynamics modeling). Since the RBF-FD differentiation matrices approximating the four different derivative operators have an identical sparsity pattern, this leads to the simultaneous execution of 16 SpMVs at a time. Using multiple vectors at a time has been investigated before to densify the computations~\cite{Im01} but, to the best of the authors’ knowledge, this is the first time that the densification comes from adding both vectors and matrices.
+Another solution, pursued in this paper, \ge{is to compute multiple SpMVs using matrices with identical spasity patterns, but with different matrix elements.}  Obviously not all the applications have such a property. However, important classes of applications such as graph recommendation~\cite{Kucuktunc13-SNAM}, eigensolving~\cite{LOBPCG} and the computation of derivatives for solving systems of PDEs using Radial Basis Function-generated Finite Differences (RBF-FD)~\cite{FLBWSC12} \ge{fall into the category of applications that require multiple SpMVs simultaneously.} RBF-FD is a meshless method, which easily handles irregular geometries and local refinement with algorithmic complexity independent of dimensionality, 
+and which can produce high-order derivative approximations. These methods are rapidly gaining 
+ground in science and engineering modeling communities \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). 
+As a result, it is of interest to develop an efficient implementation on novel computer plat
+forms for the calculation of derivatives within the context of RBF-FD, which thus far are responsible 
+for the bulk of computer resources. \ge{Typical equations solved by RBF-FD depend on multiple derivatives
+of multiple functions. Rather than compute each derivative individually, this paper investigates 
+how to compute all derivatives simultaneously in an interleaved fashion. Specifically, 
+we calculate four different derivatives (corresponding to four different sparse matrices with identical 
+sparsity pattern) of four different functions
+%is an interThis paper investigates the possibility  to increase the ratio  case of approximating 
+%four different derivatives, using RBF-FD, for four different functions 
+(a common scenario in 3D fluid dynamics modeling) for a total of 16 derivatives. }
+%Since the RBF-FD differentiation matrices approximating the four different derivative operators have an identical sparsity pattern, this leads to the simultaneous execution of 16 SpMVs at a time. Using multiple vectors at a time has been investigated before to densify the computations~\cite{Im01} but, to the best of the authors’ knowledge, this is the first time that the densification comes from adding both vectors and matrices.
 
 To perform our analysis, we focus our attention on the improvement
 that can be achieved on the Intel Xeon Phi processor. It follows the
@@ -185,22 +210,29 @@ SIMD registers. The Xeon Phi processor has been shown to be promising
 for sparse linear algebra compared to more classical CPU or GPU
 architectures~\cite{Saule13-ARXIV, Liu:2013:ESM:2464996.2465013, cramer2012openmp}.
 
-In Section~\ref{sec:rbf}, we introduce and further motivate the RBF-FD method, giving an example of how calculating the derivatives for a common system of PDEs in fluid dynamics can be expressed as sixteen multiplications of four vectors by four sparse matrices with identical sparsity patterns.
+In Section~\ref{sec:rbf}, we introduce and further motivate the RBF-FD method, giving 
+an example of how calculating the derivatives for a common system of PDEs in fluid dynamics 
+can be expressed as sixteen multiplications of four vectors by four sparse matrices with 
+identical sparsity patterns.
+
 Section~\ref{sec:model} presents an
 estimation of the instruction intensity of various forms of the
 computations. We show that a sixfold improvement can be
 expected when computing the sixteen multiplications simultaneously to
 reach a total of about 210~Gflop/s. This performance represents
 approximately 10\% of the available flop/s of a Xeon Phi
-coprocessor. Therefore, it is necessary to have an implementation that
+coprocessor. \ge{Therefore, it is necessary to have an implementation that
 performs the computation in as few instructions as
-possible. We describe in Section~\ref{sec:impl} the details of the MIC
+possible.} \NOTE{I DO NOT FOLLOW the Therefore in the previous sentence.}
+We describe in Section~\ref{sec:impl} the details of the MIC
 architecture and how to use specialized load, store, swizzle and
-permutation instructions to efficiently bring the data in the vector
+permutation instructions to efficiently bring the data from memory into the vector
 registers to be processed. Section~\ref{sec:expe} gives some
 experimental results about the amount of bandwidth that can be achieved
 depending on how the SpMV kernel is written. 
-It also provides the actual performance of the various kernels on multiple classes of matrices, some generated for purpose of analysis, and some extracted from an application of RBF-FD. A performance of 135~Gflop/s is achieved using RBF-FD differentiation matrices. Concluding remarks and perspectives are provided in Section~\ref{sec:ccl}.\looseness=-1
+It also provides the actual performance of the various kernels on multiple classes of matrices, 
+some generated for purpose of analysis, and some extracted from an application of RBF-FD. 
+A performance of 135~Gflop/s is achieved using RBF-FD differentiation matrices. Concluding remarks and perspectives are provided in Section~\ref{sec:ccl}.\looseness=-1
 
 \input{RBF_Section}
 %\input{old_RBF_Section}
