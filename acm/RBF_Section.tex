@@ -13,10 +13,10 @@ RBFs approximate a function $f(\mathbf{x}) \in \mathbb{R}^d$ sampled at $N$ dist
 
 To obtain a RBF derivative approximation at a node location that will result in a sparse differentiation matrix (DM), the RBF-FD method has been developed over the last decade \cite{TAI1,TAI2,SDY02,WrFo06}. RBF-FD are conceptually similar to standard finite differences (FD). However, the differentiation weights for approximating a derivative at a given node (forming one row of the RBF-FD DM) enforce that the linear combination of function values at the $n$ nearest node locations (a stencil) with $n \in N$ be exact for RBFs centered at each of the $n$ nodes rather than polynomials. The result is a sparse matrix with $nN$ nonzero entries, where $n<<N$. As in FD methods, the order of the method increases with stencil size. An illustration of an RBF stencil on a sphere is given in Figure \ref{fig:stencil}.
 
-\begin{figure}%[htb]
+\begin{figure}[t]
 \centering
-\includegraphics[width=0.5\textwidth]{figures/RBFStencil}\label{fig:stencil}
-\caption{An example of an RBF-FD stencil of size $n=21$ on a sphere of $N=1024$ nodes to approximate any derivative operator at the point in the square. In nonsparse format, the DM  is $1024\times1024$ with 21 nonzero entries per row.}
+\includegraphics[width=0.8\linewidth]{figures/RBFStencil_n32_a}\label{fig:stencil}
+\caption{An example of an RBF-FD stencil of size $n=32$ on a sphere of $N=1024$ nodes to approximate any derivative operator at the point in the square. In nonsparse format, the DM  is $1024\times1024$ with 21 nonzero entries per row.}
 \end{figure}
 
 Due to the above attributes and its simplicity of implementation, the RBF-FD is gaining popularity in modeling systems of PDEs in a variety of fields in fluid dynamics (e.g., geosciences, combustion, aerodynamics \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). For example, the full shallow water equations in a 3D Cartesian coordinate system for a rotating fluid are as follows:
