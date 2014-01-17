@@ -371,7 +371,7 @@ The ratios computed with $cl = 1$ are mostly
 similar to the one with $cl=64$ when the number of vectors is
 large. But the differences are important when the number of vectors is
 low: this highlights that accessing the memory with a granularity of one cache
-line is the main problem faced when performing a standard SpMV computation.
+line is a main problem faced when performing a standard SpMV computation.
 
 Figure~\ref{fig:perf_predict} shows how these ratios translate
 into actual performance. This figure provides projected best and worst
@@ -486,7 +486,7 @@ four functions, at a single point.\looseness=-1
 
 We discuss how the implementation of the v4m4 kernel works using
 vector instructions. The code is given for reference in
-Figure~\ref{code:mat_mul}. (We will show in Section~\ref{sec:expe}
+Figure~\ref{code:mat_mul} along with a graphical depiction of the content of the registers. (We will show in Section~\ref{sec:expe}
 that an implementation that relies on compiler vectorization does not lead
 to desirable performance, which confirms the results
 of~\cite{Saule13-ARXIV}.) The registers in the MIC architecture are
@@ -503,20 +503,26 @@ and parallelism is achieved by giving blocks of rows to each thread
 using an OpenMP construct.
 
 
-The core of the technique is the use of swizzling and permutation
-features of the vectors in the Intel MIC architecture. A vector of 512
-bits is composed of four lanes (sometimes called channels) of 128
-bits, which are made of four segments of 32 bits. A swizzling
-operation allows the reorder of the elements within each lane (see how
-{\tt mat} is extracted from {\tt mat\_ent} in
-Figure~\ref{code:mat_mul}). On the other hand, a permutation reorders entire lanes,
-without changing their contents (see for instance how {\tt vect} is
-generated from {\tt all\_vect} in Figure~\ref{code:mat_mul}).  Both
-permutation and swizzling support common reordering and broadcast. In
-the code, the ``permute'' function needs to use the {\tt
+\ee{The core of the technique is to load the maximum amount of data
+  into large register and format the data for processing within these
+  registers. That way the amount of interaction with the memory is
+  minimized. The Intel MIC is more for these operations than classical
+  CPUs because it features larger vector registers and more elaborate
+  vector reorganization instructions than namely swizzling,
+  permutations and broadcasts. (The AVX instruction sets on classical
+  CPUs is more primitive in that aspect.)} A vector of 512 bits is
+composed of four lanes (sometimes called channels) of 128 bits, which
+are made of four segments of 32 bits. A swizzling operation allows the
+reorder of the elements within each lane (see how {\tt mat} is
+extracted from {\tt mat\_ent} in Figure~\ref{code:mat_mul}). On the
+other hand, a permutation reorders entire lanes, without changing
+their contents (see for instance how {\tt vect} is generated from {\tt
+  all\_vect} in Figure~\ref{code:mat_mul}).  Both permutation and
+swizzling support common reordering and broadcast. In the code, the
+``permute'' function needs to use the {\tt
   \_mm512\_permute4f128\_epi32} instruction which is only defined on
-integers and therefore in place typecasts are necessary to convert
-a vector to and from integer type.  (Note that we prefer swizzling to
+integers and therefore in place typecasts are necessary to convert a
+vector to and from integer type.  (Note that we prefer swizzling to
 permutation if possible because we believe it is cheaper. Many
 instructions have swizzling capability, while permutation is its own
 instruction.)
@@ -566,6 +572,19 @@ properly laid out in the vectors, a partial value for $y_i$ can be
 computed. Once all the nonzeros of the row have been processed, the
 exact $y_i$ value can be sent to memory using a the "No Read No Global
 Order" hint to optimize write traffic on the memory bus.
+
+\ee{The modelization of Section~\ref{sec:model} shows that the memory
+  transfer caps the computation at 210GFlop/s, which is 10\% of the
+  peak single precision of the architecture. To reach this value, the
+  cores need to execute one "useful" Fused Multiply-Add operation
+  every ten cycles. The inner loop of the kernel spends 7 vector
+  instructions to layout the data and then 3 per tensor product for a
+  total of 12 vector instructions. Most of these instruction have a
+  one cycle throughput cost except the gather operations which might
+  need to perform up to 16 memory accesses. There are also some scalar
+  operations but there are few of them and are executed on a different
+  pipeline than the vector operations. Overall, the inner loop can
+  emit the 4 Fused Multiply-Add in less than 40 cycles.}
 
 \section{Experimental Validation}
 \label{sec:expe}
