@@ -620,13 +620,13 @@ the compiler through intrinsics.
 
 
 Figure~\ref{fig:bandwidth} shows a benchmark that computes the
-bandwidth achieved when reading and/or writing large arrays on both
-the MIC card and the CPU architecture. The read benchmark performs a
+bandwidth achieved when reading and/or writing large arrays on 
+the MIC card. The read benchmark performs a
 simple sum of the array. The write benchmark sets all the elemnts of
 the array to zero, while the read/write benchmarks copies the array into
 another one. We also investigate the difference between a straight C++
 implementation (compiled with \mbox{-O3} with proper tagging to inform the
-compiler of memory alignments) and a simple implementation with
+compiler of memory alignments) and an implementation with
 explicit use of the vector registers.
 
 The {\tt read, cpp} implementation reaches a performance of 168~GB/s
@@ -798,17 +798,22 @@ version. This highlights that the C++ implementation is instruction-bound
 while our manually vectorized implementation is most likely 
 memory-bound. 
 
-To put things in perspective, we conducted similar experiments on a
-classical CPU architecture with two Intel Core i7 processors, each has eight
-cores that support AVX instructions. Both the compiler-generated and
-the manually-written vectorization using AVX instructions reach a
-(read) bandwidth of 70~GB/s. This indicates that the performance of
-the classical SpMV can not overcome 17~Gflop/s. A generic
-implementation of the multiplication of four vectors with four matrices on
-the {\tt RBF} matrix reaches a performance of 27~Gflop/s; while a
-manual implementation using AVX instructions reaches a performance of
-42~Gflop/s. This confirms that our method is sound and generalizes to
-architectures other than the Intel MIC architecture.
+\ee{The main idea of this paper, computing 16 derivatives at a time,
+  can be applied on different architectures such as multiprocessor
+  multicore or GPU. To illustrate this fact, we conducted similar
+  experiments on a classical CPU architecture with two Intel Core i7
+  (SandyBridge) processors, each has eight cores that support AVX
+  instructions.}  Both the compiler-generated and the manually-written
+vectorization using AVX instructions reach a (read) bandwidth of
+70~GB/s. This indicates that the performance of the classical SpMV can
+not overcome 17~Gflop/s. A generic implementation of the
+multiplication of four vectors with four matrices on the {\tt RBF}
+matrix reaches a performance of 27~Gflop/s. We also implemented an AVX
+vectorized version which is less compact than the one on MIC because
+of smaller vector registers and the abscence of a gather instruction
+(AVX2 on Haswell processor has that feature). It reaches a
+performance of 42~Gflop/s. This confirms that our method is sound and
+generalizes to architectures other than the Intel MIC architecture.
 
 \vspace{-0.5em}
 \section{Conclusion}
@@ -834,11 +839,12 @@ vector and a single derivative and more than 7 times faster than a
 practical implementation.
 
 In future work, we will examine the effect of larger stencil sizes and
-double precision. The presented performance does not reach the predicted
-peak and we believe that common techniques from SpMV such as cache
-partitioning can be successfully applied. We will also integrate the
-techniques presented in this paper within a fluid simulation using
-RBFFD.
+double precision. The presented performance does not reach the
+predicted peak and we believe that common techniques from SpMV such as
+cache partitioning can be successfully applied. We will also integrate
+the techniques presented in this paper within a fluid simulation using
+RBFFD. We will also look developping a similar technique on more
+commonly available devices such as GPUs.
 
 \section*{Acknowledgment}
 Erlebacher acknowledges funding from NSF grant
