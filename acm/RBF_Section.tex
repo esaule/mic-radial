@@ -15,6 +15,13 @@ RBFs approximate a function $f(\mathbf{x}) \in \mathbb{R}^d$ sampled at $N$ dist
 To obtain a RBF derivative approximation at a node location that will result in a sparse differentiation matrix (DM), the RBF-FD method has been developed over the last decade \cite{TAI1,TAI2,SDY02,WrFo06}. RBF-FD is conceptually similar to standard finite differences (FD). 
 However, the differentiation weights for approximating a derivative at a given node (forming one row of the RBF-FD derivative matrix (DM)) enforce that the linear combination of function values at the $n << N$ nearest node locations (a stencil) be exact for RBFs centered at each of the $n$ nodes rather than polynomials. The result is a sparse matrix with only $n$ entries in each of its $N$ rows, resulting in a total of $nN$ nonzero entries.
 
+\begin{figure}[tbh]
+\centering
+\includegraphics[width=0.8\linewidth]{figures/RBFStencil_n32_a}\label{fig:stencil}
+\caption{An example of an RBF-FD stencil of size $n=32$ on a sphere of $N=1024$ nodes to approximate any derivative operator at the point in the square. In nonsparse format, the DM  is $1024\times1024$ with 32 nonzero entries per row.}
+\end{figure}
+
+
 Due to the above attributes and its simplicity of implementation, the RBF-FD is gaining popularity in modeling systems of PDEs in a variety of fields in fluid dynamics (e.g., geosciences, combustion, aerodynamics \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). For example, the full shallow water equations in a 3D Cartesian coordinate system for a rotating fluid are as follows:
 {
 \small
@@ -33,11 +40,6 @@ Due to the above attributes and its simplicity of implementation, the RBF-FD is 
 \item For a given $n$ and $N$, regardless of the operator approximated, the DMs will have the same sparsity pattern. Examples of an RBF-FD DM can be seen in Figures \ref{fig:spy_plots}d and e.
 \end{itemize}
 
-\begin{figure}[tbh]
-\centering
-\includegraphics[width=0.8\linewidth]{figures/RBFStencil_n32_a}\label{fig:stencil}
-\caption{An example of an RBF-FD stencil of size $n=32$ on a sphere of $N=1024$ nodes to approximate any derivative operator at the point in the square. In nonsparse format, the DM  is $1024\times1024$ with 32 nonzero entries per row.}
-\end{figure}
 
 
 Multiple variables transform a SpMV into a SpMM (Sparse Matrix/dense Matrix multiplication), which improves register utilization and decreases cache

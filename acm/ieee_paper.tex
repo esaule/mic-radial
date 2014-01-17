@@ -13,7 +13,8 @@
 \def\es#1{{\blue{*** For Erik: #1 ***}}}
 \def\ee#1{{\green{#1}}}
 \def\ge#1{{\blue{#1}}}
-\def\NOTE#1{{\red{NOTE: #1}}}
+%\def\NOTE#1{{\red{NOTE: #1}}}
+\def\NOTE#1{{}}
 \def\ttt#1{{\tt #1}}
 \def\bold#1{{\bf #1}}
 
@@ -444,8 +445,10 @@ achieved.
 
 \begin{figure*}
   \centering
+\scalebox{.8}{
 \subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{figures/code.pdf}}%
 \subfigure[Content of the vector registers \ge{in the source code in (a)}.]{\hspace{-0.07\linewidth}\includegraphics[width=.5\linewidth]{figures/code-annote.pdf}}
+}
 
 \caption{Code snippet of the multiplication of 4 vectors with 4
   matrices. When a line changes the content of a vector register its
