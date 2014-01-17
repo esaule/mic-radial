@@ -11,10 +11,12 @@
 \def\green#1{\textbf{\textcolor{green}{#1}}}
 \def\qes#1{{\blue{*** For Erik: #1 ***}}}
 \def\es#1{{\blue{*** For Erik: #1 ***}}}
-\def\ee#1{{\green{#1}}}
-\def\ge#1{{\blue{#1}}}
-\def\NOTE#1{{\red{NOTE: #1}}}
-%\def\NOTE#1{{}}
+%\def\ee#1{{\green{#1}}}
+\def\ee#1{{#1}}
+%\def\ge#1{{\blue{#1}}}
+\def\ge#1{{#1}}
+%\def\NOTE#1{{\red{NOTE: #1}}}
+\def\NOTE#1{{}}
 \def\ttt#1{{\tt #1}}
 \def\bold#1{{\bf #1}}
 
@@ -119,7 +121,7 @@ of four different functions,
 or 16 different derivatives. We demonstrate a novel implementation on
 the Intel MIC architecture, taking into account its advanced swizzling and
 channel interchange features. We present benchmarks on a real data
-set that show an almost \ge{sevenfold} \note{eightfold; there were inconsistencies in the ppaer.} increase in speed compared to
+set that show an almost \ge{sevenfold} \NOTE{eightfold; there were inconsistencies in the paper.} increase in speed compared to
 efficient implementations of a single derivative, reaching a
 performance of almost 140~Gflop/s \ee{in single precision}. We explain the results through
 consideration of operation count versus memory bandwidth.
@@ -517,10 +519,10 @@ using an OpenMP construct.
 composed of four lanes (sometimes called channels) of 128 bits, which
 are made of four segments of 32 bits. A swizzling operation allows the
 reorder of the elements within each lane (see how {\tt mat} is
-extracted from {\tt mat\_ent} in Figure~\ref{code:mat_mul} VIII to X). On the
+extracted from {\tt mat\_ent} in Figure~\ref{code:mat_mul} line VIII to X). On the
 other hand, a permutation reorders entire lanes, without changing
 their contents (see for instance how {\tt vect} is generated from {\tt
-  all\_vect} in Figure~\ref{code:mat_mul} VII to IX).  Both permutation and
+  all\_vect} in Figure~\ref{code:mat_mul} line VII to IX).  Both permutation and
 swizzling support common reordering and broadcast. In the code, the
 ``permute'' function needs to use the {\tt
   \_mm512\_permute4f128\_epi32} instruction which is only defined on
