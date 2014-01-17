@@ -116,7 +116,7 @@ of four different functions,
 or 16 different derivatives. We demonstrate a novel implementation on
 the Intel MIC architecture, taking into account its advanced swizzling and
 channel interchange features. We present benchmarks on a real data
-set that show an almost eightfold increase in speed compared to
+set that show an almost \ge{sevenfold} \note{eightfold; there were inconsistencies in the ppaer.} increase in speed compared to
 efficient implementations of a single derivative, reaching a
 performance of almost 140~Gflop/s. We explain the results through
 consideration of operation count versus memory bandwidth.
@@ -190,9 +190,8 @@ instruction-intensive kernel to run simultaneously.
 Another solution, pursued in this paper, \ge{is to compute multiple SpMVs using matrices with identical spasity patterns, but with different matrix elements.}  Obviously not all the applications have such a property. However, important classes of applications such as graph recommendation~\cite{Kucuktunc13-SNAM}, eigensolving~\cite{LOBPCG} and the computation of derivatives for solving systems of PDEs using Radial Basis Function-generated Finite Differences (RBF-FD)~\cite{FLBWSC12} \ge{fall into the category of applications that require multiple SpMVs simultaneously.} RBF-FD is a meshless method, which easily handles irregular geometries and local refinement with algorithmic complexity independent of dimensionality, 
 and which can produce high-order derivative approximations. These methods are rapidly gaining 
 ground in science and engineering modeling communities \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). 
-As a result, it is of interest to develop an efficient implementation on novel computer plat
-forms for the calculation of derivatives within the context of RBF-FD, which thus far are responsible 
-for the bulk of computer resources. \ge{Typical equations solved by RBF-FD depend on multiple derivatives
+As a result, it is of interest to develop an efficient implementation on novel computer platforms for the calculation of derivatives within the context of RBF-FD; derivative calculations that account for the bulk of computer resources when running a numerical simulation implemented with RBF-FD. 
+\ge{Typical equations solved by RBF-FD depend on multiple derivatives
 of multiple functions. Rather than compute each derivative individually, this paper investigates 
 how to compute all derivatives simultaneously in an interleaved fashion. Specifically, 
 we calculate four different derivatives (corresponding to four different sparse matrices with identical 
@@ -217,13 +216,13 @@ identical sparsity patterns.
 
 Section~\ref{sec:model} presents an
 estimation of the instruction intensity of various forms of the
-computations. We show that a sixfold improvement can be
+computations. We show that a \ge{sevenfold} \NOTE{sixfold was inconsistent with eighfold in the abstract.} improvement can be
 expected when computing the sixteen multiplications simultaneously to
 reach a total of about 210~Gflop/s. This performance represents
 approximately 10\% of the available flop/s of a Xeon Phi
 coprocessor. \ge{Therefore, it is necessary to have an implementation that
 performs the computation in as few instructions as
-possible.} \NOTE{I DO NOT FOLLOW the Therefore in the previous sentence.}
+possible.} \NOTE{I DO NOT FOLLOW the Therefore in the previous sentence. Evan has the same concern.}
 \ge{We describe in Section~\ref{sec:impl} the details of the MIC
 architecture and how to use specialized load, store, swizzle and
 permutation instructions to efficiently bring the data from memory into the vector
@@ -416,7 +415,7 @@ believed to be between 200~GB/s and 250~GB/s.
 Each core in the architecture has a 32~kB L1 data cache, a 32~kB L1
 instruction cache, and a 512~kB L2 cache. The architecture of a core is
 based on the traditional Pentium architecture, which has been extended to
-64-bit. A core can hold four hardware contexts at any given time (240 threads in total). At each
+64-bit with hyperthreading. A core can hold four hardware contexts at any given time (240 threads in total). At each
 clock cycle, instructions from a single thread are executed. Due to
 some hardware constraints, two hardware contexts must be used to reach
 the peak instruction throughput in that architecture. Similar to the
@@ -446,7 +445,7 @@ achieved.
 \begin{figure*}
   \centering
 \subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{figures/code.pdf}}%
-\subfigure[Content of the vector registers]{\hspace{-0.07\linewidth}\includegraphics[width=.5\linewidth]{figures/code-annote.pdf}}
+\subfigure[Content of the vector registers \ge{in the source code in (a)}.]{\hspace{-0.07\linewidth}\includegraphics[width=.5\linewidth]{figures/code-annote.pdf}}
 
 \caption{Code snippet of the multiplication of 4 vectors with 4
   matrices. When a line changes the content of a vector register its
@@ -565,8 +564,8 @@ Figure~\ref{code:mat_mul}.)
 Now that $A_h^1,A_h^2,A_h^3,A_h^4$ and $x_m^1,x_m^2,x_m^3,x_m^4$ are
 properly laid out in the vectors, a partial value for $y_i$ can be
 computed. Once all the nonzeros of the row have been processed, the
-exact $y_i$ value can be sent to memory using a the No Read No Global
-Order hint to optimize write traffic on the memory bus.
+exact $y_i$ value can be sent to memory using a the "No Read No Global
+Order" hint to optimize write traffic on the memory bus.
 
 \section{Experimental Validation}
 \label{sec:expe}
@@ -620,7 +619,7 @@ not added in the {\tt read} case. On the other hand, the {\tt write}
 case reaches a performance of 158~GB/s while the
 {\tt write, cpp} implementation never exceeds 58~GB/s. 
 This difference is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction, 
-which bypasses the Read For Ownership protocol and allows the writes
+which bypasses the \ge{"Read For Ownership"} protocol and allows the writes
 to be performed in any order. The compiler can not use this
 instruction on its own because this would break the memory convention
 useful for some parallel algorithms. The {\tt read/write} benchmark
@@ -686,21 +685,21 @@ values~\cite{Saule13-ARXIV}.
 
 The different matrices used to perform our experiments and analysis
 are presented in Figure~\ref{fig:spy_plots}. The
-Supercompact matrices (Figure~\ref{fig:supercompact}) have been
+\ttt{Supercompact} matrices (Figure~\ref{fig:supercompact}) have been
 generated to only have nonzero elements in the first 32 columns of
 the matrix. As a result, only 32 values of {\tt x} are read
 from memory, and the expense associated with cache misses is removed from consideration. The cost associated with 
-{\tt A} remains. The Compact matrices
+{\tt A} remains. The \ttt{Compact} matrices
 (Figure~\ref{fig:compact}) are generated to have 32 nonzeros per row
 centered around the diagonal and it represents the ideal case for many
 applications that rely on sparse matrix vector multiplication. The nonzero
-elements of the Random
+elements of the \ttt{Random}
 matrices (Figure~\ref{fig:compact}) see their nonzero elements
 randomly (uniformly) distributed in the matrix; they represent the
 worst case scenario for a cache-based architecture where the cache
 reutilisation is the lowest from one row to the next.
 The other type of matrix is used in derivative stencils in 3D
-RBFFD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-points
+RBFFD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-point
 stencil of a 3D $8^3$ grid).
 
 We also apply a Reverse Cuthill-Mckee reordering to
@@ -753,7 +752,7 @@ time, the RCM ordering provides an improvement which can be as high as
   \includegraphics[width=.9\linewidth]{figures/mic_performance_nb_threads.pdf}
 
   \caption{Performance of $y=Ax$ for a RBF derivative stencil of a
-    $96^3$ 3D grid. Classical SpMV ($n_m=n_v=1$ given in blue) has low
+    $96^3$ 3D grid. Classical "one-matrix one-vector" SpMV ($n_m=n_v=1$ given in blue) has low
     performance. The manually vectorized code (red) is 3.5 times
     faster than the compiler generated one (green). RCM ordering
     (squares) only improves the performance for our manually
@@ -780,7 +779,7 @@ version. This highlights that the C++ implementation is instruction-bound
 while our manually vectorized implementation is most likely 
 memory-bound. 
 
-To put things in perspective, we conducted some experiments on a
+To put things in perspective, we conducted similar experiments on a
 classical CPU architecture with two Intel Core i7 processors, each has eight
 cores that support AVX instructions. Both the compiler-generated and
 the manually-written vectorization using AVX instructions reach a
@@ -809,7 +808,7 @@ with 16 outputs, computed as a sum of outer products.
 
 Our implementation makes use of the IMCI MIC instruction set and
 includes a number of swizzling and channel swapping operations, for an
-extremely efficient tensor product implementation. On a $96^3$ 3D
+extremely efficient tensor product implementation. \NOTE{From Evan: this is the first time $96^3$ is mentionned. Might wish to mention it earlier.} On a $96^3$ 3D
 grid, it reaches a performance of 140~Gflop/s which is 2.7 times
 faster than the best possible performance achievable for a single
 vector and a single derivative and more than 7 times faster than a
