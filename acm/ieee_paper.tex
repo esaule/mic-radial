@@ -8,8 +8,10 @@
 
 \def\red#1{\textbf{\textcolor{red}{#1}}}
 \def\blue#1{\textbf{\textcolor{blue}{#1}}}
+\def\green#1{\textbf{\textcolor{green}{#1}}}
 \def\qes#1{{\blue{*** For Erik: #1 ***}}}
 \def\es#1{{\blue{*** For Erik: #1 ***}}}
+\def\ee#1{{\green{#1}}}
 \def\ge#1{{\blue{#1}}}
 \def\NOTE#1{{\red{NOTE: #1}}}
 \def\ttt#1{{\tt #1}}
@@ -118,7 +120,7 @@ the Intel MIC architecture, taking into account its advanced swizzling and
 channel interchange features. We present benchmarks on a real data
 set that show an almost \ge{sevenfold} \note{eightfold; there were inconsistencies in the ppaer.} increase in speed compared to
 efficient implementations of a single derivative, reaching a
-performance of almost 140~Gflop/s. We explain the results through
+performance of almost 140~Gflop/s \ee{in single precision}. We explain the results through
 consideration of operation count versus memory bandwidth.
 \end{abstract}
 
@@ -187,9 +189,9 @@ such as HyperThreading, to reduce the cycle wastage. However, most of
 the applications that use SpMV do not typically have an 
 instruction-intensive kernel to run simultaneously.
 
-Another solution, pursued in this paper, \ge{is to compute multiple SpMVs using matrices with identical spasity patterns, but with different matrix elements.}  Obviously not all the applications have such a property. However, important classes of applications such as graph recommendation~\cite{Kucuktunc13-SNAM}, eigensolving~\cite{LOBPCG} and the computation of derivatives for solving systems of PDEs using Radial Basis Function-generated Finite Differences (RBF-FD)~\cite{FLBWSC12} \ge{fall into the category of applications that require multiple SpMVs simultaneously.} RBF-FD is a meshless method, which easily handles irregular geometries and local refinement with algorithmic complexity independent of dimensionality, 
+Another solution, pursued in this paper, \ge{is to compute multiple SpMVs using matrices with identical spasity patterns, but with different matrix elements.}  Obviously not all the applications have such a property. However, important classes of applications such as graph recommendation~\cite{Kucuktunc13-SNAM}, \NOTE{eigensolving does not match that description} and the computation of derivatives for solving systems of PDEs using Radial Basis Function-generated Finite Differences (RBF-FD)~\cite{FLBWSC12} \ge{fall into the category of applications that require multiple SpMVs simultaneously.} RBF-FD is a meshless method, which easily handles irregular geometries and local refinement with algorithmic complexity independent of dimensionality, 
 and which can produce high-order derivative approximations. These methods are rapidly gaining 
-ground in science and engineering modeling communities \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). 
+ground in science and engineering modeling communities \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}. 
 As a result, it is of interest to develop an efficient implementation on novel computer platforms for the calculation of derivatives within the context of RBF-FD; derivative calculations that account for the bulk of computer resources when running a numerical simulation implemented with RBF-FD. 
 \ge{Typical equations solved by RBF-FD depend on multiple derivatives
 of multiple functions. Rather than compute each derivative individually, this paper investigates 
@@ -220,9 +222,7 @@ computations. We show that a \ge{sevenfold} \NOTE{sixfold was inconsistent with 
 expected when computing the sixteen multiplications simultaneously to
 reach a total of about 210~Gflop/s. This performance represents
 approximately 10\% of the available flop/s of a Xeon Phi
-coprocessor. \ge{Therefore, it is necessary to have an implementation that
-performs the computation in as few instructions as
-possible.} \NOTE{I DO NOT FOLLOW the Therefore in the previous sentence. Evan has the same concern.}
+coprocessor. \ee{Provided the computation is mostly irregular, it is necessary to have an implementation that organizes the data in such a way it can perform a fully efficient Fused Multiply-Add every 10 cycles.} \NOTE{Rewrote, is it more clear?}
 \ge{We describe in Section~\ref{sec:impl} the details of the MIC
 architecture and how to use specialized load, store, swizzle and
 permutation instructions to efficiently bring the data from memory into the vector
@@ -234,7 +234,7 @@ SpMV kernels.}
 %depending on how the SpMV kernel is written. 
 It also provides the actual performance of the various kernels on multiple classes of matrices, 
 some generated for purpose of analysis, and some extracted from an application of RBF-FD. 
-A performance of 135~Gflop/s is achieved using RBF-FD differentiation matrices. Concluding remarks and perspectives are provided in Section~\ref{sec:ccl}.\looseness=-1
+A performance of 135~Gflop/s in single precision is achieved using RBF-FD differentiation matrices, which is 3.75 imes better than the theoretical peak performance of an SpMV operation. Concluding remarks and perspectives are provided in Section~\ref{sec:ccl}.\looseness=-1
 
 \input{RBF_Section}
 %\input{old_RBF_Section}

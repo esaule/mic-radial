@@ -10,6 +10,7 @@
 \label{sec:rbf}
 
 RBFs approximate a function $f(\mathbf{x}) \in \mathbb{R}^d$ sampled at $N$ distinct node locations by linearly combining translates of a single radially symmetric function, e.g. $\phi(r) = e^{-\varepsilon^2r^2}$, where $r=\|\mathbf{x}-\mathbf{x}_{i}\|$ denotes the Euclidean distance between where the function $f(\mathbf{x})$ is evaluated, $\mathbf{x}$, and where the RBF, $\phi$, is centered $\mathbf{x}_{i}$. The parameter $\varepsilon$ controls the shape of the RBF. Note that the argument of an RBF is simply a scalar distance, $r$, independent of any coordinate system or dimension. As a result, nodes can be scattered as desired across complex physical domains with the implementation of the method being independent of dimensionality. Thus, no mesh generation is needed and algorithmic complexity does not increase with dimension.
+\NOTE{While reading that paragraph, I was under the impression that the physical domain needs to be a sphere.}
 
 To obtain a RBF derivative approximation at a node location that will result in a sparse differentiation matrix (DM), the RBF-FD method has been developed over the last decade \cite{TAI1,TAI2,SDY02,WrFo06}. RBF-FD is conceptually similar to standard finite differences (FD). 
 However, the differentiation weights for approximating a derivative at a given node (forming one row of the RBF-FD derivative matrix (DM)) enforce that the linear combination of function values at the $n << N$ nearest node locations (a stencil) be exact for RBFs centered at each of the $n$ nodes rather than polynomials. The result is a sparse matrix with only $n$ entries in each of its $N$ rows, resulting in a total of $nN$ nonzero entries.
@@ -62,7 +63,7 @@ misses by vectorizing over the multiple source vectors. Furthermore, due to the 
 \end{equation}
 where $\{\underline{u},\underline{v}, \underline{w}, \underline{h}\}$ are the functions values at all nodes of the corresponding variables with the left hand side being the resulting derivative approximations. The increased memory bandwidth due to an increase in the number of derivative matrices is offset by improved cache utilization, leading to an overall performance benefit. In practice however, the number of vectors whose derivatives are required is limited, capping the performance of the matrix/vector multiplication. Similarly, the number of different derivatives in a particular computation is finite. It is for this reason that we seek to combine the benefits of multiple vectors and multiple matrices simultaneously. We limit this initial study to four vectors and four matrices, which is a common number found in fluid dynamic calculations.
 
-\ge{We also note that the DMs are time-independent. They are computed once and used repeatedly to update the solution 
-in time. Thus, the cost to calculate the derivatives, although high, is amortized by the very long numerical simulations.}
+\ge{We also note that the DMs are time-independent. They are computed once \ee{at the beginning of the simulation} and used repeatedly to update the solution 
+in time \ee{(for each iteration of the simulation)}. Thus, the cost to calculate the derivatives, although high, is amortized by the very long numerical simulations.}
 
 %\end{document}
