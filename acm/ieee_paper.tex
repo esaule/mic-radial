@@ -808,10 +808,10 @@ vectorization using AVX instructions reach a (read) bandwidth of
 70~GB/s. This indicates that the performance of the classical SpMV can
 not overcome 17~Gflop/s. A generic implementation of the
 multiplication of four vectors with four matrices on the {\tt RBF}
-matrix reaches a performance of 27~Gflop/s. We also implemented an AVX
+matrix reaches a performance of 27~Gflop/s. \ee{We also implemented an AVX
 vectorized version which is less compact than the one on MIC because
 of smaller vector registers and the abscence of a gather instruction
-(AVX2 on Haswell processor has that feature). It reaches a
+(Haswell processors support AVX2 which have that feature).} It reaches a
 performance of 42~Gflop/s. This confirms that our method is sound and
 generalizes to architectures other than the Intel MIC architecture.
 
@@ -843,8 +843,8 @@ double precision. The presented performance does not reach the
 predicted peak and we believe that common techniques from SpMV such as
 cache partitioning can be successfully applied. We will also integrate
 the techniques presented in this paper within a fluid simulation using
-RBFFD. We will also look developping a similar technique on more
-commonly available devices such as GPUs.
+RBFFD. \ee{We will also look developping a similar technique on more
+commonly available devices such as GPUs.}
 
 \section*{Acknowledgment}
 Erlebacher acknowledges funding from NSF grant
