@@ -13,8 +13,8 @@
 \def\es#1{{\blue{*** For Erik: #1 ***}}}
 \def\ee#1{{\green{#1}}}
 \def\ge#1{{\blue{#1}}}
-%\def\NOTE#1{{\red{NOTE: #1}}}
-\def\NOTE#1{{}}
+\def\NOTE#1{{\red{NOTE: #1}}}
+%\def\NOTE#1{{}}
 \def\ttt#1{{\tt #1}}
 \def\bold#1{{\bf #1}}
 
@@ -517,10 +517,10 @@ using an OpenMP construct.
 composed of four lanes (sometimes called channels) of 128 bits, which
 are made of four segments of 32 bits. A swizzling operation allows the
 reorder of the elements within each lane (see how {\tt mat} is
-extracted from {\tt mat\_ent} in Figure~\ref{code:mat_mul}). On the
+extracted from {\tt mat\_ent} in Figure~\ref{code:mat_mul} VIII to X). On the
 other hand, a permutation reorders entire lanes, without changing
 their contents (see for instance how {\tt vect} is generated from {\tt
-  all\_vect} in Figure~\ref{code:mat_mul}).  Both permutation and
+  all\_vect} in Figure~\ref{code:mat_mul} VII to IX).  Both permutation and
 swizzling support common reordering and broadcast. In the code, the
 ``permute'' function needs to use the {\tt
   \_mm512\_permute4f128\_epi32} instruction which is only defined on
@@ -553,26 +553,26 @@ Loading the entries from the {\tt x} vector is  more
 involved. First, the column pointers of four different nonzeros are
 loaded into a vector register and the values are distributed one per
 lane of the vector register using an {\tt unpack}
-operation\footnote{Notice that there are two calls to {\tt unpack} for the
+operation in line IV\footnote{Notice that there are two calls to {\tt unpack} for the
 LSB and MSB. Both are mandatory even if one is known to be
 nilpotent according the documentation of the hardware.} (The column
 pointers are named $j,k,l,m$ in Figure~\ref{code:mat_mul}.) They
 are replicated so that each value fills a single vector lane 
-using a swizzle operation. Then each value is multiplied by four
+using a swizzle operation (in line V). Then each value is multiplied by four
 (because $n_v=4$) 
 and the offset vector $(3,2,1,0)$ is added to each lane to obtain the
 correct index of the elements of the {\tt x} vector within each lane
-using a Fused Multiply-Add operation. A {\tt gather} operation is then
-performed to bring the 16 entries of the {\tt x} vector into the SIMD
+using a Fused Multiply-Add operation in line VI. A {\tt gather} operation is then
+performed in line VII to bring the 16 entries of the {\tt x} vector into the SIMD
 register. At this point we have a register where each lane is the
 four vector entries for a nonzero element. Using a broadcast
 permutation, one can replicate an entry of the four vectors across
 each lane. (The broadcast of $x_m^1,x_m^2,x_m^3,x_m^4$ is shown in
-Figure~\ref{code:mat_mul}.)
+Figure~\ref{code:mat_mul} in line IX.)
 
 Now that $A_h^1,A_h^2,A_h^3,A_h^4$ and $x_m^1,x_m^2,x_m^3,x_m^4$ are
 properly laid out in the vectors, a partial value for $y_i$ can be
-computed. Once all the nonzeros of the row have been processed, the
+computed in line XI. Once all the nonzeros of the row have been processed, the
 exact $y_i$ value can be sent to memory using a the "No Read No Global
 Order" hint to optimize write traffic on the memory bus.
 
