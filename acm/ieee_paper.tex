@@ -129,11 +129,12 @@ consideration of operation count versus memory bandwidth.
 
 
 % A category with the (minimum) three required fields
-\category{H.4}{Information Systems Applications}{Miscellaneous}
+%\category{I.6}{Simulation and Modeling}{Applications} %\break
+\category{F.2}{Analysis of Algorithms and Problem Complexity}{Numerical Algorithms and Problems}
 %A category including the fourth, optional field follows...
-\category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+%\category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
 
-\terms{Theory}
+%\terms{Theory}
 
 \keywords{MIC, SIMD, SpMV, Sparse Matrix, Radial Basis Function}
 
@@ -509,13 +510,13 @@ using an OpenMP construct.
 
 
 \ee{The core of the technique is to load the maximum amount of data
-  into large register and format the data for processing within these
-  registers. That way the amount of interaction with the memory is
-  minimized. The Intel MIC is more for these operations than classical
+  into large the registers and format the data for processing within these
+  registers, minimizing the amount of interaction with memory. 
+  The Intel MIC is more for these operations than classical
   CPUs because it features larger vector registers and more elaborate
-  vector reorganization instructions than namely swizzling,
+  vector reorganization instructions, such as swizzling,
   permutations and broadcasts. (The AVX instruction sets on classical
-  CPUs is more primitive in that aspect.)} A vector of 512 bits is
+  CPUs are more primitive in that aspect.)} A vector of 512 bits is
 composed of four lanes (sometimes called channels) of 128 bits, which
 are made of four segments of 32 bits. A swizzling operation allows the
 reorder of the elements within each lane (see how {\tt mat} is
@@ -578,8 +579,9 @@ computed in line XI. Once all the nonzeros of the row have been processed, the
 exact $y_i$ value can be sent to memory using a the "No Read No Global
 Order" hint to optimize write traffic on the memory bus.
 
-\ee{The modelization of Section~\ref{sec:model} shows that the memory
-  transfer caps the computation at 210GFlop/s, which is 10\% of the
+\ee{The modelization of Section~\ref{sec:model} establishes that the 
+  memory
+  transfer caps the computation at 210~GFlop/s, which is 10\% of the
   peak single precision of the architecture. To reach this value, the
   cores need to execute one "useful" Fused Multiply-Add operation
   every ten cycles. The inner loop of the kernel spends 7 vector
@@ -781,7 +783,8 @@ time, the RCM ordering provides an improvement which can be as high as
     faster than the compiler generated one (green). RCM ordering
     (squares) only improves the performance for our manually
     vectorized code.
-    We also show peak theoretical performance for the base case and the 4 vector/1 matrix case. Not shown is the peak theoretical performance of 210 Gflops for the 4/4 case. 
+    We also show peak theoretical performance for v1m1 and v4m1 on the MIC. 
+    Not shown is the peak theoretical performance of 210 Gflops for v4m4. 
     }
   \label{fig:comparison_spmv}
   \label{fig:perf_mic}
@@ -850,7 +853,7 @@ double precision. The presented performance does not reach the
 predicted peak and we believe that common techniques from SpMV such as
 cache partitioning can be successfully applied. We will also integrate
 the techniques presented in this paper within a fluid simulation using
-RBFFD. \ee{We will also look developping a similar technique on more
+RBFFD. \ee{We will also look into developing a similar technique on more
 commonly available devices such as GPUs.}
 
 \section*{Acknowledgment}

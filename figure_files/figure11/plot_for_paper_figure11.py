@@ -96,10 +96,10 @@ def plot_file(infile,outfile):
     #plt.ylim(0,100)
     plt.xlim([0,250])
 
-    myutil.horizontal_line(35,  xmin=205, xmax=250, col='b', lw=4)
-    myutil.horizontal_line(135, xmin=205, xmax=250, col='g', lw=4)
-    plt.text(130,32.5,'peak: 35 Gflop/s', fontsize=16)
-    plt.text(130,132.5,'peak: 135 Gflop/s', fontsize=16)
+    myutil.horizontal_line(35,  xmin=210, xmax=250, col='b', lw=4)
+    myutil.horizontal_line(135, xmin=210, xmax=250, col='g', lw=4)
+    plt.text(120,33.8,'v1m1 peak: 35 Gflop/s', fontsize=14)
+    plt.text(120,133.8,'v4m1 peak: 135 Gflop/s', fontsize=14)
 
     plt.tight_layout()
     plt.savefig.format = "pdf"
