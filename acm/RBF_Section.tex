@@ -13,18 +13,18 @@ RBFs approximate a function $f(\mathbf{x}) \in \mathbb{R}^d$ sampled at $N$ dist
 \NOTE{While reading that paragraph, I was under the impression that the physical domain needs to be a sphere.}
 
 To obtain a RBF derivative approximation at a node location that will result in a sparse differentiation matrix (DM), the RBF-FD method has been developed over the last decade \cite{TAI1,TAI2,SDY02,WrFo06}. RBF-FD is conceptually similar to standard finite differences (FD). 
-However, the differentiation weights for approximating a derivative at a given node (forming one row of the RBF-FD derivative matrix (DM)) enforce that the linear combination of function values at the $n << N$ nearest node locations (a stencil) be exact for RBFs centered at each of the $n$ nodes rather than polynomials. The result is a sparse matrix with only $n$ entries in each of its $N$ rows, resulting in a total of $nN$ nonzero entries.
+However, the differentiation weights for approximating a derivative at a given node (forming one row of the RBF-FD derivative matrix (DM)) enforce that the linear combination of function values at the $n << N$ nearest node locations (a stencil) be exact for RBFs centered at each of the $n$ nodes rather than polynomials. The result is a sparse matrix with only $n$ entries in each of its $N$ rows, resulting in a total of $nN$ nonzero entries. An example stencil is shown in 
+%Figure~\ref{fig:stencil}.  % Latex is making this figure 2. Do not know why. 
+Figure~1.
 
 \begin{figure}[tbh]
 \centering
-\includegraphics[width=0.8\linewidth]{figures/RBFStencil_n32_a}\label{fig:stencil}
+\includegraphics[width=0.7\linewidth]{figures/RBFStencil_n32_a}\label{fig:stencil}
 \caption{An example of an RBF-FD stencil of size $n=32$ on a sphere of $N=1024$ nodes to approximate any derivative operator at the point in the square. In nonsparse format, the DM  is $1024\times1024$ with 32 nonzero entries per row.}
 \end{figure}
 
-
 Due to the above attributes and its simplicity of implementation, the RBF-FD is gaining popularity in modeling systems of PDEs in a variety of fields in fluid dynamics (e.g., geosciences, combustion, aerodynamics \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). For example, the full shallow water equations in a 3D Cartesian coordinate system for a rotating fluid are as follows:
-{
-\small
+{ \small
 \begin{eqnarray}
 \dfrac{\partial u}{\partial t} &=& - \left( u\dfrac{\partial u}{\partial x} + v\dfrac{\partial u}{\partial y} + w\dfrac{\partial u}{\partial z} + f(yw - zv) + g\dfrac{\partial h}{\partial x} \right) 
 \nonumber \\
@@ -34,17 +34,29 @@ Due to the above attributes and its simplicity of implementation, the RBF-FD is 
 \nonumber\\
 \frac{\partial h}{\partial t}& =&-\left(\dfrac{\partial (uh)}{\partial x} + \dfrac{\partial (vh)}{\partial y} + h\dfrac{\partial (wh)}{\partial z}\right) , \label{height} \nonumber
 \end{eqnarray}
-} where $f$ is the Coriolis force, $\{u,v,w\}$ are the components of the velocity vector in the respective $\{x,y,z\}$ directions, and $h$ is the geopotential height (analogous to pressure). Thus, we have four variables $\{u,v,w,h\}$ and three DMs, $D_x, D_y, D_z$ representing $\dfrac{\partial}{\partial x}, \dfrac{\partial}{\partial y},\dfrac{\partial w}{\partial z}$, respectively. Moreover, in order to stably time step the equations with an explicit time-stepping scheme, most numerical methods (including RBF-FD) require a fourth operator, hyperviscosity, to be added to each equation. Hyperviscosity takes the form of $\triangle^p$ ($\triangle$ denotes the Laplacian operator), where $p\geq3$, which is approximated by the matrix $D_{hyp}$. Therefore, in order to solve this system of PDEs, the application of 4 DM to 4 unknowns, i.e. 16 SpMV is required at every time step. Due to the fact that RBFs are independent of a coordinate system, taking into account only distances to nearest neighbors, the DMs have the following properties:
+}
+where $f$ is the Coriolis force, $\{u,v,w\}$ are the components of the velocity vector in the respective $\{x,y,z\}$ directions, and $h$ is the geopotential height (analogous to pressure). Thus, we have four variables $\{u,v,w,h\}$ and three DMs, $D_x, D_y, D_z$ representing 
+\begingroup
+\everymath{\footnotesize}
+\scriptsize
+$\dfrac{\partial}{\partial x}, \dfrac{\partial}{\partial y},\dfrac{\partial}{\partial z}$, 
+\endgroup
+respectively. Moreover, in order to stably time step the equations with an explicit time-stepping scheme, most numerical methods (including RBF-FD) require a fourth operator, hyperviscosity, to be added to each equation. Hyperviscosity takes the form of $\triangle^p$ ($\triangle$ denotes the Laplacian operator), where $p\geq3$, which is approximated by the matrix $D_{hyp}$. Therefore, in order to solve this system of PDEs, the application of 4 DM to 4 unknowns, i.e. 16 SpMV is required at every time step. Due to the fact that RBFs are independent of a coordinate system, taking into account only distances to nearest neighbors, the DMs have the following properties:
 \begin{itemize}
-\item For a given $n$, regardless of the operator approximated, e.g. $\dfrac{\partial}{\partial x}$ or the Laplacian, RBF-FD DMs will have the same number of nonzeros per row.
+\item For a given $n$, regardless of the operator approximated, e.g.,
+$\partial_x$, 
+%$\dfrac{\partial}{\partial x}$ 
+or the Laplacian, RBF-FD DMs will have the same number of nonzeros per row.
 \item For a given $n$ and $N$, regardless of the operator approximated, the DMs will have the same sparsity pattern. Examples of an RBF-FD DM can be seen in Figures \ref{fig:spy_plots}d and e.
 \end{itemize}
-
 
 
 Multiple variables transform a SpMV into a SpMM (Sparse Matrix/dense Matrix multiplication), which improves register utilization and decreases cache
 misses by vectorizing over the multiple source vectors. Furthermore, due to the properties just mentioned, multiple derivatives of a single function can be calculated rather than computing a single derivative of multiple functions. Using the PDE system above as an example, the block structure of the SpMM for computing all derivatives needed is %can be seen in Equation \ref{fig:struct_comp}, 
 %\begin{figure}[h]
+\begingroup
+\everymath{\footnotesize}
+\scriptsize
 \begin{equation}
   %\centering
  %{\small
@@ -64,6 +76,7 @@ misses by vectorizing over the multiple source vectors. Furthermore, due to the 
   \label{fig:struct_comp}
 %\end{figure}
 \end{equation}
+\endgroup
 where $\{\underline{u},\underline{v}, \underline{w}, \underline{h}\}$ are the functions values at all nodes of the corresponding variables with the left hand side being the resulting derivative approximations. The increased memory bandwidth due to an increase in the number of derivative matrices is offset by improved cache utilization, leading to an overall performance benefit. In practice however, the number of vectors whose derivatives are required is limited, capping the performance of the matrix/vector multiplication. Similarly, the number of different derivatives in a particular computation is finite. It is for this reason that we seek to combine the benefits of multiple vectors and multiple matrices simultaneously. We limit this initial study to four vectors and four matrices, which is a common number found in fluid dynamic calculations.
 
 \ge{We also note that the DMs are time-independent. They are computed once \ee{at the beginning of the simulation} and used repeatedly to update the solution 

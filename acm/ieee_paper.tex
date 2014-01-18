@@ -242,7 +242,7 @@ A performance of 135~Gflop/s in single precision is achieved using RBF-FD differ
 \input{RBF_Section}
 %\input{old_RBF_Section}
 
-\section{Modelization of the Potential Improvements}
+\section{Modelization of the \\Potential Improvements}
 \label{sec:model}
 
 We saw in the previous section that one can express the RBF problem as
@@ -766,7 +766,7 @@ structured grids and a
 {\tt RBF} derivative matrix extracted from a real 3D application. In the {\tt
   compact} case, the performance can be as high as 195~Gflop/s, which is
 within 15\% of the predicted  peak performance. The performance of the
-{\tt RBF} case varies between 100~Gflop/s and 140~Gflop/s. Most of the
+{\tt RBF} case varies between 100 and 140~Gflop/s. Most of the
 time, the RCM ordering provides an improvement which can be as high as
 30~Gflop/s.
 
@@ -780,7 +780,9 @@ time, the RCM ordering provides an improvement which can be as high as
     performance. The manually vectorized code (red) is 3.5 times
     faster than the compiler generated one (green). RCM ordering
     (squares) only improves the performance for our manually
-    vectorized code.}
+    vectorized code.
+    We also show peak theoretical performance for the base case and the 4 vector/1 matrix case. Not shown is the peak theoretical performance of 210 Gflops for the 4/4 case. 
+    }
   \label{fig:comparison_spmv}
   \label{fig:perf_mic}
 \end{figure}
@@ -799,7 +801,7 @@ optimized implementation almost reaches 140~Gflop/s.
 Notice that 
 RCM ordering has no impact in the standard C++ implementation while it
 provides a significant improvement in our manually vectorized
-version. This highlights that the C++ implementation is instruction-bound
+version. Thus, the C++ implementation is likely instruction-bound
 while our manually vectorized implementation is most likely 
 memory-bound. 
 
