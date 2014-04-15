@@ -1,0 +1,169 @@
+Dear Gordon Erlebacher,
+
+The 2014 International Conference on Supercomputing  (ICS 2014)
+program committee is delighted to inform you that your paper 39 entitled
+
+Acceleration of Derivative Calculations with Application to Radial Basis Function – Finite-Differences on the Intel MIC Architecture
+
+has been ACCEPTED to appear in the conference.
+
+Your paper was one of 34 considered for publication out of 162 submissions. Congratulations!
+
+Reviews and comments on your paper are appended to this email.
+Please note that the reviews may have changed since the rebuttal to reflect your responses, the views by
+other reviewers, and the discussions at the PC meeting.
+
+Your final manuscript will be due on APRIL 7, 2014.
+
+Please take seriously into account any concerns raised in the appended reviews when preparing the final
+manuscript.
+
+The conference proceedings chair will be in contact with you shortly to provide you
+information on preparation of your final manuscript.
+
+I am looking forward to meeting you in Munich in June.
+
+Best regards,
+
+Per Stenstrom
+ICS 2014 PC Chair
+
+
+----------------------- REVIEW 1 ---------------------
+PAPER: 39
+TITLE: Acceleration of Derivative Calculations with Application to Radial Basis Function – Finite-Differences on the Intel MIC Architecture
+AUTHORS: Gordon Erlebacher, Erik Saule, Natasha Flyer and Evan Bollig
+
+OVERALL EVALUATION: 1 (weak accept)
+REVIEWER'S CONFIDENCE: 4 (high)
+Reviewer expertise: 4 (good (know the topic well))
+Novelty of the contribution: 3 (fair (incremental improvement))
+Writing quality: 4 (good (well-written))
+Relevance to conference: 4 (good (solid interest to ICS community))
+
+----------- REVIEW -----------
+This paper investigated the problem of improving the performance of sparse matrix-vector multiplications (SpMV's) on the Intel MIC architecture.  The discussion was in the context of applying the derivatives of radial basis functions, in which multiple SpMV's, where the matrices have identical sparsity structures, have to be performed.  If the reviewer understood the paper correctly, the authors considered combining n_m x n_v SpMV's together with n_m different matrices (which had the same sparsity structure) and each matrix multiplying with n_v different vectors.  They provided a detailed analysis of the potential improvement in performance in such an approach by considering the number of data transfers and the number of floating-point operations.  The paper ended with a description of how the SpMV's were implemented on the Intel Xeon Phi processors and a presentation of the experimental results.
+
+The paper was well written and the results looked reasonably good.  The reviewer has a few questions though.
+
+First, the paper discussed entirely the improvement of the performance of SpMV's (by framing them as sparse matrix-matrix computation).  However, the derivatives -- the matrices in the SpMV's (or SpMM's) -- needed to be computed.  The authors acknowledged that the cost of calculating these derivatives was high.  So, how costly was that compared to, for example one SpMV (or one SpMM)? DONE. 
+
+Second, n_m and n_v were set to 4 in the experiments.  Maybe the reviewer missed it, but were there explanations as to why 4 were picked for the experiments.  Why not n_m = n_v = 16, for example, using the analysis in Figure 3?   
+
+MENTIONNED IN SECTION 2
+" Therefore, in order to solve this system of PDEs, the application of 4 DM to 4 un- knowns, i.e. 16 SpMV is required at every time step."
+
+Third, the authors reported that the nonzero entries of the matrices were stored in an array.  The reviewer assumed that it was an 1-D array, based on the discussion in the paper and Figure 5.  Why not 2-D, since all the rows had the same number of nonzero entries?
+NO CHANGE TO TEXT. THIS IS COMMON PROGRAMMING PRACTICE. 
+
+----------------------- REVIEW 2 ---------------------
+PAPER: 39
+TITLE: Acceleration of Derivative Calculations with Application to Radial Basis Function – Finite-Differences on the Intel MIC Architecture
+AUTHORS: Gordon Erlebacher, Erik Saule, Natasha Flyer and Evan Bollig
+
+OVERALL EVALUATION: 3 (strong accept)
+REVIEWER'S CONFIDENCE: 4 (high)
+Reviewer expertise: 4 (good (know the topic well))
+Novelty of the contribution: 4 (good (new contribution))
+Writing quality: 5 (excellent (outstandingly well written))
+Relevance to conference: 5 (excellent (outstanding interest to ICS community))
+
+----------- REVIEW -----------
+This paper is very well written, and the work is well motivated.
+
+The authors provide a thorough analysis of the computational scheme and complexity, and motivate their
+mapping to the Intel MIC architecture.  Their detailed breakdown of the mapping to the Intel MIC architecutre
+is very comprehensive, and well explained.  Clearly they went to considerable length to understand
+how to map their matvec operations onto this architecture in an optimal manner.  They authors predict
+and demostrate nearly an order of magnitude speedup over convential approaches, by taking advantage
+of the specialized features of the MIC architecture.  This analysis while specific to their matvec
+example is a template for how one could approach other more complex computations.  It's not a recipe,
+but it is an excellent exemplar of how to approach predicting and optimizing the performance of
+a computational kernel on the MIC architecture.
+
+Their computational experiments are very compelling evidence that their theortecial analysis
+is sound, as they show good agreement between the experimental and predicted    results.
+
+Overall, I really enjoyed and appreciated this paper.  While it may not be truly seminal work,
+it is an excellent piece of work        exploring in depth the behavior of the MIC architecture, with
+comprehensive theoretical work to predict the performance combined with the computational
+experiments needed to verify the models/predictions.  Well done.
+
+Typos:
+
+DONE In Section 5.2, Figure 8c is listed as 8b (second reference).
+DONE In Section 5, Figure 9 follows Figure 10 - should reorder these.
+
+
+----------------------- REVIEW 3 ---------------------
+PAPER: 39
+TITLE: Acceleration of Derivative Calculations with Application to Radial Basis Function – Finite-Differences on the Intel MIC Architecture
+AUTHORS: Gordon Erlebacher, Erik Saule, Natasha Flyer and Evan Bollig
+
+OVERALL EVALUATION: 2 (accept)
+REVIEWER'S CONFIDENCE: 5 (expert)
+Reviewer expertise: 5 (excellent (expert on topic))
+Novelty of the contribution: 3 (fair (incremental improvement))
+Writing quality: 4 (good (well-written))
+Relevance to conference: 4 (good (solid interest to ICS community))
+
+----------- REVIEW -----------
+In the paper "Acceleration of Derivative Calculations with Application to Radial Basis Function --
+Finite-Differences on the Intel MIC Architecture" the authors demonstrate
+how the calculation of derivatives within the context of Radial
+Basis Function Finite-Difference (RBFFD) can be efficient mapped to Intel
+Xeon Phi systems built upon Intel's MIC Architecture.
+
+Their paper materializes a very solid piece
+of engineering and optimization work: they start with a long and extensive
+literature review and provide a detailed introduction of the problem they want to solve.
+Before describing their actual implementation tricks,
+an analytic model in order to estimate the expected performance of their
+implementation is derived. Afterwards a description covering the essential
+and needed (vector-)instructions is provided followed by performance measurements
+and their comparison to the estimates obtained by the model and a similarly
+optimized version for standard CPUs. Therefore I come to the conclusion that this work
+very interesting for the ICS audience and should be accepted for
+presentation during the conference sessions.
+
+I would like to give a few suggestion for improvements:
+- The layout of the typesetting should be double-checked, at several places words cross the column boundaries (WILL DO)
+
+- one page five, second column, beginning, you say that vector-div, vector-sin, etc. run in one cycle. This is not true they are part of Intel's Intrinsic Short Vector Math Library and therefor implemented in Software, cf. http://software.intel.com/sites/products/documentation/doclib/iss/2013/compiler/cpp-lin/index.htm#GUID-3B77B85C-83C6-4B1D-B742-620C6B4934FE.htm  DONE (only mention */+/MAD)
+
+(a) and (b) in Figure 5 should be just in one line (NOT SURE WHAT IS ASKED) DONE.
+
+- one page nine, right before your conclusion your compare with a standard Xeon E5 and not Core i7 as written in the text I guess. Can you please be more specific?  This also includes the kind of experiment you use for comparing both architectures. Can you provide efficiencies for both architectures and compare & comment?  
+
+- In your future work section you plan to use your new algorithm within a multi-card setup. A common problem with SpMV is the involved PCIe overhead, can you please comment on how you plan to address this? Please note, due to Hostsystem limitations you are just able to transfer data with 1.0 (Xeon E5) or 2.5 (Xeon E5 v2) GB/s between cards in different nodes when running MPI directly on the cards. DONE.
+
+*** We made no mention of multi-card setup. ***
+
+
+----------------------- REVIEW 4 ---------------------
+PAPER: 39
+TITLE: Acceleration of Derivative Calculations with Application to Radial Basis Function – Finite-Differences on the Intel MIC Architecture
+AUTHORS: Gordon Erlebacher, Erik Saule, Natasha Flyer and Evan Bollig
+
+OVERALL EVALUATION: -2 (reject)
+REVIEWER'S CONFIDENCE: 2 (low)
+Reviewer expertise: 3 (fair (some familiarity with topic))
+Novelty of the contribution: 3 (fair (incremental improvement))
+Writing quality: 2 (poor (needs improvement))
+Relevance to conference: 3 (fair (some interest to ICS community))
+
+----------- REVIEW -----------
+The paper conciders the acceleration of derivative calculations for radial basis function (RDF)-Finite Differences (FD), and the implementation on Intel Xeon Phi.
+The main idea is to replace the Sparce Matrix Vector (SpMV) product with 4 of the same type, transfering the SpMV to an Sparse Matrix Matrix (SpMM) product. To port it to Xeon Phi, performance is achieved only for vectorized code which is then described. The method is than experimentally validated.
+
+The paper is hard to understand because of inconsistencies that force the reader to guess what is meant. E.g. it is unclear, what is the relation between the stencil in fig. 1 and the SpMM in eq (1), what is the x vector and what the y vector, and why is the size of the x vector just nv while the size of the y vector is nm times nv.
+The paper never states what A, x, and y are. Please add somewhere the sentence from your response letter: “Equation (1) in the paper represents the product y = A x, where y is the computed derivative, A is the derivative matrix, and x is the function whose derivative is being computed.“ And then make the table in fig 2 consistent with that. If A is the matrix in eq (1), i.e. it consists of n_m of the D’s (e.g. 4 matrices in eq (1)), then A is not a square matrix. The number of rows in A is not n_r, but n_m x n_r. Only the number of columns is n_r (and n_r = N, the number of nodes). In this case, y is left hand side of eq (1) and has size n_m x n_v x n_r. But it is not a vector then, but a matrix. Otherwise, if A would be a square matrix with n_r rows and columns, than y would be a vector, but would have the same size as x. Please resolve these inconsistencies.
+
+The improvements of the method can hardly be reenacted, and thus the novelty of the approach hardly be considered. The algorithm basically says: The PDE has 4 equations for 4 unknowns, so instead of solving the 4 equations independently (and thus compute the derivatives individually), they should be solved (computed) all in one. This is well-known for more than 2 decades. Also that the sparcity patterns can be very different (fig 8), and that RCM reordering helps is nothing new or surprising.
+
+The performance comparison also doesn’t give much new insight - as it mainly compares things other then the SpMV vs SpMM comparison. Only fig 3 shows the different combinations of number of matrices and number of vectors. This is nice, but is a theoretical analysis not a measurement of actual implementation.
+
+Fig (10) - where the accompanying text says "we investicate the central question: do we gain acutal performance by transforming SpMV to SpMM" - only does it half way: it compares SpMV (blue line) with SpMM (green line) - this comparison is okay, SpMM (v4m4) reaches 38 GFlops vs. 14 GFlops in the SpMV (v1m1) case. But a) it is not discussed why the gain is this factor 2.7 where fig 3 indicates an expected gain of 5-10.
+But more important is b): the main improvement comes from manually vectorizing the scheme. This brings an increase in performance from 38 (green) to 140 (red) GFlops, but it is within the same scheme (SpMM v4m4) the comparison of compiler vectorization vs manual vectorization. How much would be gained by manually vectorizing the SpMV (v1m1) code as well? And what would another combination of n_v, n_m give? E.g. the plot in fig (10) indicates the theoretical peak of the v4m1 scheme (135 GFlops). Why does the v4m4 scheme show the improvement which would be expected for the v4m1 scheme? And what would the v4m1 scheme itself give, or v1m4?
+
+All other comparisons are „rcm“ vs „no rcm“ (fig 10 the 2 lines of each color), which has nothing to do with SpMV vs SpMM, or influence of the sparcity patterns from supercompact to random (fig 9a) or from compact to real life (fig 9b). These comparisons are shown for the SpMM (v4m4) case only, so it is not shown how much gain in performance is achieved by changing from SpMV to SpMM, or whether/how strong the improvement of SpMM over SpMV depends on the sparcity patterns.

@@ -1,0 +1,25 @@
+Discuss other applications, put citations. 
+
+---------------------
+Paragraph on RBF practical calculation: shallow water equations. 
+Introduction: 
+This problem: 4 matrix (same topo) and four vectors: find it in many different applcitions (citations). In section 2, explain one of these applications. 
+
+Use many papers. 
+
+Expect this to work similarly on GPUs. Channeling and swizzling. 
+Investigate how to swizzle/channel a warp on the GPU. 
+B.14 programming guide. Shuffling/swizzle. (supported: >= 3.0 
+
+Multiple of 8 or 4. 
+----------------------------------------------------------------------
+CSR: add another term to memory access, and state that it is not required. 
+----------------------------------------------------------------------
+Put ELLPACK in the introduction.
+----------------------------------------------------------------------
+AVX does not exist on CPU. 
+0000000
+
+
+Clarify in the conclusions, could do similar optimizations elsewhere. 
+----------------------------------------------------------------------

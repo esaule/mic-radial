@@ -1,0 +1,834 @@
+%\documentclass[10pt,conference,compsocconf]{IEEEtran}
+%\documentclass{acm_proc_article-sp}
+\documentclass{sig-alternate}
+\input{support/macros} % color is defined in macros or misc_mac
+\input{support/misc_mac}
+\input{support/setupicase}
+
+
+\def\red#1{\textbf{\textcolor{red}{#1}}}
+\def\blue#1{\textbf{\textcolor{blue}{#1}}}
+\def\qes#1{{\blue{*** For Erik: #1 ***}}}
+\def\es#1{{\blue{*** For Erik: #1 ***}}}
+\def\ge#1{{\blue{#1}}}
+\def\NOTE#1{{\red{NOTE: #1}}}
+\def\ttt#1{{\tt #1}}
+\def\bold#1{{\bf #1}}
+
+\usepackage{soul}
+\usepackage{xspace}
+\usepackage{color} 
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\usepackage[colorlinks=true,% 
+  linkcolor=red,% 
+  citecolor=darkgreen,%
+  urlcolor=blue]{hyperref}
+
+\usepackage{listings}
+
+
+\newcommand{\todo}[1]{{\color{red}\textbf{\hl{#1}}\xspace}}
+
+\def\qes#1{}
+\def\es#1{}
+%\def\ge#1{}
+%\usepackage{morefloats}
+
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+
+\usepackage{graphicx}
+%%\usepackage[pdftex]{graphicx}
+\usepackage{subfigure}
+%\usepackage{fixltx2e}
+%%\usepackage{url}
+%%\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+\title{Acceleration of Derivative Calculations with Application to Radial Basis Function --
+Finite-Differences on the Intel MIC Architecture}
+%\title{Sparse Matrix Vector Multiplication with Multiple vectors and
+  %Multiple Matrices on the MIC Architecture \todo{? more application oriented''}}
+
+\subtitle{[Extended Abstract]}
+
+%\numberofauthors{4}
+
+%\author{
+%\alignauthor
+%Gordon Erlebacher\\ %\titlenote{Dr.~Trovato insisted his name be first.}\\
+%       \affaddr{Department of Scientific Computing}\\
+%       \affaddr{Florida State University}\\
+%       \affaddr{Tallahassee, FL 32306-4120}\\
+%       \email{gordon.erlebach@gmail.com}
+%\alignauthor
+%Erik Saule
+%        \affaddr{Department of Computer Science}\\
+%        \affaddr{University of North Carolina at Charlotte}\\
+%        \email{esaule@uncc.edu}
+%\and
+%\alignauthor
+%Natasha Flyer
+%        \affaddr{Computational and Information System Laboratory}\\
+%        \affaddr{UCAR}\\
+%        \email{flyer@ucar.edu}
+%\alignauthor
+%Evan Bollig
+%        \affaddr{Minnesota Supercomputer Institute}\\
+%        \affaddr{University of Minnesota}\\
+%        \affaddr{Minneapolis, MN}\\
+%        \email{bollig@gmail.com}
+%}
+\maketitle
+
+
+%\author{\IEEEauthorblockN{Gordon Erlebacher\IEEEauthorrefmark{1},
+%Erik Saule\IEEEauthorrefmark{2}, Natasha Flyer\IEEEauthorrefmark{3}, 
+%and Evan Bollig\IEEEauthorrefmark{1}}
+%\IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Scientific Computing, 
+%Florida State University}
+%\IEEEauthorblockA{\IEEEauthorrefmark{2}Department of Computer Science, University of North Carolina at Charlotte}
+%\IEEEauthorblockA{\IEEEauthorrefmark{3}Computational and Information Systems Laboratory, UCAR}
+%Email: gerlebacher@fsu.edu, esaule@uncc.edu, flyer@ucar.edu, bollig@gmail.com}
+%\maketitle
+
+
+\begin{abstract}
+In this paper, we develop an efficient scheme for the calculation of
+derivatives within the context of Radial Basis Function
+Finite-Difference (RBFFD). RBF methods express functions as a linear
+combination of \ge{spherically} symmetric basis functions on an arbitrary set of
+nodes. The Finite-Difference component expresses this combination over
+a local set of nodes neighboring the point where the derivative is
+sought.  The derivative at all points takes the form of a sparse
+matrix/vector multiplication (SpMV).
+
+In this paper, we consider the case of local stencils with a fixed number
+of nodes at each point and encode the sparse matrix in ELLPACK
+format. We increase the number of operations relative to memory
+bandwidth by \ge{interleaving} the calculation of  four derivatives 
+of four different functions,
+or 16 different derivatives. We demonstrate a novel implementation on
+the Intel MIC architecture, taking into account its advanced swizzling and
+channel interchange features. We present benchmarks on a real data
+set that show an almost \ge{sevenfold} \note{eightfold; there were inconsistencies in the ppaer.} increase in speed compared to
+efficient implementations of a single derivative, reaching a
+performance of almost 140~Gflop/s. We explain the results through
+consideration of operation count versus memory bandwidth.
+\end{abstract}
+
+
+% A category with the (minimum) three required fields
+\category{H.4}{Information Systems Applications}{Miscellaneous}
+%A category including the fourth, optional field follows...
+\category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+
+\terms{Theory}
+
+\keywords{MIC, SIMD, SpMV, Sparse Matrix, Radial Basis Function}
+
+%\begin{IEEEkeywords}
+%MIC; SIMD; SpMV; SpMM; Sparse Matrix; Radial Basis Function;
+%\end{IEEEkeywords}
+
+%\IEEEpeerreviewmaketitle
+
+\section{Introduction}
+The multiplication of a sparse matrix by a dense vector (SpMV) is an
+important kernel in many applied fields such as fluid dynamics 
+\cite{journals/tog/BolzFGS03}, recommendation systems~\cite{Brin98} and graph
+drawing~\cite{Koren05}). Naturally, improving the performance of SpMV has
+captured the interest of many researchers; including the development of
+various implementations for 
+CPUs~\cite{Buluc2009SPAA,Williams07} and GPUs~\cite{Bell08,
+  conf/ipps/KreutzerHWFBB12,
+  journals/concurrency/VazquezFG11,kumar2012accelerating}. \ge{The main
+challenge  to obtain good performance for matrix vector multiplication in general, and 
+sparse matrix vector multiplication in particular, is the low ratio of floating point operations
+to memory bandwidth. When the matrix is not dense, the problem is exacerbated due to non-uniform 
+access patterns.}
+%{SpMV is that
+%the operations are conducted using memory locations that are irregularly spaced. 
+%This makes the kernels mostly memory bound
+% and there is a significant instruction overhead per flop.
+
+% REMOVED by GE
+%This makes the kernels strongly memory bound.  There is also a 
+%significant instruction overhead per flop.
+\NOTE{I rewrote last few sentences: write more precisely? Blas 2 is Matrix/vector, and that is still somewhat memory bound.}
+
+Common improvement techniques such as register blocking, bandwidth
+reduction (matrix reordering~\cite{Cuthill69}), partitioning to fit in
+cache or TLB~\cite{Nishtala07,Temam:1992:CBS:147877.148091,conf/ppsc/Toledo97},
+unrolling~\cite{Mellor-Crummey04} have impacts that are very
+dependent on the matrix and overall do not lead to dramatic
+improvement. (The state-of-the-art techniques in OSKI~\cite{Vuduc05}
+provide some useful yet limited improvements). Register blocking~\cite{conf/ppsc/Toledo97} does
+not work well to many of the matrices in general use (although it can be applied
+with virtually no overhead thanks to compressed
+representations~\cite{Buluc11}.) Indeed, there are about 8 bytes of the matrix to transfer
+from memory 
+per nonzero in single precision; each nonzero requires two
+floating point operations leading to a flop-to-byte ratio of at most
+$\frac{1}{4}$. This limits the obtained performance to at most a
+quarter of the bandwidth of the architecture, wasting a lot of
+potentially useful cycles. The commonly used techniques are mostly
+designed to reach that bound rather than overcome it.
+
+Fortunately that fate is not inevitable. One solution would be to
+schedule a more instruction-intensive kernel simultaneously with the
+execution of SpMV, relying on some hardware threading capabilities,
+such as HyperThreading, to reduce the cycle wastage. However, most of 
+the applications that use SpMV do not typically have an 
+instruction-intensive kernel to run simultaneously.
+
+Another solution, pursued in this paper, \ge{is to compute multiple SpMVs using matrices with identical spasity patterns, but with different matrix elements.}  Obviously not all the applications have such a property. However, important classes of applications such as graph recommendation~\cite{Kucuktunc13-SNAM}, eigensolving~\cite{LOBPCG} and the computation of derivatives for solving systems of PDEs using Radial Basis Function-generated Finite Differences (RBF-FD)~\cite{FLBWSC12} \ge{fall into the category of applications that require multiple SpMVs simultaneously.} RBF-FD is a meshless method, which easily handles irregular geometries and local refinement with algorithmic complexity independent of dimensionality, 
+and which can produce high-order derivative approximations. These methods are rapidly gaining 
+ground in science and engineering modeling communities \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). 
+As a result, it is of interest to develop an efficient implementation on novel computer platforms for the calculation of derivatives within the context of RBF-FD; derivative calculations that account for the bulk of computer resources when running a numerical simulation implemented with RBF-FD. 
+\ge{Typical equations solved by RBF-FD depend on multiple derivatives
+of multiple functions. Rather than compute each derivative individually, this paper investigates 
+how to compute all derivatives simultaneously in an interleaved fashion. Specifically, 
+we calculate four different derivatives (corresponding to four different sparse matrices with identical 
+sparsity pattern) of four different functions
+%is an interThis paper investigates the possibility  to increase the ratio  case of approximating 
+%four different derivatives, using RBF-FD, for four different functions 
+(a common scenario in 3D fluid dynamics modeling) for a total of 16 derivatives. }
+%Since the RBF-FD differentiation matrices approximating the four different derivative operators have an identical sparsity pattern, this leads to the simultaneous execution of 16 SpMVs at a time. Using multiple vectors at a time has been investigated before to densify the computations~\cite{Im01} but, to the best of the authors’ knowledge, this is the first time that the densification comes from adding both vectors and matrices.
+
+To perform our analysis, we focus our attention on the improvement
+that can be achieved on the Intel Xeon Phi processor. It follows the
+Many Integrated Core (MIC) architecture, which has a significant
+memory bandwidth and peak flop throughput thanks to its 512-bit large
+SIMD registers. The Xeon Phi processor has been shown to be promising
+for sparse linear algebra compared to more classical CPU or GPU
+architectures~\cite{Saule13-ARXIV, Liu:2013:ESM:2464996.2465013, cramer2012openmp}.
+
+In Section~\ref{sec:rbf}, we introduce and further motivate the RBF-FD method, giving 
+an example of how calculating the derivatives for a common system of PDEs in fluid dynamics 
+can be expressed as sixteen multiplications of four vectors by four sparse matrices with 
+identical sparsity patterns.
+
+Section~\ref{sec:model} presents an
+estimation of the instruction intensity of various forms of the
+computations. We show that a \ge{sevenfold} \NOTE{sixfold was inconsistent with eighfold in the abstract.} improvement can be
+expected when computing the sixteen multiplications simultaneously to
+reach a total of about 210~Gflop/s. This performance represents
+approximately 10\% of the available flop/s of a Xeon Phi
+coprocessor. \ge{Therefore, it is necessary to have an implementation that
+performs the computation in as few instructions as
+possible.} \NOTE{I DO NOT FOLLOW the Therefore in the previous sentence. Evan has the same concern.}
+\ge{We describe in Section~\ref{sec:impl} the details of the MIC
+architecture and how to use specialized load, store, swizzle and
+permutation instructions to efficiently bring the data from memory into the vector
+registers to be processed. Section~\ref{sec:expe} presents results on 
+memory access and computational speed and their relation to choices made in the 
+SpMV kernels.}
+%experimental results  discussing the relationship between the structure of $A$ and 
+%the ; specifcally on the amount of bandwidth that can be achieved
+%depending on how the SpMV kernel is written. 
+It also provides the actual performance of the various kernels on multiple classes of matrices, 
+some generated for purpose of analysis, and some extracted from an application of RBF-FD. 
+A performance of 135~Gflop/s is achieved using RBF-FD differentiation matrices. Concluding remarks and perspectives are provided in Section~\ref{sec:ccl}.\looseness=-1
+
+\input{RBF_Section}
+%\input{old_RBF_Section}
+
+\section{Modelization of the Potential Improvements}
+\label{sec:model}
+
+We saw in the previous section that one can express the RBF problem as
+a multiplication of four matrices by four vectors. We present here an
+estimation of the variation on the flop intensity of the computation
+and its impact on the expected performance of the
+application. Relevant notation are given in Figure~\ref{tab:not}.
+
+\begin{figure}[t]
+  \begin{center}
+    \scalebox{.8}{
+      \begin{tabular}{|c|l|}
+        %\hline
+        %& & \\
+        \hline
+        $b_i$ & number of bytes per index \\
+        $b_x$ & number of bytes per value \\
+        $n_z$ & number of nonzeros per row of $A$ \\
+        $n_r$ & number of column/rows of $A$ \\
+        $n_c$ & total number of nonzeros\\
+        $n_v$ & number of {\tt x} vectors \\
+        $n_m$ & number of matrices \\
+        $s_M$ & size of the $n_m$ matrices in bytes\\
+        $s_x$ & size of the $n_v$ {\tt x} vectors in bytes\\
+        $s_y$ & size of the $n_v n_m$ {\tt y} vectors in bytes\\
+        \hline
+        $cl$    & size of a cache line in bytes\\
+        $b_{wT}$ & number of bytes written to memory  \\
+        $b_{rT}$ & minimum number of bytes read from memory  \\
+        $b_T$   & minimum number of bytes transferred \\
+        $B_{rT}$ & maximum number of bytes read from memory \\
+        $B_T$   & maximum number of bytes transferred \\
+        $O$     & number of floating point operations \\
+        $I_b$   & maximum computational intensity\\
+        $I_w$   & minimum computational intensity\\        
+        \hline
+      \end{tabular}
+    }
+  \end{center}
+  \caption{Notation relative to the application problem (upper section) and to the benchmarks (lower section.)}
+  \label{tab:not}
+\end{figure}
+
+Each vector in the problem is of dimension $n_r$ and each entry
+takes $b_x$ bytes. There are $n_v$ {\tt x} vectors and $n_v n_m$ {\tt
+  y} vectors, which lead to the size of the {\tt x} and {\tt y} vectors:
+$$s_x = n_v b_x n_r\mbox{, ~}s_y = n_v n_m b_x n_r$$
+
+The matrix is composed of $n_r$ rows and columns with $n_z$ nonzeros
+per row leading to a total of $$n_c = n_r n_z$$ nonzero entries in
+the matrix. Each of these nonzero entries has one index of size $b_i$
+and $n_m$ values of size $b_x$. The matrices have a total size
+of $$s_M = n_c (b_i + b_x n_m) = n_r n_z (b_i + b_x n_m)$$
+
+\begin{figure*}[tbh]
+  \centering
+  \subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}\label{fig:ratio_best}}%
+  \subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
+  \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
+  
+  \caption{Ratio of flops to bytes in single precision:  
+    \ref{fig:ratio_best} best case; \ref{fig:ratio_worst} worst case when $cl=64$ 
+    ; and \ref{fig:ratio_worst_nocache} worst case neglecting that the
+    memory transfers are with a granularity of one cache line (equivalent to $cl = 1$)}
+  \label{fig:ratio_bytes_flops}
+\end{figure*}
+
+
+If we assume an algorithm where the rows are processed one after
+the other, the amount of memory written is precisely the
+size of the {\tt y} vector. (This assumption removes the possibility of
+blocking or cache partitioning techniques.) $$b_{wT} = s_y = n_v n_m b_x n_r$$
+
+The amount of data read from memory depends highly on both the
+algorithm's execution path, and on how the matrix is structured. But
+in the best case both the matrix $A$ and the source vector {\tt x} are
+read once from the main memory. (We assume that all the elements of
+$\tt x$ are involved in the SpMV.)  Thus, $$b_{rT} = s_M + s_x = n_r
+n_z (b_i + b_x n_m) + n_v b_x n_r$$
+ $$b_T = b_{rT} + b_{wT} =  n_r n_z (b_i + b_x n_m) + n_v b_x n_r (1 + n_m)$$
+
+Notice that there is no reason for a piece of the matrix to be read
+multiple times. But assuming that each element of the {\tt x} vector
+is read a single time is a strong assumption. If using a single core,
+it assumes that either the cache of the architecture can store the full
+{\tt x} vector or that the matrix is sufficiently well structured 
+to cause no cache trashing. If using multiple cores, this assumes that
+no element of the {\tt x} vectors will be used by multiple
+cores. \cite{Saule13-ARXIV} showed that there is very little cache trashing
+in practice; however having elements of the vectors used by
+multiple cores can have a significant impact on the performance
+(growing with $n_v$).
+
+On the other hand, in the worst case, every time the {\tt x} vector is
+accessed, the value needs to be transferred from memory again. So in
+total, there are as many transfers as the number of nonzeros in the
+matrix. Note however that most architectures cannot read memory a
+single byte at a time. Instead, a minimum number of bytes, equal to
+the size of a cacheline $cl$, are transferred at once.  When there are
+multiple vectors, each nonzero element uses $n_v$ consecutive
+entries. In the worst case, the number of bytes read and transferred is
+$$B_{rT} = s_M + n_c cl \ceil{\frac{n_vb_x}{cl}} $$ 
+$$B_T = n_v n_m b_x n_r + n_r n_z \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)$$
+
+In SpMV, each nonzero of the matrix requires two floating point
+operations: one for performing the multiplication and one for
+accumulating the result row-wise. Here we are dealing with $n_v n_m$
+simultaneous SpMVs and the number of floating point operations is
+$$O = 2 n_v n_m n_c = 2 n_v n_m n_z n_r$$
+
+The computation intensity is the amount of floating point operations performed per
+byte transferred. In the worst case and in the best case, we have
+$$I_b = \frac{O}{b_T} = \frac{2 n_v n_m}{ (b_i + b_x n_m) + n_v n_m b_x n_z^{-1} + n_v b_x n_z^{-1} }$$
+%$$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{n_v n_m b_x n_z^{-1} + \left ( b_i + b_x n_m +  cl \ceil{\frac{n_vb_x}{cl}} \right)}$$
+$$I_w = \frac{O}{B_T} = \frac{2 n_v n_m}{(b_i+b_x n_m) + n_v n_m b_x n_z^{-1} + cl \ceil{\frac{n_vb_x}{cl}} }$$
+
+
+Figure~\ref{fig:ratio_bytes_flops} presents the flop to byte ratios
+for single precision computation in the best and the worst case on a
+classical cache-based architecture ($cl = 64$) and assuming $cl=1$. We
+can easily see the potential improvement in the computational
+intensity when the number of matrices or vectors increases. There is a
+significant difference between the best and the worst case: there is a
+eightfold difference in the one matrix -- one vector ($n_m=n_v=1$) case but that gap closes
+with the increase in the number of vectors and matrices to a fourfold
+difference in the four matrices and four vectors ($n_m=n_v=4$) case and 1.6 fold in the 
+$n_m=n_v=16$ case. 
+The ratios computed with $cl = 1$ are mostly
+similar to the one with $cl=64$ when the number of vectors is
+large. But the differences are important when the number of vectors is
+low: this highlights that accessing the memory with a granularity of one cache
+line is the main problem faced when performing a standard SpMV computation.
+
+Figure~\ref{fig:perf_predict} shows how these ratios translate
+into actual performance. This figure provides projected best and worst
+Gflop/s achievable assuming the computation is memory-bound and the
+architecture reaches 150~GB/s. Notice that \cite{Saule13-ARXIV}
+showed a higher peak bandwidth, but we will show in
+Section~\ref{sec:expe} why 150~GB/s is a better estimate of what one
+might achieve in these kernels. In single precision, the worse that
+one could achieve by using four vectors and four matrices is much higher
+than the best achievable using a classical SpMV computation. The best
+performance reachable is 210~Gflop/s: almost six times higher than the
+peak of the classical SpMV case. 
+
+
+\begin{figure}
+  \centering 
+  \includegraphics[width=.9\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}
+  \caption{Estimation of the maximum achievable performance using a
+    device with a bandwidth from memory to computational units of 150~GB/s when
+    varying the number of vectors and matrices.}
+  \label{fig:perf_predict}
+\end{figure}
+
+\section{Efficient Implementation on the Intel Xeon Phi processor}
+\label{sec:impl}
+
+\subsection{Intel Xeon Phi}
+
+In this work, we use an Intel Xeon Phi 5110P coprocessor. This card
+has 8 memory controllers that can each execute 5 billion
+transactions per second. Each has two 32-bit channels, achieving a total
+bandwidth of 320~GB/s aggregated across all the memory
+controllers. There are 60 cores clocked at 1.05~GHz. Their memory
+interfaces are 32-bit wide with two channels and the total bandwidth
+is 8.4~GB/s per core. Thus, the cores should be able to consume 504~GB/s
+at most. However, the bandwidth between the cores and the memory
+controllers is limited by the ring network that connects the cores and
+the memory controller. Its precise bandwidth is
+believed to be between 200~GB/s and 250~GB/s.
+
+Each core in the architecture has a 32~kB L1 data cache, a 32~kB L1
+instruction cache, and a 512~kB L2 cache. The architecture of a core is
+based on the traditional Pentium architecture, which has been extended to
+64-bit with hyperthreading. A core can hold four hardware contexts at any given time (240 threads in total). At each
+clock cycle, instructions from a single thread are executed. Due to
+some hardware constraints, two hardware contexts must be used to reach
+the peak instruction throughput in that architecture. Similar to the
+Pentium architecture, a core has two different concurrent instruction
+pipelines that allow the execution of two instructions per
+cycle. However, only one vector or floating point instruction can be
+executed per cycle.
+
+Most of the performance of the architecture comes from the vector
+processing unit. Each core has 32 512-bit SIMD registers that can be
+used for double or single precision, that is, either as a vector of eight
+64-bit values or as a vector of 16 32-bit values, respectively. The
+vector processing unit can perform basic instructions, such as
+addition or division, and mathematical operations, such as {\tt sin} or
+{\tt sqrt}, making it possible to reach 16 single precision (or 8 double precision)
+operations per cycle.  
+The unit also supports Fused Multiply-Add (FMA)
+operations, which are typically counted as two operations 
+when benchmarking. Therefore, the peak performance of the 5110P
+card is one Tflop/s in double precision and two Tflop/s in single
+precision. If FMA cannot be used, only half of these rates can be
+achieved.
+
+
+\subsection{Bringing the data into the vector register}
+
+\begin{figure*}
+  \centering
+\subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{figures/code.pdf}}%
+\subfigure[Content of the vector registers \ge{in the source code in (a)}.]{\hspace{-0.07\linewidth}\includegraphics[width=.5\linewidth]{figures/code-annote.pdf}}
+
+\caption{Code snippet of the multiplication of 4 vectors with 4
+  matrices. When a line changes the content of a vector register its
+  new content is shown on the right. The effects of swizzling and
+  permutations are highlighted using a color code.}
+\label{code:mat_mul}
+\end{figure*}
+
+
+
+As explained in Section~\ref{sec:model}, we expect to achieve a performance of
+about 210~Gflop/s in single precision in the best case. We will focus
+on the single precision case with four vectors and four matrices. 
+Similar techniques apply for other combinations. This target
+performance represents 10\% of the peak performance of the
+architecture, which cannot be reached without an efficient vectorization. 
+Indeed, to reach such a performance, a Fused Multiply-Add
+instruction on fully loaded registers must be executed at most every
+10 cycles.
+
+In term of memory layout, we adopt a format similar to the ELLPACK
+format to store the matrix since the number of nonzeros per row is
+constant throughout the matrix. The matrix is given in two arrays. The
+first array is {\tt col\_id} that describes the
+sparsity structure of the matrix. Each row of {\tt col\_id} consists
+of $n_z$ entries that label the column index of each nonzero in
+$A$. The other array is  {\tt data} that gives the values of
+the nonzeros in the four matrices. The values of the matrices are
+interleaved by groups of four so that the value $A^l_{col\_id[k]}$ of
+the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.
+(In other words, the first four entries are from $A^{1}$ and the 
+next four are from $A^2$.) The vectors {\tt x} are
+interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
+consecutive in memory. The vector {\tt y} is similarly 
+grouped in sets of 16, which correspond to four derivatives applied to
+four functions, at a single point.\looseness=-1
+
+
+We discuss how the implementation of the v4m4 kernel works using
+vector instructions. The code is given for reference in
+Figure~\ref{code:mat_mul}. (We will show in Section~\ref{sec:expe}
+that an implementation that relies on compiler vectorization does not lead
+to desirable performance, which confirms the results
+of~\cite{Saule13-ARXIV}.) The registers in the MIC architecture are
+512 bits wide and can store 16 floats or integers. (In comparison to
+OpenCL or CUDA, one can think of these registers as a warp.) The end
+goal is to load and format the nonzero values $A_h^1,A_h^2,A_h^3,A_h^4$
+and the vector entries $x_m^1,x_m^2,x_m^3,x_m^4$ into two vector registers and 
+apply Fused Multiply-Add on them, which is depicted in the {\tt accu} line of 
+Figure~\ref{code:mat_mul}. Bringing the data into the vector
+register as shown in the figure is the difficult component of our 
+proposed algorithm, which we proceed to explain further. 
+A thread will perform the multiplications one row at a time,
+and parallelism is achieved by giving blocks of rows to each thread
+using an OpenMP construct.
+
+
+The core of the technique is the use of swizzling and permutation
+features of the vectors in the Intel MIC architecture. A vector of 512
+bits is composed of four lanes (sometimes called channels) of 128
+bits, which are made of four segments of 32 bits. A swizzling
+operation allows the reorder of the elements within each lane (see how
+{\tt mat} is extracted from {\tt mat\_ent} in
+Figure~\ref{code:mat_mul}). On the other hand, a permutation reorders entire lanes,
+without changing their contents (see for instance how {\tt vect} is
+generated from {\tt all\_vect} in Figure~\ref{code:mat_mul}).  Both
+permutation and swizzling support common reordering and broadcast. In
+the code, the ``permute'' function needs to use the {\tt
+  \_mm512\_permute4f128\_epi32} instruction which is only defined on
+integers and therefore in place typecasts are necessary to convert
+a vector to and from integer type.  (Note that we prefer swizzling to
+permutation if possible because we believe it is cheaper. Many
+instructions have swizzling capability, while permutation is its own
+instruction.)
+
+Every operation that loads data from memory into a register
+transfers 512 bits, or 16 floats at a time. A single nonzero
+in the matrix will cause 16 operations to be performed, but it only
+uses four floats from the matrix and four floats from the {\tt x} vector. So
+we would like to execute a single instruction to load the data for four 
+nonzeros in the matrix, and another instruction to load the data for
+four nonzeros from the vectors.  
+(The number of nonzeros on a row in our application is
+always a multiple of four; if it weren't, we would add some explicit
+zeros in the data structure for padding.)
+
+The values from the nonzero elements in the matrix are the simplest to
+load. One can load the 16 floating point values for four nonzeros of
+the matrix at once. The four floats coming from each matrix are
+naturally grouped within each lane of the SIMD register. One can use a
+swizzle operation to broadcast the four elements of a single matrix to
+fill the whole register. (The broadcast of $A_h^1,A_h^2,A_h^3,A_h^4$ is
+shown in Figure~\ref{code:mat_mul}.)
+
+Loading the entries from the {\tt x} vector is  more
+involved. First, the column pointers of four different nonzeros are
+loaded into a vector register and the values are distributed one per
+lane of the vector register using an {\tt unpack}
+operation\footnote{Notice that there are two calls to {\tt unpack} for the
+LSB and MSB. Both are mandatory even if one is known to be
+nilpotent according the documentation of the hardware.} (The column
+pointers are named $j,k,l,m$ in Figure~\ref{code:mat_mul}.) They
+are replicated so that each value fills a single vector lane 
+using a swizzle operation. Then each value is multiplied by four
+(because $n_v=4$) 
+and the offset vector $(3,2,1,0)$ is added to each lane to obtain the
+correct index of the elements of the {\tt x} vector within each lane
+using a Fused Multiply-Add operation. A {\tt gather} operation is then
+performed to bring the 16 entries of the {\tt x} vector into the SIMD
+register. At this point we have a register where each lane is the
+four vector entries for a nonzero element. Using a broadcast
+permutation, one can replicate an entry of the four vectors across
+each lane. (The broadcast of $x_m^1,x_m^2,x_m^3,x_m^4$ is shown in
+Figure~\ref{code:mat_mul}.)
+
+Now that $A_h^1,A_h^2,A_h^3,A_h^4$ and $x_m^1,x_m^2,x_m^3,x_m^4$ are
+properly laid out in the vectors, a partial value for $y_i$ can be
+computed. Once all the nonzeros of the row have been processed, the
+exact $y_i$ value can be sent to memory using a the "No Read No Global
+Order" hint to optimize write traffic on the memory bus.
+
+\section{Experimental Validation}
+\label{sec:expe}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=.9\linewidth]{figures/bandwidth_read_write.pdf}
+  
+  \caption{Bandwidth performance under idealized conditions.  Entries
+    with "cpp" (triangles) denote cases where vectorization is
+    compiler generated.}
+  \label{fig:bandwidth}
+  \label{fig:band_rw_MIC}
+\end{figure}
+
+In this section, we describe a series of numerical experiments to
+confirm the performance predictions of Section~\ref{sec:model}. To
+better understand our results, we first perform some bandwidth
+measurements, followed by the actual SpMV computations. All the codes
+are compiled with the Intel C Compiler version 13 and
+\mbox{-O3} optimization. The codes use the IMCI instructions exposed by
+the compiler through intrinsics.
+
+\subsection{Bandwidth}
+
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=.9\linewidth]{figures/bandwidth_gather_unpack.pdf}
+  \caption{Performance of {\tt gather} and {\tt unpack} operations.}
+  \label{fig:band_gather} 
+\end{figure}
+
+
+Figure~\ref{fig:bandwidth} shows a benchmark that computes the
+bandwidth achieved when reading and/or writing large arrays on both
+the MIC card and the CPU architecture. The read benchmark performs a
+simple sum of the array. The write benchmark sets all the elemnts of
+the array to zero, while the read/write benchmarks copies the array into
+another one. We also investigate the difference between a straight C++
+implementation (compiled with \mbox{-O3} with proper tagging to inform the
+compiler of memory alignments) and a simple implementation with
+explicit use of the vector registers.
+
+The {\tt read, cpp} implementation reaches a performance of 168~GB/s
+ which is better than the {\tt read}
+implementation which only achieves 145~GB/s. This
+is explained by the compiler adding loop unrolling and software
+prefetching in the assembly code in the {\tt read, cpp} case, which is
+not added in the {\tt read} case. On the other hand, the {\tt write}
+case reaches a performance of 158~GB/s while the
+{\tt write, cpp} implementation never exceeds 58~GB/s. 
+This difference is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction, 
+which bypasses the \ge{"Read For Ownership"} protocol and allows the writes
+to be performed in any order. The compiler can not use this
+instruction on its own because this would break the memory convention
+useful for some parallel algorithms. The {\tt read/write} benchmark
+performs at 140~GB/s while the {\tt read/write, cpp} benchmark performs
+at about 90~GB/s.
+
+Note that SpMV kernels are not likely to use only simple read and simple
+writes. We also benchmark the performance we
+can achieve using {\tt gather} and {\tt unpack} operations and we
+present the results in Figure~\ref{fig:band_gather}. The {\tt unpack}
+instruction can reach a performance of 140~GB/s. (There is no easy way
+to implement the equivalent of the {\tt unpack} operation without
+using explicit registers.) The performance of the {\tt gather}
+operations depends in which order the array is read. If the indices
+are ordered ({\tt compact}) then a performance of 140~GB/s is
+reached. If the indices are completely randomized, the performance
+drops below 5~GB/s. We can see that implementing the
+indirection mechanism without vector instructions lowers the
+performance significantly. (In the {\tt compact} case, it never
+surpasses 100~GB/s and is close to 50~GB/s most of the time.)
+\def\ww{.19\textwidth}
+\begin{figure*}[t]
+  \begin{center}
+    \subfigure[Supercompact.]{%
+      \label{fig:supercompact}
+      \includegraphics[width=\ww]{figures/supercompact_matrix-crop.png}}%
+    \subfigure[Compact.]{%
+      \label{fig:compact}
+      \includegraphics[width=\ww]{figures/compact_matrix-crop.png}}%
+    \subfigure[Random.]{%
+      \label{fig:random}
+      \includegraphics[width=\ww]{figures/random_matrix-crop.png}}%
+    %% \subfigure[2D, no RCM.]{%
+    %%   \label{fig:rbf2dnorcm}
+    %%   \includegraphics[width=\ww]{figures/kd-tree-2d-norcm-crop.png}}%
+    %% \subfigure[2D, RCM.]{%
+    %%   \label{fig:rbf2drcm}
+    %%   \includegraphics[width=\ww]{figures/kd-tree-2d-rcm-crop.png}} 
+    \subfigure[3D, RCM.]{%
+      \label{fig:rbf3dnorcm} 
+      \includegraphics[width=\ww]{figures/kd-tree-3d-norcm-crop.png}}%
+    \subfigure[3D, no RCM.]{%
+      \label{fig:rbf3drcm}
+      \includegraphics[width=\ww]{figures/kd-tree-3d-rcm-crop.png}}%
+  \end{center}
+  
+  \caption{Different sparsity distributions. In all cases, there are
+    512 rows and 32 nonzeros per row. The last two matrices
+    corresponds to a derivative stencil in 3D RBFFD
+    calculations (with and without RCM ordering).}
+  \label{fig:spy_plots}
+\end{figure*}
+
+To summarize, using vector instructions appears necessary in order
+to reach the highest bandwidth on the MIC architecture. For the instructions used
+in a typical SpMV computation, one can expect a bandwidth between
+140~GB/s to 160~GB/s. That is why we use in our estimations a best
+achievable bandwidth of 150~GB/s despite the fact that a 
+ code carefully crafted to maximize bandwidth can reach higher
+values~\cite{Saule13-ARXIV}. 
+
+\subsection{Instances}
+
+The different matrices used to perform our experiments and analysis
+are presented in Figure~\ref{fig:spy_plots}. The
+\ttt{Supercompact} matrices (Figure~\ref{fig:supercompact}) have been
+generated to only have nonzero elements in the first 32 columns of
+the matrix. As a result, only 32 values of {\tt x} are read
+from memory, and the expense associated with cache misses is removed from consideration. The cost associated with 
+{\tt A} remains. The Compact matrices
+(Figure~\ref{fig:compact}) are generated to have 32 nonzeros per row
+centered around the diagonal and it represents the ideal case for many
+applications that rely on sparse matrix vector multiplication. The nonzero
+elements of the Random
+matrices (Figure~\ref{fig:compact}) see their nonzero elements
+randomly (uniformly) distributed in the matrix; they represent the
+worst case scenario for a cache-based architecture where the cache
+reutilisation is the lowest from one row to the next.
+The other type of matrix is used in derivative stencils in 3D
+RBFFD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-points
+stencil of a 3D $8^3$ grid).
+
+We also apply a Reverse Cuthill-Mckee reordering to
+all the matrices.  This ordering technique aims to reduce the
+distance between the nonzeros and the diagonal, hopefully increasing 
+the cache hit ratio.  The reordered version of the matrix can be
+seen in Figure~\ref{fig:rbf3drcm}.
+
+\vspace{-0.3em}
+\subsection{Computations}
+
+\begin{figure*}[t]
+  \centering
+  \subfigure[Supercompact and Random.]{\includegraphics[width=.48\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
+  \subfigure[Compact and RBFFD.]{\includegraphics[width=.48\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
+  
+  \caption{Performance of the manually vectorized code. The two
+    horizontal lines depict the worst and the best predicted performances.}
+  \label{fig:expe_types}
+\end{figure*}
+
+We now investigate the actual performance that we can obtain when
+multiplying four vectors by four matrices in single
+precision. Figure~\ref{fig:expe_types} presents results for different
+types of matrices and also shows the minimum and maximum performance
+predicted in Section~\ref{sec:model}. Figure~\ref{fig:perf_ideal}
+gives the results for the {\tt supercompact} and {\tt random} matrices
+that represent both the best and the worst case for such a practical 
+computation. The {\tt supercompact} case peaks at
+208~Gflop/s which is very close to the predicted peak
+performance of 213~Gflop/s. Conversely the performance of the {\tt
+  random} case decreases to 56~Gflop/s which is close to
+the lowest predicted performance of 55~Gflop/s. One can see that RCM
+ordering helps the {\tt random} case but the impact decreases when the
+size of the matrix increases.
+
+Figure~\ref{fig:perf_realistic} gives the results on the {\tt compact}
+case, which represents the best realistic matrix one could find with very
+structured grids and a
+{\tt RBF} derivative matrix extracted from a real 3D application. In the {\tt
+  compact} case, the performance can be as high as 195~Gflop/s, which is
+within 15\% of the predicted  peak performance. The performance of the
+{\tt RBF} case varies between 100~Gflop/s and 140~Gflop/s. Most of the
+time, the RCM ordering provides an improvement which can be as high as
+30~Gflop/s.
+
+\begin{figure}[t]
+  \centering 
+  
+  \includegraphics[width=.9\linewidth]{figures/mic_performance_nb_threads.pdf}
+
+  \caption{Performance of $y=Ax$ for a RBF derivative stencil of a
+    $96^3$ 3D grid. Classical SpMV ($n_m=n_v=1$ given in blue) has low
+    performance. The manually vectorized code (red) is 3.5 times
+    faster than the compiler generated one (green). RCM ordering
+    (squares) only improves the performance for our manually
+    vectorized code.}
+  \label{fig:comparison_spmv}
+  \label{fig:perf_mic}
+\end{figure}
+
+We finally investigate the central questions of this paper. Do we gain
+actual performance by transforming classical SpMV computation into the
+multiplication of four vectors by four matrices for the computation of the
+derivative of RBFs? Does using manual vectorization improve actual
+application performance? Figure~\ref{fig:comparison_spmv} compares the
+performance achieved by a classical SpMV and by the multiplication of
+four vectors by four matrices using either standard C++ code and our
+optimized implementation. The
+classical SpMV computation reaches 14~Gflop/s. 
+The standard C++ implementation reaches a performance of 38~Gflop/s while our
+optimized implementation almost reaches 140~Gflop/s. 
+Notice that 
+RCM ordering has no impact in the standard C++ implementation while it
+provides a significant improvement in our manually vectorized
+version. This highlights that the C++ implementation is instruction-bound
+while our manually vectorized implementation is most likely 
+memory-bound. 
+
+To put things in perspective, we conducted some experiments on a
+classical CPU architecture with two Intel Core i7 processors, each has eight
+cores that support AVX instructions. Both the compiler-generated and
+the manually-written vectorization using AVX instructions reach a
+(read) bandwidth of 70~GB/s. This indicates that the performance of
+the classical SpMV can not overcome 17~Gflop/s. A generic
+implementation of the multiplication of four vectors with four matrices on
+the {\tt RBF} matrix reaches a performance of 27~Gflop/s; while a
+manual implementation using AVX instructions reaches a performance of
+42~Gflop/s. This confirms that our method is sound and generalizes to
+architectures other than the Intel MIC architecture.
+
+\vspace{-0.5em}
+\section{Conclusion}
+\label{sec:ccl}
+
+In the previous sections, we have explored the practical
+implementation on an Intel Xeon Phi card of multiple derivative
+operators acting on multiple vectors within the context of
+RBFFD. Each derivative has an associated sparse matrix with a fixed
+number of nonzeros on each row. While computing a single derivative of
+multiple functions is rather common, we accelerate the algorithm further 
+by considering multiple
+matrices, with identical sparsity patterns, acting on multiple vectors. 
+We specialize our study to four matrices and four derivatives,
+with 16 outputs, computed as a sum of outer products.
+
+Our implementation makes use of the IMCI MIC instruction set and
+includes a number of swizzling and channel swapping operations, for an
+extremely efficient tensor product implementation. On a $96^3$ 3D
+grid, it reaches a performance of 140~Gflop/s which is 2.7 times
+faster than the best possible performance achievable for a single
+vector and a single derivative and more than 7 times faster than a
+practical implementation.
+
+In future work, we will examine the effect of larger stencil sizes and
+double precision. The presented performance does not reach the predicted
+peak and we believe that common techniques from SpMV such as cache
+partitioning can be successfully applied. We will also integrate the
+techniques presented in this paper within a fluid simulation using
+RBFFD.
+
+\section*{Acknowledgment}
+Erlebacher acknowledges funding from NSF grant
+DMS-\#0934331 (FSU), and the use of the MIC at FSU and at LCSE/U. Minnesota (provided by Prof. D. Yuen). NCAR is sponsored by NSF. 
+Flyer acknowledges support of NSF grant DMS-0934317.
+
+
+\bibliographystyle{plain} %{IEEEabrv,paper.bib}
+\bibliography{paper, bollig}
+\end{document}
+
+

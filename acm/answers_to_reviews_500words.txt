@@ -1,0 +1,25 @@
+Review 1
+The cost of computing the derivatives requires the inversion of a nxn system of equations for each node. For stencil sizes of 64 or 128, this can be expensive. But the calculation of derivative weights is done only once. Our method is useful when solving time-dependent PDEs or stationary PDEs via iterative methods, and the derivatives are to be computed thousands if not millions of times, thus amortizing the original cost. 
+
+Regarding the time to compute the derivation matrix. This operation is typically not very optimized because the same matrix is often dumped to disk and reused later to perform many analyses each composed of many tens of thousands 
+of spmv operations. To give a point of reference, the cost of computing the matrix has an order of magnitude of a thousand spmvs. If one is performing a single simulation, then the cost of generating the matrix is important, but when perforing a parametric study on a single grid, the cost of the derivative matrix calculation is negligible.
+
+Effectively, we could go to n_m=n_v to 16 based on figure 3. However, as mentionned in the introduction, the transport equations for Euler's equations require $x,y,z$ derivatives of $u,v,w,p$ and the calculation of a special hyperviscosity operator. Thus, there are four derivatives applied to four functions. If we had more functions and more derivatives, we could certainly increase the values of n_m and n_v. 
+
+We use 1D arrays for all operations. If the data is contiguous, a 1D array is equivalent to a 2D array, with our own control using pointers.  Low level programming, assembler, CUDA, etc. all work better with 1D arrays. Finally, we would like have a certain degree of control of where our data goes in memory, and thus it is easier to think about our arrays as one-dimensional. 
+
+
+
+Review 3
+The front end to the MIC was an Intel(R) Xeon(R) CPU E5-2650 running at 2.0GHZ, with a total of 16 cores (8 per socket), with hyperthreading enabled and 64 GB of RAM running at 1600 MHz. 
+
+
+
+Review 4
+Given the short space provided, we were only brief in our description of the RBF-FD, and the implementation on the MIC, although we provided source code for those interested in the details.  The stencil size is the number of non-zeros in each row of the matrix $A$ used in the matrix multiplication y = A*x.   Equation (1) in the paper represents the product y = A x, where y is the computed derivative, A is the derivative matrix, and x is the function whose derivative is being computed.  The size of the different matrices is clearly shown in Equation (1).
+
+
+From Erik: 
+[3/31/14, 11:44:59 AM] erik saule: I think we should first give the full name of the CPU. If you know on which machine this was run, you should have the information dans /proc/cpuinfo
+[3/31/14, 11:45:44 AM] erik saule: there is indeed little difference between Xeon E5 architecture and core i7. The most different is in the support for ECC memory and higher core count
+[3/31/14, 11:46:12 AM] erik saule: but let's say explicitely it is a Xeon E5-2650 at 2Ghz

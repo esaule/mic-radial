@@ -1,0 +1,1243 @@
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011)
+ restricted \write18 enabled.
+entering extended mode
+(./ieee_paper.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
+rman-x-2009-06-19, ngerman-x-2009-06-19, afrikaans, ancientgreek, ibycus, arabi
+c, armenian, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danis
+h, dutch, ukenglish, usenglishmax, esperanto, estonian, ethiopic, farsi, finnis
+h, french, galician, german, ngerman, swissgerman, monogreek, greek, hungarian,
+ icelandic, assamese, bengali, gujarati, hindi, kannada, malayalam, marathi, or
+iya, panjabi, tamil, telugu, indonesian, interlingua, irish, italian, kurmanji,
+ lao, latin, latvian, lithuanian, mongolian, mongolianlmc, bokmal, nynorsk, pol
+ish, portuguese, romanian, russian, sanskrit, serbian, serbianc, slovak, sloven
+ian, spanish, swedish, turkish, turkmen, ukrainian, uppersorbian, welsh, loaded
+.
+(./sig-alternate.cls
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/epsfig.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/graphics.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/pdftex-def/pdftex.def
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/infwarerr.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/ltxcmds.sty)))))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsopn.sty))
+Document Class 'sig-alternate' <23rd. May '12>. Modified by G.K.M. Tobin/Gerry 
+Murray
+Based in part upon document Style `acmconf' <22 May 89>. Hacked 4/91 by
+shivers@cs.cmu.edu, 4/93 by theobald@cs.mcgill.ca
+Excerpts were taken from (Journal Style) 'esub2acm.cls'.
+****** Bugs/comments/suggestions/technicalities to Gerry Murray -- murray@hq.ac
+m.org ******
+Questions on the style, SIGS policies, etc. to Adrienne Griscti griscti@acm.org
+
+Document Class: sig-alternate 2012/05/23 - V2.5 - based on acmproc.cls V1.3 <No
+v. 30 '99>
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/latexsym.sty)
+Using 'Abbrev' bibliography style
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/t1enc.def)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/ae/t1aer.fd)))
+(./support/macros.tex
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/color.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/color.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/dvipsnam.def))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/tabularx.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/array.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/soul/soul.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/xpackages/xbase/xparse.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3names.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/expl3.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/etex-pkg/etex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3basics.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3expan.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3tl.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3int.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3quark.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3seq.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3toks.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3prg.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3clist.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3token.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3prop.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3msg.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3io.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3skip.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3box.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3keyval.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3keys.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3precom.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3xref.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3file.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3fp.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3luatex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/calc.sty)))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/listings.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/lstmisc.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/listings.cfg)))
+(./support/misc_mac.tex
+(/usr/local/texlive/2011/texmf-dist/tex/generic/epsf/epsf.tex
+This is `epsf.tex' v2.7.4 <14 February 2011>
+)) (./support/setupicase.tex)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/xspace.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/generic/ifxetex/ifxetex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/kvoptions.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/hyperref.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/url/url.sty)
+
+Package hyperref Warning: Option `pdfpagelabels' is turned off
+(hyperref)                because \thepage is undefined.
+
+)
+
+Package hyperref Message: Driver (autodetected): hpdftex.
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/subfigure/subfigure.sty
+****************************************
+* Local config file subfigure.cfg used *
+****************************************
+(/usr/local/texlive/2011/texmf-dist/tex/latex/subfigure/subfigure.cfg))
+(./ieee_paper.aux)
+(/usr/local/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/grfext.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+
+Package hyperref Warning: Height of page (\paperheight) is invalid (0.0pt),
+(hyperref)                using 11in.
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
+(./ieee_paper.out) (./ieee_paper.out)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/ulasy.fd)
+
+LaTeX Warning: No \author given.
+
+
+Overfull \hbox (17.12251pt too wide) in paragraph at lines 86--86
+ [] 
+
+Overfull \hbox (9.7055pt too wide) in paragraph at lines 153--170
+[]\T1/aer/m/n/9 Common im-prove-ment tech-niques such as reg-is-ter block-
+
+Underfull \vbox (badness 10000) has occurred while \output is active [1{/usr/lo
+cal/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+(./RBF_Section.tex
+Overfull \hbox (2.40742pt too wide) in paragraph at lines 9--9
+[]\secfnt INTRODUCTION AND MO-TI-VA-TION
+<figures/RBFStencil.png, id=122, 269.005pt x 235.88126pt>
+<use figures/RBFStencil.png>
+Overfull \hbox (12.0pt too wide) in paragraph at lines 18--19
+ [][][] 
+
+Overfull \hbox (1.01735pt too wide) in paragraph at lines 22--23
+\T1/aer/m/n/9 ple-men-ta-tion, the RBF-FD is gain-ing pop-u-lar-ity in mod-
+
+Overfull \hbox (9.25926pt too wide) in alignment at lines 23--31
+ [][][] []
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.33 \begin{itemize}
+                     [2 <./figures/RBFStencil.png>]
+Overfull \hbox (9.47473pt too wide) detected at line 55
+[] \OT1/cmr/m/n/9 = [] \OMS/cmsy/m/n/9 ^^B []
+)
+Overfull \hbox (13.37436pt too wide) in paragraph at lines 226--226
+[]\secfnt MODELIZATION OF THE PO-TEN-TIAL
+(/usr/local/texlive/2011/texmf-dist/tex/latex/ae/t1aett.fd)
+<figures/flops_to_bytes_best-crop.pdf, id=155, 435.6275pt x 429.605pt>
+<use figures/flops_to_bytes_best-crop.pdf>
+<figures/flops_to_bytes_worst-crop.pdf, id=156, 435.6275pt x 429.605pt>
+<use figures/flops_to_bytes_worst-crop.pdf>
+<figures/flops_to_bytes_no_cache-crop.pdf, id=157, 433.62pt x 428.60126pt>
+<use figures/flops_to_bytes_no_cache-crop.pdf>pdfTeX warning (ext4): destinatio
+n with the same identifier (name{page.}) has been already used, duplicate ignor
+ed
+<to be read again> 
+                   \relax 
+l.319 
+       [3] <figures/gflops_peak.pdf, id=176, 578.16pt x 433.62pt>
+<use figures/gflops_peak.pdf>pdfTeX warning (ext4): destination with the same i
+dentifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.398 
+       [4 <./figures/flops_to_bytes_best-crop.pdf> <./figures/flops_to_bytes_wo
+rst-crop.pdf> <./figures/flops_to_bytes_no_cache-crop.pdf>]
+<figures/code.pdf, id=296, 614.295pt x 794.97pt> <use figures/code.pdf>
+<figures/code-annote.pdf, id=298, 583.76732pt x 678.74391pt>
+<use figures/code-annote.pdf>
+Overfull \hbox (14.09207pt too wide) in paragraph at lines 431--433
+ [][][][] 
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.507 
+       [5 <./figures/gflops_peak.pdf>]pdfTeX warning (ext4): destination with t
+he same identifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.507 
+       [6 <./figures/code.pdf> <./figures/code-annote.pdf>]
+Overfull \hbox (3.18217pt too wide) in paragraph at lines 548--553
+[]\T1/aer/m/n/9 Now that $\OML/cmm/m/it/9 A[]; A[]; A[]; A[]$ \T1/aer/m/n/9 and
+ $\OML/cmm/m/it/9 x[]; x[]; x[]; x[]$ \T1/aer/m/n/9 are prop-
+<figures/bandwidth_read_write.pdf, id=369, 578.16pt x 433.62pt>
+<use figures/bandwidth_read_write.pdf>
+<figures/bandwidth_gather_unpack.pdf, id=371, 578.16pt x 433.62pt>
+<use figures/bandwidth_gather_unpack.pdf>
+Overfull \hbox (1.17372pt too wide) in paragraph at lines 597--612
+[]\T1/aer/m/n/9 The \T1/aett/m/n/9 read, cpp \T1/aer/m/n/9 im-ple-men-ta-tion r
+eaches a per-for-mance
+
+Overfull \hbox (2.56786pt too wide) in paragraph at lines 597--612
+\T1/aer/m/n/9 the com-piler adding loop un-rolling and soft-ware prefetch-
+
+Overfull \hbox (25.707pt too wide) in paragraph at lines 597--612
+\T1/aer/m/n/9 This dif-fer-ence is due to the use of the \T1/aett/m/n/9 _mm512_
+store_nrngo_ps
+
+Underfull \vbox (badness 3323) has occurred while \output is activepdfTeX warni
+ng (ext4): destination with the same identifier (name{page.}) has been already 
+used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.612 
+       [7 <./figures/bandwidth_read_write.pdf> <./figures/bandwidth_gather_unpa
+ck.pdf>]
+<figures/supercompact_matrix-crop.png, id=461, 443.6575pt x 429.605pt>
+<use figures/supercompact_matrix-crop.png>
+<figures/compact_matrix-crop.png, id=462, 443.6575pt x 429.605pt>
+<use figures/compact_matrix-crop.png>
+<figures/random_matrix-crop.png, id=463, 443.6575pt x 429.605pt>
+<use figures/random_matrix-crop.png>
+<figures/kd-tree-3d-norcm-crop.png, id=465, 443.6575pt x 429.605pt>
+<use figures/kd-tree-3d-norcm-crop.png>
+<figures/kd-tree-3d-rcm-crop.png, id=466, 443.6575pt x 429.605pt>
+<use figures/kd-tree-3d-rcm-crop.png>
+<figures/random_supercompact.pdf, id=474, 578.16pt x 433.62pt>
+<use figures/random_supercompact.pdf>
+<figures/rbf_compact.pdf, id=475, 578.16pt x 433.62pt>
+<use figures/rbf_compact.pdf>
+Overfull \hbox (12.03519pt too wide) in paragraph at lines 723--732
+\T1/aer/m/n/9 The per-for-mance of the \T1/aett/m/n/9 RBF \T1/aer/m/n/9 case va
+ries be-tween 100 Gflop/s
+<figures/mic_performance_nb_threads.pdf, id=480, 578.16pt x 433.62pt>
+<use figures/mic_performance_nb_threads.pdf>
+Overfull \hbox (15.48291pt too wide) in paragraph at lines 748--765
+\T1/aer/m/n/9 This high-lights that the C++ im-ple-men-ta-tion is instruction-
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.766 T
+       o put things in perspective, we conducted some experiments on a [8 <./fi
+gures/mic_performance_nb_threads.pdf>]
+Overfull \hbox (1.86609pt too wide) in paragraph at lines 782--792
+\T1/aer/m/n/9 ple deriva-tive op-er-a-tors act-ing on mul-ti-ple vec-tors withi
+n
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.812 
+       [9 <./figures/supercompact_matrix-crop.png> <./figures/compact_matrix-cr
+op.png> <./figures/random_matrix-crop.png> <./figures/kd-tree-3d-norcm-crop.png
+> <./figures/kd-tree-3d-rcm-crop.png> <./figures/random_supercompact.pdf> <./fi
+gures/rbf_compact.pdf>] (./ieee_paper.bbl
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.165 
+       [10])pdfTeX warning (ext4): destination with the same identifier (name{p
+age.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.816 \end{document}
+                     [11] (./ieee_paper.aux) )
+(see the transcript file for additional information){/usr/local/texlive/2011/te
+xmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2011/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2011/texmf-dist/fonts/ty
+pe1/public/amsfonts/cmextra/cmex9.pfb></usr/local/texlive/2011/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2011/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2011/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmsy6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmti9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmtt10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmtt9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/s
+ymbols/msbm10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/helvetic/
+uhvb8a.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.
+pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/
+local/texlive/2011/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+Output written on ieee_paper.pdf (11 pages, 812791 bytes).
+Transcript written on ieee_paper.log.
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011)
+ restricted \write18 enabled.
+entering extended mode
+(./ieee_paper.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
+rman-x-2009-06-19, ngerman-x-2009-06-19, afrikaans, ancientgreek, ibycus, arabi
+c, armenian, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danis
+h, dutch, ukenglish, usenglishmax, esperanto, estonian, ethiopic, farsi, finnis
+h, french, galician, german, ngerman, swissgerman, monogreek, greek, hungarian,
+ icelandic, assamese, bengali, gujarati, hindi, kannada, malayalam, marathi, or
+iya, panjabi, tamil, telugu, indonesian, interlingua, irish, italian, kurmanji,
+ lao, latin, latvian, lithuanian, mongolian, mongolianlmc, bokmal, nynorsk, pol
+ish, portuguese, romanian, russian, sanskrit, serbian, serbianc, slovak, sloven
+ian, spanish, swedish, turkish, turkmen, ukrainian, uppersorbian, welsh, loaded
+.
+(./sig-alternate.cls
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/epsfig.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/graphics.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/pdftex-def/pdftex.def
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/infwarerr.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/ltxcmds.sty)))))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsopn.sty))
+Document Class 'sig-alternate' <23rd. May '12>. Modified by G.K.M. Tobin/Gerry 
+Murray
+Based in part upon document Style `acmconf' <22 May 89>. Hacked 4/91 by
+shivers@cs.cmu.edu, 4/93 by theobald@cs.mcgill.ca
+Excerpts were taken from (Journal Style) 'esub2acm.cls'.
+****** Bugs/comments/suggestions/technicalities to Gerry Murray -- murray@hq.ac
+m.org ******
+Questions on the style, SIGS policies, etc. to Adrienne Griscti griscti@acm.org
+
+Document Class: sig-alternate 2012/05/23 - V2.5 - based on acmproc.cls V1.3 <No
+v. 30 '99>
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/latexsym.sty)
+Using 'Abbrev' bibliography style
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/t1enc.def)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/ae/t1aer.fd)))
+(./support/macros.tex
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/color.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/color.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/dvipsnam.def))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/tabularx.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/array.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/soul/soul.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/xpackages/xbase/xparse.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3names.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/expl3.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/etex-pkg/etex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3basics.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3expan.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3tl.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3int.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3quark.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3seq.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3toks.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3prg.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3clist.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3token.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3prop.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3msg.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3io.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3skip.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3box.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3keyval.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3keys.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3precom.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3xref.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3file.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3fp.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3luatex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/calc.sty)))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/listings.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/lstmisc.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/listings.cfg)))
+(./support/misc_mac.tex
+(/usr/local/texlive/2011/texmf-dist/tex/generic/epsf/epsf.tex
+This is `epsf.tex' v2.7.4 <14 February 2011>
+)) (./support/setupicase.tex)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/xspace.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/generic/ifxetex/ifxetex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/kvoptions.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/hyperref.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/url/url.sty)
+
+Package hyperref Warning: Option `pdfpagelabels' is turned off
+(hyperref)                because \thepage is undefined.
+
+)
+
+Package hyperref Message: Driver (autodetected): hpdftex.
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/subfigure/subfigure.sty
+****************************************
+* Local config file subfigure.cfg used *
+****************************************
+(/usr/local/texlive/2011/texmf-dist/tex/latex/subfigure/subfigure.cfg))
+(./ieee_paper.aux)
+(/usr/local/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/grfext.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+
+Package hyperref Warning: Height of page (\paperheight) is invalid (0.0pt),
+(hyperref)                using 11in.
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
+(./ieee_paper.out) (./ieee_paper.out)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/ulasy.fd)
+
+LaTeX Warning: No \author given.
+
+
+Overfull \hbox (17.12251pt too wide) in paragraph at lines 86--86
+ [] 
+
+Overfull \hbox (9.7055pt too wide) in paragraph at lines 153--170
+[]\T1/aer/m/n/9 Common im-prove-ment tech-niques such as reg-is-ter block-
+
+Underfull \vbox (badness 10000) has occurred while \output is active [1{/usr/lo
+cal/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+(./RBF_Section.tex
+Overfull \hbox (2.40742pt too wide) in paragraph at lines 9--9
+[]\secfnt INTRODUCTION AND MO-TI-VA-TION
+<figures/RBFStencil.png, id=122, 269.005pt x 235.88126pt>
+<use figures/RBFStencil.png>
+Overfull \hbox (12.0pt too wide) in paragraph at lines 18--19
+ [][][] 
+
+Overfull \hbox (1.01735pt too wide) in paragraph at lines 22--23
+\T1/aer/m/n/9 ple-men-ta-tion, the RBF-FD is gain-ing pop-u-lar-ity in mod-
+
+Overfull \hbox (9.25926pt too wide) in alignment at lines 23--31
+ [][][] []
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.33 \begin{itemize}
+                     [2 <./figures/RBFStencil.png>]
+Overfull \hbox (9.47473pt too wide) detected at line 55
+[] \OT1/cmr/m/n/9 = [] \OMS/cmsy/m/n/9 ^^B []
+)
+Overfull \hbox (13.37436pt too wide) in paragraph at lines 226--226
+[]\secfnt MODELIZATION OF THE PO-TEN-TIAL
+(/usr/local/texlive/2011/texmf-dist/tex/latex/ae/t1aett.fd)
+<figures/flops_to_bytes_best-crop.pdf, id=155, 435.6275pt x 429.605pt>
+<use figures/flops_to_bytes_best-crop.pdf>
+<figures/flops_to_bytes_worst-crop.pdf, id=156, 435.6275pt x 429.605pt>
+<use figures/flops_to_bytes_worst-crop.pdf>
+<figures/flops_to_bytes_no_cache-crop.pdf, id=157, 433.62pt x 428.60126pt>
+<use figures/flops_to_bytes_no_cache-crop.pdf>pdfTeX warning (ext4): destinatio
+n with the same identifier (name{page.}) has been already used, duplicate ignor
+ed
+<to be read again> 
+                   \relax 
+l.319 
+       [3] <figures/gflops_peak.pdf, id=176, 578.16pt x 433.62pt>
+<use figures/gflops_peak.pdf>pdfTeX warning (ext4): destination with the same i
+dentifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.398 
+       [4 <./figures/flops_to_bytes_best-crop.pdf> <./figures/flops_to_bytes_wo
+rst-crop.pdf> <./figures/flops_to_bytes_no_cache-crop.pdf>]
+<figures/code.pdf, id=296, 614.295pt x 794.97pt> <use figures/code.pdf>
+<figures/code-annote.pdf, id=298, 583.76732pt x 678.74391pt>
+<use figures/code-annote.pdf>
+Overfull \hbox (14.09207pt too wide) in paragraph at lines 431--433
+ [][][][] 
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.507 
+       [5 <./figures/gflops_peak.pdf>]pdfTeX warning (ext4): destination with t
+he same identifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.507 
+       [6 <./figures/code.pdf> <./figures/code-annote.pdf>]
+Overfull \hbox (3.18217pt too wide) in paragraph at lines 548--553
+[]\T1/aer/m/n/9 Now that $\OML/cmm/m/it/9 A[]; A[]; A[]; A[]$ \T1/aer/m/n/9 and
+ $\OML/cmm/m/it/9 x[]; x[]; x[]; x[]$ \T1/aer/m/n/9 are prop-
+<figures/bandwidth_read_write.pdf, id=369, 578.16pt x 433.62pt>
+<use figures/bandwidth_read_write.pdf>
+<figures/bandwidth_gather_unpack.pdf, id=371, 578.16pt x 433.62pt>
+<use figures/bandwidth_gather_unpack.pdf>
+Overfull \hbox (1.17372pt too wide) in paragraph at lines 597--612
+[]\T1/aer/m/n/9 The \T1/aett/m/n/9 read, cpp \T1/aer/m/n/9 im-ple-men-ta-tion r
+eaches a per-for-mance
+
+Overfull \hbox (2.56786pt too wide) in paragraph at lines 597--612
+\T1/aer/m/n/9 the com-piler adding loop un-rolling and soft-ware prefetch-
+
+Overfull \hbox (25.707pt too wide) in paragraph at lines 597--612
+\T1/aer/m/n/9 This dif-fer-ence is due to the use of the \T1/aett/m/n/9 _mm512_
+store_nrngo_ps
+
+Underfull \vbox (badness 3323) has occurred while \output is activepdfTeX warni
+ng (ext4): destination with the same identifier (name{page.}) has been already 
+used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.612 
+       [7 <./figures/bandwidth_read_write.pdf> <./figures/bandwidth_gather_unpa
+ck.pdf>]
+<figures/supercompact_matrix-crop.png, id=461, 443.6575pt x 429.605pt>
+<use figures/supercompact_matrix-crop.png>
+<figures/compact_matrix-crop.png, id=462, 443.6575pt x 429.605pt>
+<use figures/compact_matrix-crop.png>
+<figures/random_matrix-crop.png, id=463, 443.6575pt x 429.605pt>
+<use figures/random_matrix-crop.png>
+<figures/kd-tree-3d-norcm-crop.png, id=465, 443.6575pt x 429.605pt>
+<use figures/kd-tree-3d-norcm-crop.png>
+<figures/kd-tree-3d-rcm-crop.png, id=466, 443.6575pt x 429.605pt>
+<use figures/kd-tree-3d-rcm-crop.png>
+<figures/random_supercompact.pdf, id=474, 578.16pt x 433.62pt>
+<use figures/random_supercompact.pdf>
+<figures/rbf_compact.pdf, id=475, 578.16pt x 433.62pt>
+<use figures/rbf_compact.pdf>
+Overfull \hbox (12.03519pt too wide) in paragraph at lines 723--732
+\T1/aer/m/n/9 The per-for-mance of the \T1/aett/m/n/9 RBF \T1/aer/m/n/9 case va
+ries be-tween 100 Gflop/s
+<figures/mic_performance_nb_threads.pdf, id=480, 578.16pt x 433.62pt>
+<use figures/mic_performance_nb_threads.pdf>
+Overfull \hbox (15.48291pt too wide) in paragraph at lines 748--765
+\T1/aer/m/n/9 This high-lights that the C++ im-ple-men-ta-tion is instruction-
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.766 T
+       o put things in perspective, we conducted some experiments on a [8 <./fi
+gures/mic_performance_nb_threads.pdf>]
+Overfull \hbox (1.86609pt too wide) in paragraph at lines 782--792
+\T1/aer/m/n/9 ple deriva-tive op-er-a-tors act-ing on mul-ti-ple vec-tors withi
+n
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.812 
+       [9 <./figures/supercompact_matrix-crop.png> <./figures/compact_matrix-cr
+op.png> <./figures/random_matrix-crop.png> <./figures/kd-tree-3d-norcm-crop.png
+> <./figures/kd-tree-3d-rcm-crop.png> <./figures/random_supercompact.pdf> <./fi
+gures/rbf_compact.pdf>] (./ieee_paper.bbl
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.165 
+       [10])pdfTeX warning (ext4): destination with the same identifier (name{p
+age.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.816 \end{document}
+                     [11] (./ieee_paper.aux) )
+(see the transcript file for additional information){/usr/local/texlive/2011/te
+xmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2011/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2011/texmf-dist/fonts/ty
+pe1/public/amsfonts/cmextra/cmex9.pfb></usr/local/texlive/2011/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2011/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2011/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmsy6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmti9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmtt10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmtt9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/s
+ymbols/msbm10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/helvetic/
+uhvb8a.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.
+pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/
+local/texlive/2011/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+Output written on ieee_paper.pdf (11 pages, 812791 bytes).
+Transcript written on ieee_paper.log.
+This is BibTeX, Version 0.99d (TeX Live 2011)
+The top-level auxiliary file: ieee_paper.aux
+The style file: plain.bst
+White space in argument---line 129 of file ieee_paper.aux
+ : \bibdata{paper,
+ :                 bollig}
+I'm skipping whatever remains of this command
+Database file #1: paper.bib
+Warning--empty journal in kumar2012accelerating
+Warning--empty institution in Saule13-ARXIV
+(There was 1 error message)
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011)
+ restricted \write18 enabled.
+entering extended mode
+(./ieee_paper.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
+rman-x-2009-06-19, ngerman-x-2009-06-19, afrikaans, ancientgreek, ibycus, arabi
+c, armenian, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danis
+h, dutch, ukenglish, usenglishmax, esperanto, estonian, ethiopic, farsi, finnis
+h, french, galician, german, ngerman, swissgerman, monogreek, greek, hungarian,
+ icelandic, assamese, bengali, gujarati, hindi, kannada, malayalam, marathi, or
+iya, panjabi, tamil, telugu, indonesian, interlingua, irish, italian, kurmanji,
+ lao, latin, latvian, lithuanian, mongolian, mongolianlmc, bokmal, nynorsk, pol
+ish, portuguese, romanian, russian, sanskrit, serbian, serbianc, slovak, sloven
+ian, spanish, swedish, turkish, turkmen, ukrainian, uppersorbian, welsh, loaded
+.
+(./sig-alternate.cls
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/epsfig.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/graphics.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/pdftex-def/pdftex.def
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/infwarerr.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/ltxcmds.sty)))))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsopn.sty))
+Document Class 'sig-alternate' <23rd. May '12>. Modified by G.K.M. Tobin/Gerry 
+Murray
+Based in part upon document Style `acmconf' <22 May 89>. Hacked 4/91 by
+shivers@cs.cmu.edu, 4/93 by theobald@cs.mcgill.ca
+Excerpts were taken from (Journal Style) 'esub2acm.cls'.
+****** Bugs/comments/suggestions/technicalities to Gerry Murray -- murray@hq.ac
+m.org ******
+Questions on the style, SIGS policies, etc. to Adrienne Griscti griscti@acm.org
+
+Document Class: sig-alternate 2012/05/23 - V2.5 - based on acmproc.cls V1.3 <No
+v. 30 '99>
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/latexsym.sty)
+Using 'Abbrev' bibliography style
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/t1enc.def)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/ae/t1aer.fd)))
+(./support/macros.tex
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/color.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/color.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/dvipsnam.def))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/tabularx.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/array.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/soul/soul.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/xpackages/xbase/xparse.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3names.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/expl3.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/etex-pkg/etex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3basics.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3expan.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3tl.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3int.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3quark.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3seq.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3toks.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3prg.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3clist.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3token.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3prop.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3msg.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3io.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3skip.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3box.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3keyval.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3keys.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3precom.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3xref.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3file.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3fp.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3luatex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/calc.sty)))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/listings.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/lstmisc.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/listings.cfg)))
+(./support/misc_mac.tex
+(/usr/local/texlive/2011/texmf-dist/tex/generic/epsf/epsf.tex
+This is `epsf.tex' v2.7.4 <14 February 2011>
+)) (./support/setupicase.tex)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/xspace.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/generic/ifxetex/ifxetex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/kvoptions.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/hyperref.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/url/url.sty)
+
+Package hyperref Warning: Option `pdfpagelabels' is turned off
+(hyperref)                because \thepage is undefined.
+
+)
+
+Package hyperref Message: Driver (autodetected): hpdftex.
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/subfigure/subfigure.sty
+****************************************
+* Local config file subfigure.cfg used *
+****************************************
+(/usr/local/texlive/2011/texmf-dist/tex/latex/subfigure/subfigure.cfg))
+(./ieee_paper.aux)
+(/usr/local/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/grfext.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+
+Package hyperref Warning: Height of page (\paperheight) is invalid (0.0pt),
+(hyperref)                using 11in.
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
+(./ieee_paper.out) (./ieee_paper.out)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/ulasy.fd)
+
+LaTeX Warning: No \author given.
+
+
+Overfull \hbox (17.12251pt too wide) in paragraph at lines 86--86
+ [] 
+
+Overfull \hbox (9.7055pt too wide) in paragraph at lines 153--170
+[]\T1/aer/m/n/9 Common im-prove-ment tech-niques such as reg-is-ter block-
+
+Underfull \vbox (badness 10000) has occurred while \output is active [1{/usr/lo
+cal/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+(./RBF_Section.tex
+Overfull \hbox (2.40742pt too wide) in paragraph at lines 9--9
+[]\secfnt INTRODUCTION AND MO-TI-VA-TION
+<figures/RBFStencil.png, id=122, 269.005pt x 235.88126pt>
+<use figures/RBFStencil.png>
+Overfull \hbox (12.0pt too wide) in paragraph at lines 18--19
+ [][][] 
+
+Overfull \hbox (1.01735pt too wide) in paragraph at lines 22--23
+\T1/aer/m/n/9 ple-men-ta-tion, the RBF-FD is gain-ing pop-u-lar-ity in mod-
+
+Overfull \hbox (9.25926pt too wide) in alignment at lines 23--31
+ [][][] []
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.33 \begin{itemize}
+                     [2 <./figures/RBFStencil.png>]
+Overfull \hbox (9.47473pt too wide) detected at line 55
+[] \OT1/cmr/m/n/9 = [] \OMS/cmsy/m/n/9 ^^B []
+)
+Overfull \hbox (13.37436pt too wide) in paragraph at lines 226--226
+[]\secfnt MODELIZATION OF THE PO-TEN-TIAL
+(/usr/local/texlive/2011/texmf-dist/tex/latex/ae/t1aett.fd)
+<figures/flops_to_bytes_best-crop.pdf, id=155, 435.6275pt x 429.605pt>
+<use figures/flops_to_bytes_best-crop.pdf>
+<figures/flops_to_bytes_worst-crop.pdf, id=156, 435.6275pt x 429.605pt>
+<use figures/flops_to_bytes_worst-crop.pdf>
+<figures/flops_to_bytes_no_cache-crop.pdf, id=157, 433.62pt x 428.60126pt>
+<use figures/flops_to_bytes_no_cache-crop.pdf>pdfTeX warning (ext4): destinatio
+n with the same identifier (name{page.}) has been already used, duplicate ignor
+ed
+<to be read again> 
+                   \relax 
+l.319 
+       [3] <figures/gflops_peak.pdf, id=176, 578.16pt x 433.62pt>
+<use figures/gflops_peak.pdf>pdfTeX warning (ext4): destination with the same i
+dentifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.398 
+       [4 <./figures/flops_to_bytes_best-crop.pdf> <./figures/flops_to_bytes_wo
+rst-crop.pdf> <./figures/flops_to_bytes_no_cache-crop.pdf>]
+<figures/code.pdf, id=296, 614.295pt x 794.97pt> <use figures/code.pdf>
+<figures/code-annote.pdf, id=298, 583.76732pt x 678.74391pt>
+<use figures/code-annote.pdf>
+Overfull \hbox (14.09207pt too wide) in paragraph at lines 431--433
+ [][][][] 
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.507 
+       [5 <./figures/gflops_peak.pdf>]pdfTeX warning (ext4): destination with t
+he same identifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.507 
+       [6 <./figures/code.pdf> <./figures/code-annote.pdf>]
+Overfull \hbox (3.18217pt too wide) in paragraph at lines 548--553
+[]\T1/aer/m/n/9 Now that $\OML/cmm/m/it/9 A[]; A[]; A[]; A[]$ \T1/aer/m/n/9 and
+ $\OML/cmm/m/it/9 x[]; x[]; x[]; x[]$ \T1/aer/m/n/9 are prop-
+<figures/bandwidth_read_write.pdf, id=369, 578.16pt x 433.62pt>
+<use figures/bandwidth_read_write.pdf>
+<figures/bandwidth_gather_unpack.pdf, id=371, 578.16pt x 433.62pt>
+<use figures/bandwidth_gather_unpack.pdf>
+Overfull \hbox (1.17372pt too wide) in paragraph at lines 597--612
+[]\T1/aer/m/n/9 The \T1/aett/m/n/9 read, cpp \T1/aer/m/n/9 im-ple-men-ta-tion r
+eaches a per-for-mance
+
+Overfull \hbox (2.56786pt too wide) in paragraph at lines 597--612
+\T1/aer/m/n/9 the com-piler adding loop un-rolling and soft-ware prefetch-
+
+Overfull \hbox (25.707pt too wide) in paragraph at lines 597--612
+\T1/aer/m/n/9 This dif-fer-ence is due to the use of the \T1/aett/m/n/9 _mm512_
+store_nrngo_ps
+
+Underfull \vbox (badness 3323) has occurred while \output is activepdfTeX warni
+ng (ext4): destination with the same identifier (name{page.}) has been already 
+used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.612 
+       [7 <./figures/bandwidth_read_write.pdf> <./figures/bandwidth_gather_unpa
+ck.pdf>]
+<figures/supercompact_matrix-crop.png, id=461, 443.6575pt x 429.605pt>
+<use figures/supercompact_matrix-crop.png>
+<figures/compact_matrix-crop.png, id=462, 443.6575pt x 429.605pt>
+<use figures/compact_matrix-crop.png>
+<figures/random_matrix-crop.png, id=463, 443.6575pt x 429.605pt>
+<use figures/random_matrix-crop.png>
+<figures/kd-tree-3d-norcm-crop.png, id=465, 443.6575pt x 429.605pt>
+<use figures/kd-tree-3d-norcm-crop.png>
+<figures/kd-tree-3d-rcm-crop.png, id=466, 443.6575pt x 429.605pt>
+<use figures/kd-tree-3d-rcm-crop.png>
+<figures/random_supercompact.pdf, id=474, 578.16pt x 433.62pt>
+<use figures/random_supercompact.pdf>
+<figures/rbf_compact.pdf, id=475, 578.16pt x 433.62pt>
+<use figures/rbf_compact.pdf>
+Overfull \hbox (12.03519pt too wide) in paragraph at lines 723--732
+\T1/aer/m/n/9 The per-for-mance of the \T1/aett/m/n/9 RBF \T1/aer/m/n/9 case va
+ries be-tween 100 Gflop/s
+<figures/mic_performance_nb_threads.pdf, id=480, 578.16pt x 433.62pt>
+<use figures/mic_performance_nb_threads.pdf>
+Overfull \hbox (15.48291pt too wide) in paragraph at lines 748--765
+\T1/aer/m/n/9 This high-lights that the C++ im-ple-men-ta-tion is instruction-
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.766 T
+       o put things in perspective, we conducted some experiments on a [8 <./fi
+gures/mic_performance_nb_threads.pdf>]
+Overfull \hbox (1.86609pt too wide) in paragraph at lines 782--792
+\T1/aer/m/n/9 ple deriva-tive op-er-a-tors act-ing on mul-ti-ple vec-tors withi
+n
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.812 
+       [9 <./figures/supercompact_matrix-crop.png> <./figures/compact_matrix-cr
+op.png> <./figures/random_matrix-crop.png> <./figures/kd-tree-3d-norcm-crop.png
+> <./figures/kd-tree-3d-rcm-crop.png> <./figures/random_supercompact.pdf> <./fi
+gures/rbf_compact.pdf>] (./ieee_paper.bbl
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.165 
+       [10])pdfTeX warning (ext4): destination with the same identifier (name{p
+age.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.816 \end{document}
+                     [11] (./ieee_paper.aux) )
+(see the transcript file for additional information){/usr/local/texlive/2011/te
+xmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2011/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2011/texmf-dist/fonts/ty
+pe1/public/amsfonts/cmextra/cmex9.pfb></usr/local/texlive/2011/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2011/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2011/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmsy6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmti9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmtt10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmtt9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/s
+ymbols/msbm10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/helvetic/
+uhvb8a.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.
+pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/
+local/texlive/2011/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+Output written on ieee_paper.pdf (11 pages, 812791 bytes).
+Transcript written on ieee_paper.log.
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011)
+ restricted \write18 enabled.
+entering extended mode
+(./ieee_paper.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
+rman-x-2009-06-19, ngerman-x-2009-06-19, afrikaans, ancientgreek, ibycus, arabi
+c, armenian, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danis
+h, dutch, ukenglish, usenglishmax, esperanto, estonian, ethiopic, farsi, finnis
+h, french, galician, german, ngerman, swissgerman, monogreek, greek, hungarian,
+ icelandic, assamese, bengali, gujarati, hindi, kannada, malayalam, marathi, or
+iya, panjabi, tamil, telugu, indonesian, interlingua, irish, italian, kurmanji,
+ lao, latin, latvian, lithuanian, mongolian, mongolianlmc, bokmal, nynorsk, pol
+ish, portuguese, romanian, russian, sanskrit, serbian, serbianc, slovak, sloven
+ian, spanish, swedish, turkish, turkmen, ukrainian, uppersorbian, welsh, loaded
+.
+(./sig-alternate.cls
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/epsfig.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/graphics.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/pdftex-def/pdftex.def
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/infwarerr.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/ltxcmds.sty)))))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsmath/amsopn.sty))
+Document Class 'sig-alternate' <23rd. May '12>. Modified by G.K.M. Tobin/Gerry 
+Murray
+Based in part upon document Style `acmconf' <22 May 89>. Hacked 4/91 by
+shivers@cs.cmu.edu, 4/93 by theobald@cs.mcgill.ca
+Excerpts were taken from (Journal Style) 'esub2acm.cls'.
+****** Bugs/comments/suggestions/technicalities to Gerry Murray -- murray@hq.ac
+m.org ******
+Questions on the style, SIGS policies, etc. to Adrienne Griscti griscti@acm.org
+
+Document Class: sig-alternate 2012/05/23 - V2.5 - based on acmproc.cls V1.3 <No
+v. 30 '99>
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/latexsym.sty)
+Using 'Abbrev' bibliography style
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/t1enc.def)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/ae/t1aer.fd)))
+(./support/macros.tex
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/color.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/color.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/dvipsnam.def))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/tabularx.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/array.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/soul/soul.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/xpackages/xbase/xparse.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3names.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/expl3.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/etex-pkg/etex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3basics.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3expan.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3tl.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3int.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3quark.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3seq.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3toks.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3prg.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3clist.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3token.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3prop.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3msg.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3io.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3skip.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3box.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3keyval.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3keys.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3precom.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3xref.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3file.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3fp.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/expl3/l3luatex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/calc.sty)))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/listings.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/lstmisc.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/listings/listings.cfg)))
+(./support/misc_mac.tex
+(/usr/local/texlive/2011/texmf-dist/tex/generic/epsf/epsf.tex
+This is `epsf.tex' v2.7.4 <14 February 2011>
+)) (./support/setupicase.tex)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/tools/xspace.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/generic/ifxetex/ifxetex.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/kvoptions.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/hyperref.cfg)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/url/url.sty)
+
+Package hyperref Warning: Option `pdfpagelabels' is turned off
+(hyperref)                because \thepage is undefined.
+
+)
+
+Package hyperref Message: Driver (autodetected): hpdftex.
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/subfigure/subfigure.sty
+****************************************
+* Local config file subfigure.cfg used *
+****************************************
+(/usr/local/texlive/2011/texmf-dist/tex/latex/subfigure/subfigure.cfg))
+(./ieee_paper.aux)
+(/usr/local/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/grfext.sty)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+
+Package hyperref Warning: Height of page (\paperheight) is invalid (0.0pt),
+(hyperref)                using 11in.
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
+(./ieee_paper.out) (./ieee_paper.out)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/base/ulasy.fd)
+
+LaTeX Warning: No \author given.
+
+
+Overfull \hbox (17.12251pt too wide) in paragraph at lines 86--86
+ [] 
+
+Overfull \hbox (9.7055pt too wide) in paragraph at lines 153--170
+[]\T1/aer/m/n/9 Common im-prove-ment tech-niques such as reg-is-ter block-
+
+Underfull \vbox (badness 10000) has occurred while \output is active [1{/usr/lo
+cal/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+(./RBF_Section.tex
+Overfull \hbox (2.40742pt too wide) in paragraph at lines 9--9
+[]\secfnt INTRODUCTION AND MO-TI-VA-TION
+<figures/RBFStencil.png, id=122, 269.005pt x 235.88126pt>
+<use figures/RBFStencil.png>
+Overfull \hbox (12.0pt too wide) in paragraph at lines 18--19
+ [][][] 
+
+Overfull \hbox (1.01735pt too wide) in paragraph at lines 22--23
+\T1/aer/m/n/9 ple-men-ta-tion, the RBF-FD is gain-ing pop-u-lar-ity in mod-
+
+Overfull \hbox (9.25926pt too wide) in alignment at lines 23--31
+ [][][] []
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
+een already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.33 \begin{itemize}
+                     [2 <./figures/RBFStencil.png>]
+Overfull \hbox (9.47473pt too wide) detected at line 55
+[] \OT1/cmr/m/n/9 = [] \OMS/cmsy/m/n/9 ^^B []
+)
+Overfull \hbox (13.37436pt too wide) in paragraph at lines 226--226
+[]\secfnt MODELIZATION OF THE PO-TEN-TIAL
+(/usr/local/texlive/2011/texmf-dist/tex/latex/ae/t1aett.fd)
+<figures/flops_to_bytes_best-crop.pdf, id=155, 435.6275pt x 429.605pt>
+<use figures/flops_to_bytes_best-crop.pdf>
+<figures/flops_to_bytes_worst-crop.pdf, id=156, 435.6275pt x 429.605pt>
+<use figures/flops_to_bytes_worst-crop.pdf>
+<figures/flops_to_bytes_no_cache-crop.pdf, id=157, 433.62pt x 428.60126pt>
+<use figures/flops_to_bytes_no_cache-crop.pdf>pdfTeX warning (ext4): destinatio
+n with the same identifier (name{page.}) has been already used, duplicate ignor
+ed
+<to be read again> 
+                   \relax 
+l.319 
+       [3] <figures/gflops_peak.pdf, id=176, 578.16pt x 433.62pt>
+<use figures/gflops_peak.pdf>pdfTeX warning (ext4): destination with the same i
+dentifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.398 
+       [4 <./figures/flops_to_bytes_best-crop.pdf> <./figures/flops_to_bytes_wo
+rst-crop.pdf> <./figures/flops_to_bytes_no_cache-crop.pdf>]
+<figures/code.pdf, id=296, 614.295pt x 794.97pt> <use figures/code.pdf>
+<figures/code-annote.pdf, id=298, 583.76732pt x 678.74391pt>
+<use figures/code-annote.pdf>
+Overfull \hbox (14.09207pt too wide) in paragraph at lines 431--433
+ [][][][] 
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.507 
+       [5 <./figures/gflops_peak.pdf>]pdfTeX warning (ext4): destination with t
+he same identifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.507 
+       [6 <./figures/code.pdf> <./figures/code-annote.pdf>]
+Overfull \hbox (3.18217pt too wide) in paragraph at lines 548--553
+[]\T1/aer/m/n/9 Now that $\OML/cmm/m/it/9 A[]; A[]; A[]; A[]$ \T1/aer/m/n/9 and
+ $\OML/cmm/m/it/9 x[]; x[]; x[]; x[]$ \T1/aer/m/n/9 are prop-
+<figures/bandwidth_read_write.pdf, id=369, 578.16pt x 433.62pt>
+<use figures/bandwidth_read_write.pdf>
+<figures/bandwidth_gather_unpack.pdf, id=371, 578.16pt x 433.62pt>
+<use figures/bandwidth_gather_unpack.pdf>
+Overfull \hbox (1.17372pt too wide) in paragraph at lines 597--612
+[]\T1/aer/m/n/9 The \T1/aett/m/n/9 read, cpp \T1/aer/m/n/9 im-ple-men-ta-tion r
+eaches a per-for-mance
+
+Overfull \hbox (2.56786pt too wide) in paragraph at lines 597--612
+\T1/aer/m/n/9 the com-piler adding loop un-rolling and soft-ware prefetch-
+
+Overfull \hbox (25.707pt too wide) in paragraph at lines 597--612
+\T1/aer/m/n/9 This dif-fer-ence is due to the use of the \T1/aett/m/n/9 _mm512_
+store_nrngo_ps
+
+Underfull \vbox (badness 3323) has occurred while \output is activepdfTeX warni
+ng (ext4): destination with the same identifier (name{page.}) has been already 
+used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.612 
+       [7 <./figures/bandwidth_read_write.pdf> <./figures/bandwidth_gather_unpa
+ck.pdf>]
+<figures/supercompact_matrix-crop.png, id=461, 443.6575pt x 429.605pt>
+<use figures/supercompact_matrix-crop.png>
+<figures/compact_matrix-crop.png, id=462, 443.6575pt x 429.605pt>
+<use figures/compact_matrix-crop.png>
+<figures/random_matrix-crop.png, id=463, 443.6575pt x 429.605pt>
+<use figures/random_matrix-crop.png>
+<figures/kd-tree-3d-norcm-crop.png, id=465, 443.6575pt x 429.605pt>
+<use figures/kd-tree-3d-norcm-crop.png>
+<figures/kd-tree-3d-rcm-crop.png, id=466, 443.6575pt x 429.605pt>
+<use figures/kd-tree-3d-rcm-crop.png>
+<figures/random_supercompact.pdf, id=474, 578.16pt x 433.62pt>
+<use figures/random_supercompact.pdf>
+<figures/rbf_compact.pdf, id=475, 578.16pt x 433.62pt>
+<use figures/rbf_compact.pdf>
+Overfull \hbox (12.03519pt too wide) in paragraph at lines 723--732
+\T1/aer/m/n/9 The per-for-mance of the \T1/aett/m/n/9 RBF \T1/aer/m/n/9 case va
+ries be-tween 100 Gflop/s
+<figures/mic_performance_nb_threads.pdf, id=480, 578.16pt x 433.62pt>
+<use figures/mic_performance_nb_threads.pdf>
+Overfull \hbox (15.48291pt too wide) in paragraph at lines 748--765
+\T1/aer/m/n/9 This high-lights that the C++ im-ple-men-ta-tion is instruction-
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.766 T
+       o put things in perspective, we conducted some experiments on a [8 <./fi
+gures/mic_performance_nb_threads.pdf>]
+Overfull \hbox (1.86609pt too wide) in paragraph at lines 782--792
+\T1/aer/m/n/9 ple deriva-tive op-er-a-tors act-ing on mul-ti-ple vec-tors withi
+n
+
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.812 
+       [9 <./figures/supercompact_matrix-crop.png> <./figures/compact_matrix-cr
+op.png> <./figures/random_matrix-crop.png> <./figures/kd-tree-3d-norcm-crop.png
+> <./figures/kd-tree-3d-rcm-crop.png> <./figures/random_supercompact.pdf> <./fi
+gures/rbf_compact.pdf>] (./ieee_paper.bbl
+Underfull \vbox (badness 10000) has occurred while \output is activepdfTeX warn
+ing (ext4): destination with the same identifier (name{page.}) has been already
+ used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.165 
+       [10])pdfTeX warning (ext4): destination with the same identifier (name{p
+age.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.816 \end{document}
+                     [11] (./ieee_paper.aux) )
+(see the transcript file for additional information){/usr/local/texlive/2011/te
+xmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2011/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2011/texmf-dist/fonts/ty
+pe1/public/amsfonts/cmextra/cmex9.pfb></usr/local/texlive/2011/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2011/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2011/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmsy6.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmti9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmtt10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmtt9.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/public/amsfonts/s
+ymbols/msbm10.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/helvetic/
+uhvb8a.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.
+pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/
+local/texlive/2011/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+Output written on ieee_paper.pdf (11 pages, 812791 bytes).
+Transcript written on ieee_paper.log.

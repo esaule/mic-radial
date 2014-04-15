@@ -1,0 +1,160 @@
+----------- REVIEW -----------
+This paper investigated the problem of improving the performance of sparse matrix-vector multiplications (SpMV's) on the Intel MIC architecture.  The discussion was in the context of applying the derivatives of radial basis functions, in which multiple SpMV's, where the matrices have identical sparsity structures, have to be performed.  If the reviewer understood the paper correctly, the authors considered combining n_m x n_v SpMV's together with n_m different matrices (which had the same sparsity structure) and each matrix multiplying with n_v different vectors.  They provided a detailed analysis of the potential improvement in performance in such an approach by considering the number of data transfers and the number of floating-point operations.  The paper ended with a description of how the SpMV's were implemented on the Intel Xeon Phi processors and a presentation of the experimental results.
+
+The paper was well written and the results looked reasonably good.  The reviewer has a few questions though.
+
+First, the paper discussed entirely the improvement of the performance of SpMV's (by framing them as sparse matrix-matrix computation).  However, the derivatives -- the matrices in the SpMV's (or SpMM's) -- needed to be computed.  The authors acknowledged that the cost of calculating these derivatives was high.  So, how costly was that compared to, for example one SpMV (or one SpMM)?
+
+*** ANSWER ***
+The cost of computing the derivatives requires the inversion of a nxn system of equations for each node. For stencil sizes of 64 or 128, 
+this can be expensive. But the calculation of derivative weights is done only once. Our method is useful when solving time-dependent PDEs or stationary PDEs via iterative methods, and the derivatives are to be computed thousands if not millions of times, thus amortizing the original cost. 
+*****   ****
+
+Second, n_m and n_v were set to 4 in the experiments.  Maybe the reviewer missed it, but were there explanations as to why 4 were picked for the experiments.  Why not n_m = n_v = 16, for example, using the analysis in Figure 3?
+
+***  ANSWER ***
+Effectively, we could go to n_m=n_v to 16 based on figure 3. However, as mentionned in the introduction, the transport equations for 
+Euler's equations require $x,y,z$ derivatives of $u,v,w,p$ and the calculation of a special hyperviscosity operator. Thus, there are four derivatives applied to four functions. If we had more functions and more derivatives, we could certainly increase the values of n_m and n_v. 
+*****
+
+Third, the authors reported that the nonzero entries of the matrices were stored in an array.  The reviewer assumed that it was an 1-D array, based on the discussion in the paper and Figure 5.  Why not 2-D, since all the rows had the same number of nonzero entries?
+
+*** ANSWER ***
+We use 1D arrays for all operations. If the data is contiguous, a 1D array is equivalent to a 2D array, with our own control of pointers. 
+Low level programming, assembler, CUDA, etc. all work better with 1D arrays. Finally, we would like have a certain degree of 
+control of where our data goes in memory, and thus it is easier to think about our arrays as one-dimensional. 
+
+----------------------- REVIEW 2 ---------------------
+PAPER: 39
+TITLE: Acceleration of Derivative Calculations with Application to Radial Basis Function – Finite-Differences on the Intel MIC Architecture
+AUTHORS: (anonymous)
+
+
+----------- REVIEW -----------
+This paper is very well written, and the work is well motivated.
+
+The authors provide a thorough analysis of the computational scheme and complexity, and motivate their
+mapping to the Intel MIC architecture.  Their detailed breakdown of the mapping to the Intel MIC architecutre
+is very comprehensive, and well explained.  Clearly they went to considerable length to understand
+how to map their matvec operations onto this architecture in an optimal manner.  They authors predict
+and demostrate nearly an order of magnitude speedup over convential approaches, by taking advantage
+of the specialized features of the MIC architecture.  This analysis while specific to their matvec
+example is a template for how one could approach other more complex computations.  It's not a recipe,
+but it is an excellent exemplar of how to approach predicting and optimizing the performance of
+a computational kernel on the MIC architecture.
+
+Their computational experiments are very compelling evidence that their theortecial analysis
+is sound, as they show good agreement between the experimental and predicted    results.
+
+Overall, I really enjoyed and appreciated this paper.  While it may not be truly seminal work,
+it is an excellent piece of work        exploring in depth the behavior of the MIC architecture, with
+comprehensive theoretical work to predict the performance combined with the computational
+experiments needed to verify the models/predictions.  Well done.
+
+Typos:
+
+In Section 5.2, Figure 8c is listed as 8b (second reference).
+
+In Section 5, Figure 9 follows Figure 10 - should reorder these.
+
+----------------------- REVIEW 3 ---------------------
+PAPER: 39
+TITLE: Acceleration of Derivative Calculations with Application to Radial Basis Function – Finite-Differences on the Intel MIC Architecture
+AUTHORS: (anonymous)
+
+
+----------- REVIEW -----------
+In the paper "Acceleration of Derivative Calculations with Application to Radial Basis Function --
+Finite-Differences on the Intel MIC Architecture" the authors demonstrate
+how the calculation of derivatives within the context of Radial
+Basis Function Finite-Difference (RBFFD) can be efficient mapped to Intel
+Xeon Phi systems built upon Intel's MIC Architecture.
+
+Their paper materializes a very solid piece
+of engineering and optimization work: they start with a long and extensive
+literature review and provide a detailed introduction of the problem they want to solve.
+Before describing their actual implementation tricks,
+an analytic model in order to estimate the expected performance of their
+implementation is derived. Afterwards a description covering the essential
+and needed (vector-)instructions is provided followed by performance measurements
+and their comparison to the estimates obtained by the model and a similarly
+optimized version for standard CPUs. Therefore I come to the conclusion that this work
+very interesting for the ICS audience and should be accepted for
+presentation during the conference sessions.
+
+I would like to give a few suggestion for improvements:
+- The layout of the typesetting should be double-checked, at several places
+  words cross the column boundaries
+- one page five, second column, beginning, you say that vector-div, vector-sin, etc. run in one cycle.
+  This is not true they are part of Intel's Intrinsic Short Vector Math Library and
+  therefor implemented in Software, cf. http://software.intel.com/sites/products/documentation/doclib/iss/2013/compiler/cpp-lin/index.htm#GUID-3B77B85C-83C6-4B1D-B742-620C6B4934FE.htm
+- (a) and (b) in Figure 5 should be just in one line
+- one page nine, right before your conclusion your compare with a standard Xeon E5
+  and not Core i7 as written in the text I guess. Can you please be more specific?
+  This also includes the kind of experiment you use for comparing both
+  architectures. Can you provide efficiencies for both architectures and compare & comment?
+- In your future work section you plan to use your new algorithm within
+  a multi-card setup. A common problem with SpMV is the involved PCIe overhead, can you please
+  comment on how you plan to address this? Please note, due to Hostsystem limitations you are just able to
+  transfer data with 1.0 (Xeon E5) or 2.5 (Xeon E5 v2) GB/s between cards in different nodes
+  when running MPI directly on the cards.
+
+----------------------- REVIEW 4 ---------------------
+PAPER: 39
+TITLE: Acceleration of Derivative Calculations with Application to Radial Basis Function – Finite-Differences on the Intel MIC Architecture
+AUTHORS: (anonymous)
+
+
+----------- REVIEW -----------
+The paper conciders the acceleration of derivative calculations for radial basis function (RDF)-Finite Differences (FD), and the implementation on Intel Xeon Phi.
+The main idea is to replace the Sparce Matrix Vector (SpMV) product with 4 of the same type, transfering the SpMV to an Sparse Matrix Matrix (SpMM) product. To port it to Xeon Phi, performance is achieved only for vectorized code which is then described. The method is than experimentally validated.
+
+The paper is hard to understand if the reader is not an expert in both, RBF-FD and Xeon Phi implementation. It is unclear, where and how the stencil size gets into the game, what is the relation between the stencil in fig. 1 and the SpMM in eq (1), what is the x vector and what the y vector, and why is the size of the x vector just nv while the size of the y vector is nm times nv. Thus, the improvements of the method can hardly be reenacted, and thus the novelty of the approach hardly be considered. Also, the implementation for Xeon Phi needs a deep knowledge of its instructions to understand the main steps and bottlenecks.
+
+*** ANSWER ***
+Given the short space provided, we were only brief in our description of the RBF-FD, and the implementation on the MIC, although we
+provided source code for those interested in the details. The stencil size is the number of non-zeros in each row of the matrix $A$ used in the matrix multiplication y = A*x.   Equation (1) in the paper represents the product $y = A x$, where $y$ is the computed derivative, $A$ is the derivative matrix, and $x$ is the function whose derivative is being computed. The size of the different matrices is clearly shown in Equation (1). 
+
+----------------------------------------------------------------------
+
+Bollig: 
+Hey Gordon, I agree with your answers.
+
+One thing I noticed reading Reviewer #4's comments: we don't actually
+state that SpMV/SpMM has the form y = Ax, except once in the caption
+of Figure 10. Given that, I understand their confusion. I think
+stating the form in Section 2 and explaining that DMs are applied as
+d/dx = D_x u would resolve the issue.
+
+For Reviewer #3, its my opinion that we should at least clarify
+whether experiments were run on a Xeon E5 series, or i7 chip. Was this
+data from Frodo? I just sent Mike an email to confirm the CPU specs.
+----
+Bollig: 
+Response from Mike:
+
+S3 has:
+- Two sockets of: Intel(R) Xeon(R) CPU E5-2650 0 @ 2.00GHz
+- 16 cores total (8/socket)
+- Hyperthreading enabled
+- 64GB 1600Mhz
+
+------
+Natasha: 
+I definitely agree with Evan. As I am reading over the paper, I find it confusing Fig. 2 and the beginning of Sec. 3 as we never define things in terms of x and y. So, I can see Rev. 4 confusion. We definitely need to clarify this as saying system (1) can be viewed as y = Ax. In fact you want to address review 4 I think that is all one needs to say is what I just saud, i.e. In (1), the LHS, which is y, is n_m x n_v as defined by the RHS which can be viewed as a linear system A*x, where A is n_m and x is n_v.
+
+------------------------------
+Erik: 
+We probably should not say that we picked nv=nm=4 because it makes 16
+vectors as an output and we like that. I think there is an application
+rationnal in picking 4/4. That is what we should emphasize in my
+opinion.
+
+Also, do you have any estimation of the costs of computing the
+matrices? Even an order of magnitude would be sufficient.
+
+For the memory layout, I think we should also say that because we care
+about the memory placement it is easier to think about it as a 1D
+array.
+
+----------------------------------------------------------------------

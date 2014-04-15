@@ -1,0 +1,12 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Introduction and Motivation for RBF-FD}{}% 2
+\BOOKMARK [1][-]{section.3}{Modelization of the Potential Improvements}{}% 3
+\BOOKMARK [1][-]{section.4}{Efficient Implementation on the Intel Xeon Phi processor}{}% 4
+\BOOKMARK [2][-]{subsection.4.1}{Intel Xeon Phi}{section.4}% 5
+\BOOKMARK [2][-]{subsection.4.2}{Bringing the data into the vector register}{section.4}% 6
+\BOOKMARK [1][-]{section.5}{Experimental Validation}{}% 7
+\BOOKMARK [2][-]{subsection.5.1}{Bandwidth}{section.5}% 8
+\BOOKMARK [2][-]{subsection.5.2}{Instances}{section.5}% 9
+\BOOKMARK [2][-]{subsection.5.3}{Computations}{section.5}% 10
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 11
+\BOOKMARK [1][-]{section.7}{References}{}% 12

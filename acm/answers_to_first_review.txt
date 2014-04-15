@@ -1,0 +1,29 @@
+Review 1
+
+The cost of computing the derivatives requires the inversion of a nxn system of equations for each node. For stencil sizes of 64 or 128, 
+this can be expensive. But the calculation of derivative weights is done only once. Our method is useful when solving time-dependent PDEs or stationary PDEs via iterative methods, and the derivatives are to be computed thousands if not millions of times, thus amortizing the original cost. 
+
+Effectively, we could go to n_m=n_v to 16 based on figure 3. However, as mentionned in the introduction, the transport equations for 
+Euler's equations require $x,y,z$ derivatives of $u,v,w,p$ and the calculation of a special hyperviscosity operator. Thus, there are four derivatives applied to four functions. If we had more functions and more derivatives, we could certainly increase the values of n_m and n_v. 
+
+We use 1D arrays for all operations. If the data is contiguous, a 1D array is equivalent to a 2D array, with our own control of pointers. 
+Low level programming, assembler, CUDA, etc. all work better with 1D arrays. Finally, we would like have a certain degree of 
+control of where our data goes in memory, and thus it is easier to think about our arrays as one-dimensional. 
+
+Given the short space provided, we were only brief in our description of the RBF-FD, and the implementation on the MIC, although we
+provided source code for those interested in the details. 
+The stencil size is the number of non-zeros in each row of the matrix $A$ used in the matrix multiplication y = A*x.   Equation (1) in the paper represents the product y = A x, where y is the computed derivative, A is the derivative matrix, and x is the function whose derivative is being computed. 
+
+----------------------------------------------------------------------
+reviewer 3: give specs de la machine. Put them on one line. 
+----------------------------------------------------------------------
+
+
+Frodo: S3 has:
+- Two sockets of: Intel(R) Xeon(R) CPU E5-2650 0 @ 2.00GHz
+- 16 cores total (8/socket)
+- Hyperthreading enabled
+- 64GB 1600Mhz
+
+----------------------------------------------------------------------
+

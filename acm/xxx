@@ -1,0 +1,11 @@
+The cost of computing the derivatives requires the inversion of a nxn system of equations for each node. For stencil sizes of 64 or 128, 
+this can be expensive. But the calculation of derivative weights is done only once. Our method is useful when solving time-dependent PDEs or stationary PDEs via iterative methods, and the derivatives are to be computed thousands if not millions of times, thus amortizing the original cost. 
+
+Effectively, we could go to n_m=n_v to 16 based on figure 3. However, as mentionned in the introduction, the transport equations for 
+Euler's equations require $x,y,z$ derivatives of $u,v,w,p$ and the calculation of a special hyperviscosity operator. Thus, there are four derivatives applied to four functions. If we had more functions and more derivatives, we could certainly increase the values of n_m and n_v. 
+
+We use 1D arrays for all operations. If the data is contiguous, a 1D array is equivalent to a 2D array, with our own control of pointers. 
+Low level programming, assembler, CUDA, etc. all work better with 1D arrays. Finally, we would like have a certain degree of 
+control of where our data goes in memory, and thus it is easier to think about our arrays as one-dimensional. 
+
+Review 4
