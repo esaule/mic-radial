@@ -71,33 +71,29 @@ Finite-Differences on the Intel MIC Architecture}
 
 %\subtitle{[Extended Abstract]}
 
-%\numberofauthors{4}
+\numberofauthors{2}
 
-%\author{
-%\alignauthor
-%Gordon Erlebacher\\ %\titlenote{Dr.~Trovato insisted his name be first.}\\
-%       \affaddr{Department of Scientific Computing}\\
-%       \affaddr{Florida State University}\\
-%       \affaddr{Tallahassee, FL 32306-4120}\\
-%       \email{gordon.erlebach@gmail.com}
-%\alignauthor
-%Erik Saule
-%        \affaddr{Department of Computer Science}\\
-%        \affaddr{University of North Carolina at Charlotte}\\
-%        \email{esaule@uncc.edu}
-%\and
-%\alignauthor
-%Natasha Flyer
-%        \affaddr{Computational and Information System Laboratory}\\
-%        \affaddr{UCAR}\\
-%        \email{flyer@ucar.edu}
-%\alignauthor
-%Evan Bollig
-%        \affaddr{Minnesota Supercomputer Institute}\\
-%        \affaddr{University of Minnesota}\\
-%        \affaddr{Minneapolis, MN}\\
-%        \email{bollig@gmail.com}
-%}
+\author{
+\alignauthor Gordon Erlebacher\\ 
+      \affaddr{Department of Scientific Computing}\\
+      \affaddr{Florida State University}\\
+%      \affaddr{Tallahassee, FL 32306-4120}\\
+      \email{gordon.erlebach@gmail.com}
+\alignauthor Erik Saule\\
+       \affaddr{Department of Computer Science}\\
+       \affaddr{University of North Carolina at Charlotte}\\
+       \email{esaule@uncc.edu}
+\and
+\alignauthor Natasha Flyer\\
+       \affaddr{Computational and Information Systems Laboratory}\\
+       \affaddr{UCAR}\\
+       \email{flyer@ucar.edu}
+\alignauthor Evan Bollig\\
+       \affaddr{Minnesota Supercomputer Institute}\\
+       \affaddr{University of Minnesota}\\
+%       \affaddr{Minneapolis, MN}\\
+       \email{bollig@gmail.com}
+}
 \maketitle
 
 
@@ -264,9 +260,9 @@ However, the differentiation weights for approximating a derivative at a given n
 %Figure~\ref{fig:stencil}.  % Latex is making this figure 2. Do not know why. 
 Figure~1.
 
-\begin{figure}[tbh]
+\begin{figure}[t]
 \centering
-\includegraphics[width=0.7\linewidth]{figures/RBFStencil_n32_a}\label{fig:stencil}
+\includegraphics[width=0.65\linewidth]{figures/RBFStencil_n32_a}\label{fig:stencil}
 \caption{An example of an RBF-FD stencil of size $n=32$ on a sphere of $N=1024$ nodes to approximate any derivative operator at the point in the square. In nonsparse format, the DM  is $1024\times1024$ with 32 nonzero entries per row.}
 \end{figure}
 
@@ -332,7 +328,7 @@ is amortized by the very long numerical simulations. \ger{The startup cost is el
 
 
 %--------------------------------------------
-\section{Modelization of the \\Potential Improvements}
+\section{Modeling the\\ Potential Improvements}
 \label{sec:model}
 
 We saw in the previous section that one can express the RBF problem as
@@ -341,7 +337,7 @@ estimation of the variation on the flop intensity of the computation
 and its impact on the expected performance of the
 application. Relevant notation are given in Figure~\ref{tab:not}.
 
-\begin{figure}[t]
+\begin{figure}[tbh]
   \begin{center}
     \scalebox{.8}{
       \begin{tabular}{|c|l|}
@@ -479,7 +475,7 @@ performance reachable is 210~Gflop/s: almost six times higher than the
 peak of the classical SpMV case. 
 
 
-\begin{figure}
+\begin{figure}[t]
   \centering 
   \includegraphics[width=.9\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}
   \caption{Estimation of the maximum achievable performance using a
