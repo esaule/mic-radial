@@ -262,7 +262,7 @@ Figure~1.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.65\linewidth]{figures/RBFStencil_n32_a}\label{fig:stencil}
+\includegraphics[width=0.60\linewidth]{figures/RBFStencil_n32_a}\label{fig:stencil}
 \caption{An example of an RBF-FD stencil of size $n=32$ on a sphere of $N=1024$ nodes to approximate any derivative operator at the point in the square. In nonsparse format, the DM  is $1024\times1024$ with 32 nonzero entries per row.}
 \end{figure}
 
@@ -385,9 +385,9 @@ of $$s_M = n_c (b_i + b_x n_m) = n_r n_z (b_i + b_x n_m)$$
 
 \begin{figure*}[tbh]
   \centering
-  \subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}\label{fig:ratio_best}}%
-  \subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
-  \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
+  \subfigure[Best case.]{\includegraphics[width=.28\linewidth]{figures/flops_to_bytes_best-crop.pdf}\label{fig:ratio_best}}%
+  \subfigure[Worst case.]{\includegraphics[width=.28\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
+  \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.28\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
   
   \caption{Ratio of flops to bytes in single precision:  
     \ref{fig:ratio_best} best case; \ref{fig:ratio_worst} worst case when $cl=64$ 
@@ -797,9 +797,9 @@ surpasses 100~GB/s and is close to 50~GB/s most of the time.)
 % Figure 9
   \centering
 % was width=.48
-  \subfigure[Supercompact and Random.]{\includegraphics[width=.4\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
+  \subfigure[Supercompact and Random.]{\includegraphics[width=.35\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
 % was width=.48
-  \subfigure[Compact and RBFFD.]{\includegraphics[width=.4\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
+  \subfigure[Compact and RBFFD.]{\includegraphics[width=.35\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
     horizontal lines depict the worst and the best predicted performances.}
@@ -875,7 +875,7 @@ time, the RCM ordering provides an improvement which can be as high as
 % Figure 10
   \centering 
   
-  \includegraphics[width=.9\linewidth]{figures/mic_performance_nb_threads.pdf}
+  \includegraphics[width=.8\linewidth]{figures/mic_performance_nb_threads.pdf}
 
   \caption{Performance of $y=Ax$ for a RBF derivative stencil of a
     $96^3$ 3D grid. Classical "one-matrix one-vector" SpMV ($n_m=n_v=1$ given in blue) has low
@@ -916,15 +916,20 @@ using two Intel Xeon E5 2670 nodes (8 cores, 2 threads and 20 Mbytes of L2
 cache per core, with hyperthreading disabled.) The cores support the AVX instruction set. 
 Both the compiler-generated code and the code written with the 
 help of the AVX instruction set reach a read bandwidth of
-85~GB/s. Using cache lines of 256 bits, we find a best/worst speeds of 4/20\; Gflops/s and 
-50/120\; Gflops/s, respectively for the 1vec/1mat and 4vec/4mat cases. 
-Our implementation on Cascade reaches 45 Gflops for the 4/4\, case, or 41\% of peak theoretical 
+85~GB/s. Using cache lines of 512 bits, we find a best/worst speeds of 2.4/20\; Gflops/s and 
+32/120\; Gflops/s, respectively for the 1vec/1mat and 4vec/4mat cases. 
+Our implementation on Cascade reaches 45 Gflops for the 4/4\, case, or 45/120=37\% of peak theoretical 
 performance on this particular processor setup. For references, we achieve 
 140/210=66\% of peak theoretical performance on the MIC. Note that peak performance 
 is not that of the processor, but of the best possible algorithm on the processor. 
 The gain in the 4/4 case with respect to 4x 1/1 case is respectively 4x on the MIC 
 and 2.5x on the front end.  
 }
+
+% cascade
+%[  2.35701906   8.04733728   9.37931034  31.62790698  36.75675676]
+%[  20.60606061   32.96969697   75.55555556  120.88888889  226.66666667]
+
 
 \vspace{-0.5em}
 \section{Conclusion}
@@ -949,7 +954,7 @@ it earlier.} On a $96^3$ 3D
 grid, it reaches a performance of 140~Gflop/s which is 2.7 times
 faster than the best possible performance achievable for a single
 vector and a single derivative and more than 7 times faster than a
-practical implementation.
+best case practical 1/1 implementation.
 
 In future work, we will examine the effect of larger stencil sizes and
 double precision. The presented performance does not reach the

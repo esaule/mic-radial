@@ -118,6 +118,9 @@ bar_width = 0.35/2
 rects1 = plt.bar(index, ratios_s_worst, bar_width, alpha=1, color='b', label='single precision worst case')
 rects1 = plt.bar(index+bar_width, ratios_s_best, bar_width, alpha=.5, color='b', label='single precision best case')
 #print ratios_s_best
+print("worst, best")
+print(ratios_s_worst)
+print(ratios_s_best)
 
 rects2 = plt.bar(index+2*bar_width, ratios_d_worst, bar_width, alpha=1, color='r', label='double precision worst case')
 rects2 = plt.bar(index+3*bar_width, ratios_d_best, bar_width, alpha=.5, color='r', label='double precision best case')
