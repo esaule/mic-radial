@@ -111,7 +111,7 @@ Finite-Differences on the Intel MIC Architecture}
 \begin{abstract}
 In this paper, we develop an efficient scheme for the calculation of
 derivatives within the context of Radial Basis Function
-Finite-Difference (RBFFD). RBF methods express functions as a linear
+Finite-Difference (RBF-FD). RBF methods express functions as a linear
 combination of \ge{spherically} symmetric basis functions on an arbitrary set of
 nodes. The Finite-Difference component expresses this combination over
 a local set of nodes neighboring the point where the derivative is
@@ -670,7 +670,7 @@ computed in line XI. Once all the nonzeros of the row have been processed, the
 exact $y_i$ value can be sent to memory using a the "No Read No Global
 Order" hint to optimize write traffic on the memory bus.
 
-\ee{The modelization of Section~\ref{sec:model} establishes that the 
+\ee{The model of Section~\ref{sec:model} establishes that the 
   memory
   transfer caps the computation at 210~GFlop/s, which is 10\% of the
   peak single precision of the architecture. To reach this value, the
@@ -788,7 +788,7 @@ surpasses 100~GB/s and is close to 50~GB/s most of the time.)
   
   \caption{Different sparsity distributions. In all cases, there are
     512 rows and 32 nonzeros per row. The last two matrices
-    corresponds to a derivative stencil in 3D RBFFD
+    corresponds to a derivative stencil in 3D RBF-FD
     calculations (with and without RCM ordering).}
   \label{fig:spy_plots}
 \end{figure*}
@@ -799,7 +799,7 @@ surpasses 100~GB/s and is close to 50~GB/s most of the time.)
 % was width=.48
   \subfigure[Supercompact and Random.]{\includegraphics[width=.35\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
 % was width=.48
-  \subfigure[Compact and RBFFD.]{\includegraphics[width=.35\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
+  \subfigure[Compact and RBF-FD.]{\includegraphics[width=.35\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
     horizontal lines depict the worst and the best predicted performances.}
@@ -834,7 +834,7 @@ randomly (uniformly) distributed in the matrix; they represent the
 worst case scenario for a cache-based architecture where the cache
 reutilisation is the lowest from one row to the next.
 The other type of matrix is used in derivative stencils in 3D
-RBFFD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-point
+RBF-FD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-point
 stencil of a 3D $8^3$ grid).
 
 We also apply a Reverse Cuthill-Mckee reordering to
@@ -938,7 +938,7 @@ and 2.5x on the front end.
 In the previous sections, we have explored the practical
 implementation on an Intel Xeon Phi card of multiple derivative
 operators acting on multiple vectors within the context of
-RBFFD. Each derivative has an associated sparse matrix with a fixed
+RBF-FD. Each derivative has an associated sparse matrix with a fixed
 number of nonzeros on each row. While computing a single derivative of
 multiple functions is rather common, we accelerate the algorithm further 
 by considering multiple
@@ -961,7 +961,7 @@ double precision. The presented performance does not reach the
 predicted peak and we believe that common techniques from SpMV such as
 cache partitioning can be successfully applied. We will also integrate
 the techniques presented in this paper within a fluid simulation using
-RBFFD. \ge{We will also look into developing a similar technique on the Kepler
+RBF-FD. \ge{We will also look into developing a similar technique on the Kepler
 family of GPUs, which offers swizzling and channeling operations.}
 
 \section*{Acknowledgment}
