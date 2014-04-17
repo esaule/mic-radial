@@ -15,20 +15,25 @@
   urlcolor=blue]{hyperref}
 
 
-%% \def\red#1{\textbf{\textcolor{red}{#1}}}
-%% \def\blue#1{\textbf{\textcolor{blue}{#1}}}
-%% \def\green#1{\textbf{\textcolor{green}{#1}}}
-%% \def\qes#1{{\blue{*** For Erik: #1 ***}}}
-%% \def\es#1{{\blue{*** For Erik: #1 ***}}}
-%% %\def\ee#1{{\green{#1}}}
-%% \def\ee#1{{#1}}
-%% %\def\ge#1{{\blue{#1}}}
-%% %\def\gee#1{}
-%% \def\ge#1{{#1}}
-%% %\def\NOTE#1{{\red{NOTE: #1}}}
-%% \def\NOTE#1{{}}
-%% \def\ttt#1{{\tt #1}}
-%% \def\bold#1{{\bf #1}}
+\def\red#1{\textbf{\textcolor{red}{#1}}}
+\def\blue#1{\textbf{\textcolor{blue}{#1}}}
+\def\green#1{\textbf{\textcolor{green}{#1}}}
+\def\qes#1{{\blue{*** For Erik: #1 ***}}}
+\def\es#1{{\blue{*** For Erik: #1 ***}}}
+%\def\ee#1{{\green{#1}}}
+\def\ee#1{{#1}}
+\def\FIXED{{\red{FIXED}}}
+%\def\NOTE#1{{\red{NOTE: #1}}}
+\def\NOTE#1{{}}
+\def\ttt#1{{\tt #1}}
+\def\bold#1{{\bf #1}}
+
+%\def\ge#1{{\blue{#1}}}  % answer to first review
+\def\ge#1{{#1}}
+
+\def\gee#1{}
+%\def\ger#1{{\red{#1}}}  % answer to second review
+\def\ger#1{#1} 
 
 
 \usepackage{listings}
@@ -59,7 +64,6 @@
 
 
 \begin{document}
-\end{document}
 \title{Acceleration of Derivative Calculations with Application to Radial Basis Function --
 Finite-Differences on the Intel MIC Architecture}
 %\title{Sparse Matrix Vector Multiplication with Multiple vectors and
@@ -67,33 +71,29 @@ Finite-Differences on the Intel MIC Architecture}
 
 %\subtitle{[Extended Abstract]}
 
-%\numberofauthors{4}
+\numberofauthors{2}
 
-%\author{
-%\alignauthor
-%Gordon Erlebacher\\ %\titlenote{Dr.~Trovato insisted his name be first.}\\
-%       \affaddr{Department of Scientific Computing}\\
-%       \affaddr{Florida State University}\\
-%       \affaddr{Tallahassee, FL 32306-4120}\\
-%       \email{gordon.erlebach@gmail.com}
-%\alignauthor
-%Erik Saule
-%        \affaddr{Department of Computer Science}\\
-%        \affaddr{University of North Carolina at Charlotte}\\
-%        \email{esaule@uncc.edu}
-%\and
-%\alignauthor
-%Natasha Flyer
-%        \affaddr{Computational and Information System Laboratory}\\
-%        \affaddr{UCAR}\\
-%        \email{flyer@ucar.edu}
-%\alignauthor
-%Evan Bollig
-%        \affaddr{Minnesota Supercomputer Institute}\\
-%        \affaddr{University of Minnesota}\\
-%        \affaddr{Minneapolis, MN}\\
-%        \email{bollig@gmail.com}
-%}
+\author{
+\alignauthor Gordon Erlebacher\\ 
+      \affaddr{Department of Scientific Computing}\\
+      \affaddr{Florida State University}\\
+%      \affaddr{Tallahassee, FL 32306-4120}\\
+      \email{gordon.erlebach@gmail.com}
+\alignauthor Erik Saule\\
+       \affaddr{Department of Computer Science}\\
+       \affaddr{University of North Carolina at Charlotte}\\
+       \email{esaule@uncc.edu}
+\and
+\alignauthor Natasha Flyer\\
+       \affaddr{Computational and Information Systems Laboratory}\\
+       \affaddr{UCAR}\\
+       \email{flyer@ucar.edu}
+\alignauthor Evan Bollig\\
+       \affaddr{Minnesota Supercomputer Institute}\\
+       \affaddr{University of Minnesota}\\
+%       \affaddr{Minneapolis, MN}\\
+       \email{bollig@gmail.com}
+}
 \maketitle
 
 
@@ -111,7 +111,7 @@ Finite-Differences on the Intel MIC Architecture}
 \begin{abstract}
 In this paper, we develop an efficient scheme for the calculation of
 derivatives within the context of Radial Basis Function
-Finite-Difference (RBFFD). RBF methods express functions as a linear
+Finite-Difference (RBF-FD). RBF methods express functions as a linear
 combination of \ge{spherically} symmetric basis functions on an arbitrary set of
 nodes. The Finite-Difference component expresses this combination over
 a local set of nodes neighboring the point where the derivative is
@@ -173,8 +173,8 @@ access patterns.}
 %significant instruction overhead per flop.
 \NOTE{I rewrote last few sentences: write more precisely? Blas 2 is Matrix/vector, and that is still somewhat memory bound.}
 
-Common improvement techniques such as register blocking, bandwidth
-reduction (matrix reordering~\cite{Cuthill69}), partitioning to fit in
+Common improvement techniques such as  bandwidth
+reduction (matrix reordering~\cite{Cuthill69}), register blocking, partitioning to fit in
 cache or TLB~\cite{Nishtala07,Temam:1992:CBS:147877.148091,conf/ppsc/Toledo97},
 unrolling~\cite{Mellor-Crummey04} have impacts that are very
 dependent on the matrix and overall do not lead to dramatic
@@ -244,11 +244,91 @@ SpMV kernels.}
 It also provides the actual performance of the various kernels on multiple classes of matrices, 
 some generated for purpose of analysis, and some extracted from an application of RBF-FD. 
 A performance of 135~Gflop/s in single precision is achieved using RBF-FD differentiation matrices, which is 3.75 times better than the theoretical peak performance of an SpMV operation. Concluding remarks and perspectives are provided in Section~\ref{sec:ccl}.%\looseness=-1
+%--------------------------------------------
 
-\input{RBF_Section}
+%\input{RBF_Section}
 %\input{old_RBF_Section}
 
-\section{Modelization of the \\Potential Improvements}
+\section{Introduction and Motivation for RBF-FD}
+\label{sec:rbf}
+
+RBFs approximate a function $f(\mathbf{x}) \in \mathbb{R}^d$ sampled at $N$ distinct node locations by linearly combining translates of a single radially symmetric function, e.g. $\phi(r) = e^{-\varepsilon^2r^2}$, where $r=\|\mathbf{x}-\mathbf{x}_{i}\|$ denotes the Euclidean distance between where the function $f(\mathbf{x})$ is evaluated, $\mathbf{x}$, and where the RBF, $\phi$, is centered $\mathbf{x}_{i}$. The parameter $\varepsilon$ controls the shape of the RBF. Note that the argument of an RBF is simply a scalar distance, $r$, independent of any coordinate system or dimension. As a result, nodes can be scattered as desired across complex physical domains with the implementation of the method being independent of dimensionality. Thus, no mesh generation is needed and algorithmic complexity does not increase with dimension.
+\NOTE{While reading that paragraph, I was under the impression that the physical domain needs to be a sphere.}
+
+To obtain a RBF derivative approximation at a node location that will result in a sparse differentiation matrix (DM), the RBF-FD method has been developed over the last decade \cite{TAI1,TAI2,SDY02,WrFo06}. RBF-FD is conceptually similar to standard finite differences (FD). 
+However, the differentiation weights for approximating a derivative at a given node (forming one row of the RBF-FD derivative matrix (DM)) enforce that the linear combination of function values at the $n << N$ nearest node locations (a stencil) be exact for RBFs centered at each of the $n$ nodes rather than polynomials. The result is a sparse matrix with only $n$ entries in each of its $N$ rows, resulting in a total of $nN$ nonzero entries. An example stencil is shown in 
+%Figure~\ref{fig:stencil}.  % Latex is making this figure 2. Do not know why. 
+Figure~1.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.60\linewidth]{figures/RBFStencil_n32_a.pdf}\label{fig:stencil}
+\caption{An example of an RBF-FD stencil of size $n=32$ on a sphere of $N=1024$ nodes to approximate any derivative operator at the point in the square. In nonsparse format, the DM  is $1024\times1024$ with 32 nonzero entries per row.}
+\end{figure}
+
+Due to the above attributes and its simplicity of implementation, the RBF-FD is gaining popularity in modeling systems of PDEs in a variety of fields in fluid dynamics (e.g., geosciences, combustion, aerodynamics \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). For example, the full shallow water equations in a 3D Cartesian coordinate system for a rotating fluid are as follows:
+{ \small
+\begin{eqnarray}
+\dfrac{\partial u}{\partial t} &=& - \left( u\dfrac{\partial u}{\partial x} + v\dfrac{\partial u}{\partial y} + w\dfrac{\partial u}{\partial z} + f(yw - zv) + g\dfrac{\partial h}{\partial x} \right) 
+\nonumber \\
+\dfrac{\partial v}{\partial t} &=& - \left( u\dfrac{\partial v}{\partial x} + v\dfrac{\partial v}{\partial y} + w\dfrac{\partial v}{\partial z} + f(zu - xw) + g\dfrac{\partial h}{\partial x} \right)
+\nonumber\\
+\dfrac{\partial w}{\partial t} &=& - \left( u\dfrac{\partial w}{\partial x} + v\dfrac{\partial w}{\partial y} + w\dfrac{\partial w}{\partial z} + f(xv - yu) + g\dfrac{\partial h}{\partial x} \right)
+\nonumber\\
+\frac{\partial h}{\partial t}& =&-\left(\dfrac{\partial (uh)}{\partial x} + \dfrac{\partial (vh)}{\partial y} + h\dfrac{\partial (wh)}{\partial z}\right) , \label{height} \nonumber
+\end{eqnarray}
+}
+where $f$ is the Coriolis force, $\{u,v,w\}$ are the components of the velocity vector in the respective $\{x,y,z\}$ directions, and $h$ is the geopotential height (analogous to pressure). Thus, we have four variables $\{u,v,w,h\}$ and three DMs, $D_x, D_y, D_z$ representing  $\partial_x$, $\partial_y$, $\partial_z$, 
+%\begingroup
+%\everymath{\footnotesize}
+%\scriptsize
+%$\dfrac{\partial}{\partial x}, \dfrac{\partial}{\partial y},\dfrac{\partial}{\partial z}$, 
+%\endgroup
+respectively. Moreover, in order to stably time step the equations with an explicit time-stepping scheme, most numerical methods (including RBF-FD) require a fourth operator, hyperviscosity, to be added to each equation. Hyperviscosity takes the form of $\triangle^p$ ($\triangle$ denotes the Laplacian operator), where $p\geq3$, which is approximated by the matrix $D_{hyp}$. Therefore, in order to solve this system of PDEs, the application of 4 DM to 4 unknowns, i.e. 16 SpMV is required at every time step. Due to the fact that RBFs are independent of a coordinate system, taking into account only distances to nearest neighbors, the DMs have the following properties:
+\begin{itemize}
+\item For a given $n$, regardless of the operator approximated, e.g.,
+$\partial_x$, 
+%$\dfrac{\partial}{\partial x}$ 
+or the Laplacian, RBF-FD DMs will have the same number of nonzeros per row.
+\item For a given $n$ and $N$, regardless of the operator approximated, the DMs will have the same sparsity pattern. Examples of an RBF-FD DM can be seen in Figures \ref{fig:spy_plots}d-e.
+\end{itemize}
+
+
+Multiple variables transform a SpMV into a SpMM (Sparse Matrix/dense Matrix multiplication), which improves register utilization and decreases cache
+misses by vectorizing over the multiple source vectors. Furthermore, due to the properties just mentioned, multiple derivatives of a single function can be calculated rather than computing a single derivative of multiple functions. Using the PDE system above as an example, the block structure of the SpMM for computing all derivatives needed is %can be seen in Equation \ref{fig:struct_comp}, 
+%\begin{figure}[h]
+\begingroup
+\everymath{\footnotesize}
+\scriptsize
+\begin{equation}
+  %\centering
+ %{\small
+   \left( \begin{array}{cccc}
+    \underline{u}_x     & \underline{v}_x     & \underline{w}_x     & \underline{h}_x \\
+    \underline{u}_y     & \underline{v}_y     & \underline{w}_y     & \underline{h}_y \\
+    \underline{u}_z     & \underline{v}_z     & \underline{w}_z     & \underline{h}_z \\
+    \underline{u}_{hyp} & \underline{v}_{hyp} & \underline{w}_{hyp} & \underline{h}_{hyp}
+  \end{array} \right)
+  = \left(
+  \begin{array}{c}
+    D_{x}\\ D_{y}\\ D_{z}\\ D_{hyp}
+  \end{array}\right)
+  \times \left(\underline{u} \,\, \underline{v} \,\, \underline{w} \,\, \underline{h} \,\,\right) 
+  \vspace{-1ex}
+  %\caption{Block structure of the computation.}
+  \label{fig:struct_comp}
+%\end{figure}
+\end{equation}
+\endgroup
+where $\{\underline{u},\underline{v}, \underline{w}, \underline{h}\}$ are the functions values at all nodes of the corresponding variables with the left hand side being the resulting derivative approximations. The increased memory bandwidth due to an increase in the number of derivative matrices is offset by improved cache utilization, leading to an overall performance benefit. In practice however, the number of vectors whose derivatives are required is limited, capping the performance of the matrix/vector multiplication. Similarly, the number of different derivatives in a particular computation is finite. It is for this reason that we seek to combine the benefits of multiple vectors and multiple matrices simultaneously. We limit this initial study to four vectors and four matrices, which is a common number found in fluid dynamic calculations. Equation~\ref{fig:struct_comp} is of the form $Y=AX$, where $Y$ encodes the $x,y,z$ discrete derivatives (and hyperviscosity operator) of $u,v,w,h$, $X$ encodes the variables $(u,v,w,h)$ and $A$ represents the 16 discrete differentiation operators. 
+
+We also note that the DMs are time-independent. They are computed once \ee{at the beginning of the simulation} and used repeatedly to update the solution 
+in time (for each iteration of the simulation). Thus, the cost to calculate the derivatives, although high \ger{(on the order of 1000 SpMVs)}, 
+is amortized by the very long numerical simulations. \ger{The startup cost is eliminated when performing parameter studies on a given node distribution. Furthermore, the computation of the derivative matrices are done serially, but are trivially parallelizable.}
+
+
+%--------------------------------------------
+\section{Modeling the\\ Potential Improvements}
 \label{sec:model}
 
 We saw in the previous section that one can express the RBF problem as
@@ -257,7 +337,7 @@ estimation of the variation on the flop intensity of the computation
 and its impact on the expected performance of the
 application. Relevant notation are given in Figure~\ref{tab:not}.
 
-\begin{figure}[t]
+\begin{figure}[tbh]
   \begin{center}
     \scalebox{.8}{
       \begin{tabular}{|c|l|}
@@ -305,9 +385,9 @@ of $$s_M = n_c (b_i + b_x n_m) = n_r n_z (b_i + b_x n_m)$$
 
 \begin{figure*}[tbh]
   \centering
-  \subfigure[Best case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_best-crop.pdf}\label{fig:ratio_best}}%
-  \subfigure[Worst case.]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
-  \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.33\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
+  \subfigure[Best case.]{\includegraphics[width=.28\linewidth]{figures/flops_to_bytes_best-crop.pdf}\label{fig:ratio_best}}%
+  \subfigure[Worst case.]{\includegraphics[width=.28\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
+  \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.28\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
   
   \caption{Ratio of flops to bytes in single precision:  
     \ref{fig:ratio_best} best case; \ref{fig:ratio_worst} worst case when $cl=64$ 
@@ -395,7 +475,7 @@ performance reachable is 210~Gflop/s: almost six times higher than the
 peak of the classical SpMV case. 
 
 
-\begin{figure}
+\begin{figure}[t]
   \centering 
   \includegraphics[width=.9\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}
   \caption{Estimation of the maximum achievable performance using a
@@ -436,35 +516,38 @@ executed per cycle.
 Most of the performance of the architecture comes from the vector
 processing unit. Each core has 32 512-bit SIMD registers that can be
 used for double or single precision, that is, either as a vector of eight
-64-bit values or as a vector of 16 32-bit values, respectively. The
-vector processing unit can perform basic instructions, such as
-addition or division, and mathematical operations, such as {\tt sin} or
-{\tt sqrt}, making it possible to reach 16 single precision (or 8 double precision)
-operations per cycle.  
+64-bit values or as a vector of 16 32-bit values, respectively. 
+\ger{The vector processing unit can perform arithmetic (addition and multiplication) 
+instructions making it possible to reach 16 single precision 
+(or 8 double precision) operations per cycle. 
 The unit also supports Fused Multiply-Add (FMA)
 operations, which are typically counted as two operations 
 when benchmarking. Therefore, the peak performance of the 5110P
 card is one Tflop/s in double precision and two Tflop/s in single
 precision. If FMA cannot be used, only half of these rates can be
-achieved.
+achieved.}
+
+%addition or %division, and mathematical operations, such as {\tt sin} or
+%{\tt sqrt}, making it possible to reach 16 single precision (or 8 double precision)
+%operations per cycle.  
 
 
 \subsection{Bringing the data into the vector register}
 
-%\begin{figure*}
-%  \centering
-%\scalebox{.8}{
-%\subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{figures/code.pdf}}%
-%\subfigure[Content of the vector registers {in the source code}.]{\hspace{0.07\linewidth}\includegraphics[width=.55\linewidth]{figures/code-annote.pdf}}
+\begin{figure*}
+  \centering
+\scalebox{.8}{
+\subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{figures/code.pdf}}%
+\subfigure[Content of the vector registers.]{\hspace{0.07\linewidth}\includegraphics[width=.55\linewidth]{figures/code-annote.pdf}}
 %%\subfigure[Content of the vector registers \ge{in the source code}.]{\hspace{-0.07\linewidth}\includegraphics[width=.55\linewidth]{figures/code-annote.pdf}}
-%}
-%
-%\caption{Code snippet of the multiplication of 4 vectors with 4
-%  matrices. When a line changes the content of a vector register its
-%  new content is shown on the right. The effects of swizzling and
-%  permutations are highlighted using a color code.}
-%\label{code:mat_mul}
-%\end{figure*}
+}
+
+\caption{Code snippet of the multiplication of 4 vectors with 4
+  matrices. When a line changes the content of a vector register its
+  new content is shown on the right. The effects of swizzling and
+  permutations are highlighted using a color code.}
+\label{code:mat_mul}
+\end{figure*}
 
 
 
@@ -484,7 +567,8 @@ constant throughout the matrix. The matrix is given in two arrays. The
 first array is {\tt col\_id} that describes the
 sparsity structure of the matrix. Each row of {\tt col\_id} consists
 of $n_z$ entries that label the column index of each nonzero in
-$A$. The other array is  {\tt data} that gives the values of
+$A$. %***
+The other array is  {\tt data} that gives the values of
 the nonzeros in the four matrices. The values of the matrices are
 interleaved by groups of four so that the value $A^l_{col\_id[k]}$ of
 the $k$th nonzero of the $l$th matrix is at index $\floor{\frac{k-1}{4}}*4*n_m + (l-1)*4+(k-1)\%4$.
@@ -493,7 +577,8 @@ next four are from $A^2$.) The vectors {\tt x} are
 interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
 consecutive in memory. The vector {\tt y} is similarly 
 grouped in sets of 16, which correspond to four derivatives applied to
-four functions, at a single point.\looseness=-1
+four functions, at a single point. %\ger{All matrices are stored as one-dimensional vectors and pointers to individual rows and elements are explicitely computed.}
+\looseness=-1
 
 
 We discuss how the implementation of the v4m4 kernel works using
@@ -585,7 +670,7 @@ computed in line XI. Once all the nonzeros of the row have been processed, the
 exact $y_i$ value can be sent to memory using a the "No Read No Global
 Order" hint to optimize write traffic on the memory bus.
 
-\ee{The modelization of Section~\ref{sec:model} establishes that the 
+\ee{The model of Section~\ref{sec:model} establishes that the 
   memory
   transfer caps the computation at 210~GFlop/s, which is 10\% of the
   peak single precision of the architecture. To reach this value, the
@@ -642,20 +727,21 @@ implementation (compiled with \mbox{-O3} with proper tagging to inform the
 compiler of memory alignments) and an implementation with
 explicit use of the vector registers.
 
-The {\tt read, cpp} implementation reaches a performance of 168~GB/s
+The {\tt read\_cpp} implementation reaches a performance of 168~GB/s
  which is better than the {\tt read}
 implementation which only achieves 145~GB/s. This
 is explained by the compiler adding loop unrolling and software
-prefetching in the assembly code in the {\tt read, cpp} case, which is
+prefetching in the assembly code in the {\tt read\_cpp} case, which is
 not added in the {\tt read} case. On the other hand, the {\tt write}
 case reaches a performance of 158~GB/s while the
-{\tt write, cpp} implementation never exceeds 58~GB/s. 
-This difference is due to the use of the {\tt \_mm512\_store\_nrngo\_ps} instruction, 
-which bypasses the \ge{"Read For Ownership"} protocol and allows the writes
+{\tt write\_cpp} implementation never exceeds 58~GB/s. 
+This difference is the result of {\tt \_mm512\_store\_nrngo\_ps}, 
+an instruction, which bypasses the \ge{"Read For Ownership"} protocol 
+and allows the writes
 to be performed in any order. The compiler can not use this
 instruction on its own because this would break the memory convention
 useful for some parallel algorithms. The {\tt read/write} benchmark
-performs at 140~GB/s while the {\tt read/write, cpp} benchmark performs
+performs at 140~GB/s while the {\tt read/write\_cpp} benchmark performs
 at about 90~GB/s.
 
 Note that SpMV kernels are not likely to use only simple read and simple
@@ -702,7 +788,7 @@ surpasses 100~GB/s and is close to 50~GB/s most of the time.)
   
   \caption{Different sparsity distributions. In all cases, there are
     512 rows and 32 nonzeros per row. The last two matrices
-    corresponds to a derivative stencil in 3D RBFFD
+    corresponds to a derivative stencil in 3D RBF-FD
     calculations (with and without RCM ordering).}
   \label{fig:spy_plots}
 \end{figure*}
@@ -711,9 +797,9 @@ surpasses 100~GB/s and is close to 50~GB/s most of the time.)
 % Figure 9
   \centering
 % was width=.48
-  \subfigure[Supercompact and Random.]{\includegraphics[width=.4\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
+  \subfigure[Supercompact and Random.]{\includegraphics[width=.35\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
 % was width=.48
-  \subfigure[Compact and RBFFD.]{\includegraphics[width=.4\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
+  \subfigure[Compact and RBF-FD.]{\includegraphics[width=.35\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
     horizontal lines depict the worst and the best predicted performances.}
@@ -743,12 +829,12 @@ from memory, and the expense associated with cache misses is removed from consid
 centered around the diagonal and it represents the ideal case for many
 applications that rely on sparse matrix vector multiplication. The nonzero
 elements of the \ttt{Random}
-matrices (Figure~\ref{fig:compact}) see their nonzero elements
+matrices (Figure~\ref{fig:random}) see their nonzero elements
 randomly (uniformly) distributed in the matrix; they represent the
 worst case scenario for a cache-based architecture where the cache
 reutilisation is the lowest from one row to the next.
 The other type of matrix is used in derivative stencils in 3D
-RBFFD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-point
+RBF-FD calculations (Figure~\ref{fig:rbf3dnorcm} shows a $32$-point
 stencil of a 3D $8^3$ grid).
 
 We also apply a Reverse Cuthill-Mckee reordering to
@@ -789,7 +875,7 @@ time, the RCM ordering provides an improvement which can be as high as
 % Figure 10
   \centering 
   
-  \includegraphics[width=.9\linewidth]{figures/mic_performance_nb_threads.pdf}
+  \includegraphics[width=.8\linewidth]{figures/mic_performance_nb_threads.pdf}
 
   \caption{Performance of $y=Ax$ for a RBF derivative stencil of a
     $96^3$ 3D grid. Classical "one-matrix one-vector" SpMV ($n_m=n_v=1$ given in blue) has low
@@ -822,22 +908,28 @@ version. Thus, the C++ implementation is likely instruction-bound
 while our manually vectorized implementation is most likely 
 memory-bound. 
 
-\ee{The main idea of this paper, computing 16 derivatives at a time,
-  can be applied on different architectures such as multiprocessor
-  multicore or GPU. To illustrate this fact, we conducted similar
-  experiments on a classical CPU architecture with two Intel Core i7
-  (SandyBridge) processors, each has eight cores that support AVX
-  instructions.}  Both the compiler-generated and the manually-written
-vectorization using AVX instructions reach a (read) bandwidth of
-70~GB/s. This indicates that the performance of the classical SpMV can
-not overcome 17~Gflop/s. A generic implementation of the
-multiplication of four vectors with four matrices on the {\tt RBF}
-matrix reaches a performance of 27~Gflop/s. \ee{We also implemented an AVX
-vectorized version which is less compact than the one on MIC because
-of smaller vector registers and the abscence of a gather instruction
-(Haswell processors support AVX2 which have that feature).} It reaches a
-performance of 42~Gflop/s. This confirms that our method is sound and
-generalizes to architectures other than the Intel MIC architecture.
+\ger{The main idea of this paper, computing 16 derivatives at a time,
+can be applied on different architectures such as multiprocessor
+multicore or GPU. To illustrate this fact, we conducted similar experiments
+on Cascade at the Minnesota Supercomputing Institute
+using two Intel Xeon E5 2670 nodes (8 cores, 2 threads and 20 Mbytes of L2
+cache per core, with hyperthreading disabled.) The cores support the AVX instruction set. 
+Both the compiler-generated code and the code written with the 
+help of the AVX instruction set reach a read bandwidth of
+85~GB/s. Using cache lines of 512 bits, we find a best/worst speeds of 2.4/20\; Gflops/s and 
+32/120\; Gflops/s, respectively for the 1vec/1mat and 4vec/4mat cases. 
+Our implementation on Cascade reaches 45 Gflops for the 4/4\, case, or 45/120=37\% of peak theoretical 
+performance on this particular processor setup. For reference, we achieve 
+140/210=66\% of peak theoretical performance on the MIC. Note that peak performance 
+is not that of the processor, but of the best possible algorithm on the processor. 
+The gain in the 4/4 case with respect to 4x 1/1 case is 4x on the MIC 
+and 2.5x on the front end, respectively.  
+}
+
+% cascade
+%[  2.35701906   8.04733728   9.37931034  31.62790698  36.75675676]
+%[  20.60606061   32.96969697   75.55555556  120.88888889  226.66666667]
+
 
 \vspace{-0.5em}
 \section{Conclusion}
@@ -846,7 +938,7 @@ generalizes to architectures other than the Intel MIC architecture.
 In the previous sections, we have explored the practical
 implementation on an Intel Xeon Phi card of multiple derivative
 operators acting on multiple vectors within the context of
-RBFFD. Each derivative has an associated sparse matrix with a fixed
+RBF-FD. Each derivative has an associated sparse matrix with a fixed
 number of nonzeros on each row. While computing a single derivative of
 multiple functions is rather common, we accelerate the algorithm further 
 by considering multiple
@@ -856,19 +948,21 @@ with 16 outputs, computed as a sum of outer products.
 
 Our implementation makes use of the IMCI MIC instruction set and
 includes a number of swizzling and channel swapping operations, for an
-extremely efficient tensor product implementation. \NOTE{From Evan: this is the first time $96^3$ is mentionned. Might wish to mention it earlier.} On a $96^3$ 3D
+extremely efficient tensor product implementation. 
+\NOTE{From Evan: this is the first time $96^3$ is mentionned. Might wish to mention 
+it earlier.} On a $96^3$ 3D
 grid, it reaches a performance of 140~Gflop/s which is 2.7 times
 faster than the best possible performance achievable for a single
 vector and a single derivative and more than 7 times faster than a
-practical implementation.
+best case practical 1/1 implementation.
 
 In future work, we will examine the effect of larger stencil sizes and
 double precision. The presented performance does not reach the
 predicted peak and we believe that common techniques from SpMV such as
 cache partitioning can be successfully applied. We will also integrate
 the techniques presented in this paper within a fluid simulation using
-RBFFD. \ee{We will also look into developing a similar technique on more
-commonly available devices such as GPUs.}
+RBF-FD. \ge{We will also look into developing a similar technique on the Kepler
+family of GPUs, which offers swizzling and channeling operations.}
 
 \section*{Acknowledgment}
 Erlebacher acknowledges funding from NSF grant

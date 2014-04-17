@@ -3,7 +3,8 @@
 \documentclass{sig-alternate}
 \input{support/macros} % color is defined in macros or misc_mac
 \input{support/misc_mac}
-\input{support/setupicase}
+% resets margins. Bad. 
+%\input{support/setupicase}
 
 \usepackage{soul}
 \usepackage{xspace}
@@ -249,7 +250,8 @@ A performance of 135~Gflop/s in single precision is achieved using RBF-FD differ
 %\input{RBF_Section}
 %\input{old_RBF_Section}
 
-\section{Introduction and Motivation for RBF-FD}
+\pagebreak
+\section{Introduction and Motivation \\for RBF-FD}
 \label{sec:rbf}
 
 RBFs approximate a function $f(\mathbf{x}) \in \mathbb{R}^d$ sampled at $N$ distinct node locations by linearly combining translates of a single radially symmetric function, e.g. $\phi(r) = e^{-\varepsilon^2r^2}$, where $r=\|\mathbf{x}-\mathbf{x}_{i}\|$ denotes the Euclidean distance between where the function $f(\mathbf{x})$ is evaluated, $\mathbf{x}$, and where the RBF, $\phi$, is centered $\mathbf{x}_{i}$. The parameter $\varepsilon$ controls the shape of the RBF. Note that the argument of an RBF is simply a scalar distance, $r$, independent of any coordinate system or dimension. As a result, nodes can be scattered as desired across complex physical domains with the implementation of the method being independent of dimensionality. Thus, no mesh generation is needed and algorithmic complexity does not increase with dimension.
@@ -262,8 +264,9 @@ Figure~1.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.60\linewidth]{figures/RBFStencil_n32_a.pdf}\label{fig:stencil}
+\includegraphics[width=0.80\linewidth]{figures/RBFStencil_n32_a.pdf}\label{fig:stencil}
 \caption{An example of an RBF-FD stencil of size $n=32$ on a sphere of $N=1024$ nodes to approximate any derivative operator at the point in the square. In nonsparse format, the DM  is $1024\times1024$ with 32 nonzero entries per row.}
+\vspace{3ex}
 \end{figure}
 
 Due to the above attributes and its simplicity of implementation, the RBF-FD is gaining popularity in modeling systems of PDEs in a variety of fields in fluid dynamics (e.g., geosciences, combustion, aerodynamics \cite{Bayona13,CDNT,FoL11,FLBWSC12,SPLM}). For example, the full shallow water equations in a 3D Cartesian coordinate system for a rotating fluid are as follows:
@@ -385,9 +388,9 @@ of $$s_M = n_c (b_i + b_x n_m) = n_r n_z (b_i + b_x n_m)$$
 
 \begin{figure*}[tbh]
   \centering
-  \subfigure[Best case.]{\includegraphics[width=.28\linewidth]{figures/flops_to_bytes_best-crop.pdf}\label{fig:ratio_best}}%
-  \subfigure[Worst case.]{\includegraphics[width=.28\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
-  \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.28\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
+  \subfigure[Best case.]{\includegraphics[width=.31\linewidth]{figures/flops_to_bytes_best-crop.pdf}\label{fig:ratio_best}}%
+  \subfigure[Worst case.]{\includegraphics[width=.31\linewidth]{figures/flops_to_bytes_worst-crop.pdf}\label{fig:ratio_worst}}%
+  \subfigure[Worst case (No cacheline effects)]{\includegraphics[width=.31\linewidth]{figures/flops_to_bytes_no_cache-crop.pdf}\label{fig:ratio_worst_nocache}}
   
   \caption{Ratio of flops to bytes in single precision:  
     \ref{fig:ratio_best} best case; \ref{fig:ratio_worst} worst case when $cl=64$ 
@@ -477,11 +480,12 @@ peak of the classical SpMV case.
 
 \begin{figure}[t]
   \centering 
-  \includegraphics[width=.9\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}
+  \includegraphics[width=.95\linewidth]{figures/gflops_peak.pdf}\label{fig:gflops-peak-perf}
   \caption{Estimation of the maximum achievable performance using a
     device with a bandwidth from memory to computational units of 150~GB/s when
     varying the number of vectors and matrices.}
   \label{fig:perf_predict}
+  \vspace{3ex}
 \end{figure}
 
 \section{Efficient Implementation on the Intel Xeon Phi processor}
@@ -578,7 +582,7 @@ interleaved so that {\tt x}$^l_i$ and {\tt x}$^{l+1}_i$ are
 consecutive in memory. The vector {\tt y} is similarly 
 grouped in sets of 16, which correspond to four derivatives applied to
 four functions, at a single point. %\ger{All matrices are stored as one-dimensional vectors and pointers to individual rows and elements are explicitely computed.}
-\looseness=-1
+%GE \looseness=-1
 
 
 We discuss how the implementation of the v4m4 kernel works using
@@ -696,6 +700,7 @@ Order" hint to optimize write traffic on the memory bus.
     compiler generated.}
   \label{fig:bandwidth}
   \label{fig:band_rw_MIC}
+  \vspace{2ex}
 \end{figure}
 
 In this section, we describe a series of numerical experiments to
@@ -714,6 +719,7 @@ the compiler through intrinsics.
   \includegraphics[width=.9\linewidth]{figures/bandwidth_gather_unpack.pdf}
   \caption{Performance of {\tt gather} and {\tt unpack} operations.}
   \label{fig:band_gather} 
+  \vspace{2ex}
 \end{figure}
 
 
@@ -797,9 +803,9 @@ surpasses 100~GB/s and is close to 50~GB/s most of the time.)
 % Figure 9
   \centering
 % was width=.48
-  \subfigure[Supercompact and Random.]{\includegraphics[width=.35\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
+  \subfigure[Supercompact and Random.]{\includegraphics[width=.45\linewidth]{figures/random_supercompact.pdf}\label{fig:perf_ideal}}
 % was width=.48
-  \subfigure[Compact and RBF-FD.]{\includegraphics[width=.35\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
+  \subfigure[Compact and RBF-FD.]{\includegraphics[width=.45\linewidth]{figures/rbf_compact.pdf}\label{fig:perf_realistic}}
   
   \caption{Performance of the manually vectorized code. The two
     horizontal lines depict the worst and the best predicted performances.}
@@ -875,7 +881,7 @@ time, the RCM ordering provides an improvement which can be as high as
 % Figure 10
   \centering 
   
-  \includegraphics[width=.8\linewidth]{figures/mic_performance_nb_threads.pdf}
+  \includegraphics[width=.9\linewidth]{figures/mic_performance_nb_threads.pdf}
 
   \caption{Performance of $y=Ax$ for a RBF derivative stencil of a
     $96^3$ 3D grid. Classical "one-matrix one-vector" SpMV ($n_m=n_v=1$ given in blue) has low
@@ -884,10 +890,10 @@ time, the RCM ordering provides an improvement which can be as high as
     (squares) only improves the performance for our manually
     vectorized code.
     We also show peak theoretical performance for v1m1 and v4m1 on the MIC. 
-    Not shown is the peak theoretical performance of 210 Gflops for v4m4. 
-    }
+    Not shown is the peak theoretical performance of 210 Gflops for v4m4.  }
   \label{fig:comparison_spmv}
   \label{fig:perf_mic}
+  \vspace{2ex}
 \end{figure}
 
 We finally investigate the central questions of this paper. Do we gain
@@ -965,7 +971,7 @@ RBF-FD. \ge{We will also look into developing a similar technique on the Kepler
 family of GPUs, which offers swizzling and channeling operations.}
 
 \section*{Acknowledgment}
-Erlebacher acknowledges funding from NSF grant
+Erlebacher was supported under NSF grant
 DMS-\#0934331 (FSU), and the use of the MIC at FSU and at LCSE/U. Minnesota (provided by Prof. D. Yuen). NCAR is sponsored by NSF. 
 Flyer acknowledges support of NSF grant DMS-0934317.
 
