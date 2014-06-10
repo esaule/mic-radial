@@ -68,8 +68,38 @@
 
 \subsection{RBF-FD}
 
-\begin{frame}
-  \frametitle{Derivative as Linear operators}
+\begin{frame}[fragile]
+  \frametitle{Derivative as linear algebra operators}
+
+  \begin{columns}
+    \column{.5\linewidth}
+    \begin{block}{2nd derivative, 1D}
+
+      \includegraphics[width=\linewidth]{slides-figures/1d.pdf}
+
+      $$u''_i = \frac{u_{i+1}-2u_i+u_{i-1}}{h^2}$$
+      \scalebox{.8}{$A = \begin{pmatrix}
+        \dots & \dots & \dots & \dots & \dots & \dots & \dots \\
+        \dots & 1 & -2 & 1 & 0 & 0 & \dots  \\
+        \dots & 0 & 1 & -2 & 1 & 0 & \dots \\
+        \dots & 0 & 0 & 1 & -2 & 1 & \dots  \\
+        \dots & \dots & \dots & \dots & \dots & \dots & \dots
+      \end{pmatrix}$}
+      $$u'' = Au$$
+    \end{block}
+    
+    \column{.49\linewidth}
+    \begin{block}{2nd derivative, 2D}
+      \begin{center}
+        \includegraphics[width=.6\linewidth]{slides-figures/2d.pdf}
+      \end{center}
+      
+        $L_{i,j} = \bigtriangledown^2 u_{i,j} = \frac{1}{h^2} (u_{i+1,j}  +u_{i-1,j}$
+        
+        $~~~~~~~~~~~~~~~~+u_{i,j-1}+u_{i,j+1}-4u_i)$
+    \end{block}    
+    
+  \end{columns}
 \end{frame}
 
 \begin{frame}
@@ -105,38 +135,6 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Compute all the simple derivative at once}
-
-%  \begin{columns}
-%    \column{.5\linewidth}
-    \begin{block}{Idea}
-      \scriptsize
-      \begin{equation}
-        \left( \begin{array}{cccc}
-            \underline{u}_x     & \underline{v}_x     & \underline{w}_x     & \underline{h}_x \\
-            \underline{u}_y     & \underline{v}_y     & \underline{w}_y     & \underline{h}_y \\
-            \underline{u}_z     & \underline{v}_z     & \underline{w}_z     & \underline{h}_z \\
-            \underline{u}_{hyp} & \underline{v}_{hyp} & \underline{w}_{hyp} & \underline{h}_{hyp}
-          \end{array} \right)
-        = \left(
-          \begin{array}{c}
-            D_{x}\\ D_{y}\\ D_{z}\\ D_{hyp}
-          \end{array}\right)
-        \times \left(\underline{u} \,\, \underline{v} \,\, \underline{w} \,\, \underline{h} \,\,\right) 
-        \vspace{-1ex}
-      \end{equation}
-    \end{block}  
-%    \column{.5\linewidth}
-    
-    \begin{block}{Why would it work}
-      All the derivative matrices have the same sparsity pattern. In
-      other words, the non zeros are at the same positions in the
-      matrix, only the values of the non zero change.
-    \end{block}
-
-%  \end{columns}
-\end{frame}
 
 \subsection{MIC}
 
@@ -286,39 +284,71 @@
   Sounds like the perfect system for Sparse Matrix operations!
 \end{frame}
 
+% \begin{frame}
+%   \frametitle{Have to use vector operations to get high bandwidth}
+  
+%   \begin{columns}
+%     \column{.49\linewidth}
+
+%     \begin{center}
+%       \includegraphics[width=\linewidth,page=1]{slides-figures/PPAM-data/bandwidth.pdf}
+      
+%       Read
+%     \end{center}
+
+%     \column{.49\linewidth}
+
+%     \begin{center}
+%       \includegraphics[width=\linewidth,page=2]{slides-figures/PPAM-data/bandwidth.pdf}
+      
+%       Write
+%     \end{center}
+
+%   \end{columns}
+  
+
+%   \begin{itemize}
+%   \item Using the appropriate vectorial instructions gives significant
+%     improvements.
+%   \item Read Peak: 183GB/s.
+%   \item Write Peak: 160GB/s.
+%   \end{itemize}
+
+%   \tiny Source: PPAM 2013
+% \end{frame}
+
 \begin{frame}
-  \frametitle{Have to use vector operations to get high bandwidth}
-  
-  \begin{columns}
-    \column{.49\linewidth}
+  \frametitle{Compute all the simple derivative at once}
 
-    \begin{center}
-      \includegraphics[width=\linewidth,page=1]{slides-figures/PPAM-data/bandwidth.pdf}
-      
-      Read
-    \end{center}
+%  \begin{columns}
+%    \column{.5\linewidth}
+    \begin{block}{Idea}
+      \scriptsize
+      \begin{equation}
+        \left( \begin{array}{cccc}
+            \underline{u}_x     & \underline{v}_x     & \underline{w}_x     & \underline{h}_x \\
+            \underline{u}_y     & \underline{v}_y     & \underline{w}_y     & \underline{h}_y \\
+            \underline{u}_z     & \underline{v}_z     & \underline{w}_z     & \underline{h}_z \\
+            \underline{u}_{hyp} & \underline{v}_{hyp} & \underline{w}_{hyp} & \underline{h}_{hyp}
+          \end{array} \right)
+        = \left(
+          \begin{array}{c}
+            D_{x}\\ D_{y}\\ D_{z}\\ D_{hyp}
+          \end{array}\right)
+        \times \left(\underline{u} \,\, \underline{v} \,\, \underline{w} \,\, \underline{h} \,\,\right) 
+        \vspace{-1ex}
+      \end{equation}
+    \end{block}  
+%    \column{.5\linewidth}
+    
+    \begin{block}{Why would it work}
+      All the derivative matrices have the same sparsity pattern. In
+      other words, the non zeros are at the same positions in the
+      matrix, only the values of the non zero change.
+    \end{block}
 
-    \column{.49\linewidth}
-
-    \begin{center}
-      \includegraphics[width=\linewidth,page=2]{slides-figures/PPAM-data/bandwidth.pdf}
-      
-      Write
-    \end{center}
-
-  \end{columns}
-  
-
-  \begin{itemize}
-  \item Using the appropriate vectorial instructions gives significant
-    improvements.
-  \item Read Peak: 183GB/s.
-  \item Write Peak: 160GB/s.
-  \end{itemize}
-
-  \tiny Source: PPAM 2013
+%  \end{columns}
 \end{frame}
-
 
 \section{Performance Prediction}
 
