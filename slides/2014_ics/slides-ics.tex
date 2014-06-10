@@ -542,9 +542,21 @@
 \section{Conclusion}
 
 \begin{frame}
-  \frame{Conclusion}
+  \frametitle{Conclusion}
   
   \begin{block}{Conclusion}
+    \begin{itemize}
+    \item RBF-FD needs to compute different derivative of multiple functions.
+    \item The different derivatives have the same sparsity structure.
+    \item Idea: perform all the derivatives simultaneously
+    \item The flop-to-byte ratio increases significantly
+    \item Vector reordering operations of Xeon Phi enables efficient execution
+    \item Performs efficiently: 
+      \begin{itemize}
+      \item 3.5 times faster than peak of traditional SpMV  
+      \item faster than peak of SpMM (v=4)
+      \end{itemize}
+    \end{itemize}
   \end{block}
 
   \begin{block}{Future Works}
