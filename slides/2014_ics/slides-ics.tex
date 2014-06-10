@@ -140,34 +140,34 @@
 
 \subsection{MIC}
 
-\begin{frame}
-  \frametitle{What is Intel MIC}
-  Intel Many integrated Core (MIC) is Intel's response to GPUs
-  becoming popular in High Performance Computing.
+% \begin{frame}
+%   \frametitle{What is Intel MIC}
+%   Intel Many integrated Core (MIC) is Intel's response to GPUs
+%   becoming popular in High Performance Computing.
   
-  \begin{block}{What GPUs do well?}
-    \begin{itemize}
-      \item Get a lot of GFlops by using hundreds of cores
-      \item Each core has large SIMD-like abilities
-      \item Hide memory latency by using fast cycle context switch
-    \end{itemize}
-  \end{block}
+%   \begin{block}{What GPUs do well?}
+%     \begin{itemize}
+%       \item Get a lot of GFlops by using hundreds of cores
+%       \item Each core has large SIMD-like abilities
+%       \item Hide memory latency by using fast cycle context switch
+%     \end{itemize}
+%   \end{block}
 
 
-  \begin{block}{What GPUs do not do well?}
-    \begin{itemize}
-      \item Alien to program
-      \item Poor support for legacy applications
-      \item Inter thread communications
-      \item Branching
-    \end{itemize}
-  \end{block}
+%   \begin{block}{What GPUs do not do well?}
+%     \begin{itemize}
+%       \item Alien to program
+%       \item Poor support for legacy applications
+%       \item Inter thread communications
+%       \item Branching
+%     \end{itemize}
+%   \end{block}
 
-  Goal of \MIC : do all of it well!
-\end{frame}
+%   Goal of \MIC : do all of it well!
+% \end{frame}
 
 \begin{frame}
-  \frametitle{Overall Architecture}
+  \frametitle{Intel MIC: Overall Architecture}
   \begin{columns}
     \column{18em}    
     \includegraphics[width=18em]{slides-figures/MIC-overview.pdf}
@@ -181,7 +181,7 @@
           \item 5.5GT/s
           \item 352GB/s aggregated peak
             \begin{itemize}
-              \item twice the GPU's
+              \item about same as a K40 
               \item but you typically get half
             \end{itemize}
         \end{itemize}
@@ -220,7 +220,10 @@
     \item A vectorial unit
       \begin{itemize}
         \footnotesize
-        \item (more details on the next slides)
+        \item 512-bit registers
+        \item 16 SP floats
+        \item 8 DP floats
+        \item support FMA
       \end{itemize}
     \item Two instruction pipes:
       \begin{itemize}
@@ -235,28 +238,28 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Vectorial Unit (SIMD) : The classics}
+% \begin{frame}
+%   \frametitle{Vectorial Unit (SIMD) : The classics}
 
-  \begin{columns}
-    \column{15em}
+%   \begin{columns}
+%     \column{15em}
     
-    \includegraphics[width=15em]{slides-figures/vect-basic.png}%from intelsdg
+%     \includegraphics[width=15em]{slides-figures/vect-basic.png}%from intelsdg
 
-    \column{15em}
+%     \column{15em}
 
-    {\small 32 512-bits registers (16x32, 8x64)}
+%     {\small 32 512-bits registers (16x32, 8x64)}
 
-    \begin{block}{Binary operators (1 cycle throughput)}
-      \small mul, add, sub, and, xor, or, fma
-    \end{block}
+%     \begin{block}{Binary operators (1 cycle throughput)}
+%       \small mul, add, sub, and, xor, or, fma
+%     \end{block}
 
-    \begin{block}{Short Vector Math Library}
-      sqrt, rsqrt, log, exp, div
-    \end{block}
+%     \begin{block}{Short Vector Math Library}
+%       sqrt, rsqrt, log, exp, div
+%     \end{block}
 
-  \end{columns}
-\end{frame}
+%   \end{columns}
+% \end{frame}
 
 \begin{frame}
   \frametitle{When Should I Use \MIC ?}
@@ -284,7 +287,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Getting actual bandwidth}
+  \frametitle{Have to use vector operations to get high bandwidth}
   
   \begin{columns}
     \column{.49\linewidth}
@@ -313,6 +316,7 @@
   \item Write Peak: 160GB/s.
   \end{itemize}
 
+  \tiny Source: PPAM 2013
 \end{frame}
 
 
@@ -379,36 +383,48 @@
   \frametitle{Ok... So will it work? Flop to byte ratio}
 
   \begin{columns}
-    \column{.33\linewidth}
+    \column{.49\linewidth}
     \includegraphics[width=\linewidth]{slides-figures/ICS-figures/flops_to_bytes_best-crop.pdf}
 
     \begin{center}
       Best case\\~
     \end{center}
 
-    \column{.33\linewidth}
+    \column{.49\linewidth}
     \includegraphics[width=\linewidth]{slides-figures/ICS-figures/flops_to_bytes_worst-crop.pdf}
     \begin{center}
       Worst case\\~
     \end{center}
 
-    \column{.33\linewidth}
-    \includegraphics[width=\linewidth]{slides-figures/ICS-figures/flops_to_bytes_no_cache-crop.pdf}
-    \begin{center}
-      Worst case \\no cacheline
-    \end{center}
+    % \column{.33\linewidth}
+    % \includegraphics[width=\linewidth]{slides-figures/ICS-figures/flops_to_bytes_no_cache-crop.pdf}
+    % \begin{center}
+    %   Worst case \\no cacheline
+    % \end{center}
   \end{columns}
+
+  \tiny Also, taking cacheline into account makes a large difference (see paper for details).
 \end{frame}
 
 \begin{frame}
-  \frametitle{In terms of flops?}
+  \frametitle{In terms of flops? (Assuming memory bandwidth bound)}
 
   \includegraphics[width=.9\linewidth]{slides-figures/ICS-figures/gflops_peak.pdf}
 
 \end{frame}
 
 
-\section{Implementation}
+\section{Implementation (4 vectors, 4 matrices)}
+
+\begin{frame}
+  \frametitle{Observation on the 4 vectors, 4 matrices case}
+
+  \begin{itemize}
+  \item We aim at over 200Gflop/s in single precision. (\~{}  10\% of peak.)
+  \item One instruction in ten must be a Fused Multiply Add.
+  \item The kernel must be fairly instruction efficient
+  \end{itemize}
+\end{frame}
 
 \begin{frame}
   \frametitle{Vectorial Unit (SIMD) : Rearranging}
@@ -416,7 +432,7 @@
   \begin{columns}
     \column{.45\linewidth}
 
-    \includegraphics[width=15em]{slides-figures/vect-swizzling.png}%from intelsdg
+    \hspace*{-.1\linewidth}\includegraphics[width=1.2\linewidth]{slides-figures/vect-swizzling.png}%from intelsdg
     
     \column{.45\linewidth}
     
@@ -437,7 +453,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Vectorial Unit (SIMD) : Unaligned loads/stores}
+  \frametitle{Vectorial Unit (SIMD) : smarter loads}
   
   \begin{columns}
     \column{.45\linewidth}
@@ -446,40 +462,25 @@
       Allows to load data from memory at arbitrary offsets. Takes one
       cycle per cache line accessed.
     \end{block}
-    
     \includegraphics[width=\linewidth]{slides-figures/gather.pdf}
 
-    \begin{block}{Scatter}
-      Same principle as gather but does store operations.
-    \end{block}
-    
     \column{.45\linewidth}
   
     \begin{block}{Unpack}
       Allows to load packed data from memory using a bit mask write.
     \end{block}
-    
-    \includegraphics[width=\linewidth]{slides-figures/gather.pdf}
-
-    \begin{block}{Pack}
-      Same principle as unpack but does store operations.
-    \end{block}    
-  \end{columns}  
+     
+    \includegraphics[width=\linewidth]{slides-figures/unpack.pdf}
+ 
+  \end{columns}
 \end{frame}
 
 \begin{frame}
   \frametitle{How to do it? (4 vectors, 4 matrices)}
-
-  \begin{block}{Observations}
-    \begin{itemize}
-    \item We aim at over 200Gflop/s in single precision. (\~{}  10\% of peak.)
-    \item One instruction in ten must be a Fused Multiply Add.
-    \end{itemize}
-  \end{block}
   
   \begin{figure}
     \centering
-    \scalebox{.85}{
+    \hspace*{-1em}\scalebox{.95}{
       \subfigure[Source code]{\includegraphics[clip=true,trim=4.5cm 11cm 4cm 4.2cm,width=.6\linewidth]{slides-figures/ICS-figures/code.pdf}}%
       \subfigure[Content of the vector registers.]{\hspace{-0.07\linewidth}\includegraphics[width=.55\linewidth]{slides-figures/ICS-figures/code-annote.pdf}}
     }
