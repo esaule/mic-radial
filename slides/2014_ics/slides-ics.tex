@@ -158,6 +158,7 @@
   \frametitle{Compute all the simple derivatives at once}
 
 \only<1-2>{  \begin{block}{Shallow waters equations}
+    \vspace{-1em}
     \begin{eqnarray}
       \dfrac{\partial u}{\partial t} &=& - \left( u\dfrac{ \textcolor{blue}{\partial}  u}{\textcolor{blue}{\partial x}} + v\dfrac{\textcolor{red}{\partial} u}{\textcolor{red}{\partial y}} + w\dfrac{\textcolor{green}{\partial} u}{\textcolor{green}{\partial z}} + f(yw - zv) + g\dfrac{\textcolor{blue}{\partial} h}{\textcolor{blue}{\partial x}} \right) 
       \nonumber \\
@@ -187,11 +188,12 @@
       \times \left(\underline{u} \,\, \underline{v} \,\, \underline{w} \,\, \underline{h} \,\,\right) \nonumber
       \vspace{-1ex}
     \end{equation}
+    \only<2>{$D_{hyp}$ is essentially a Laplacian operator used to adjust time stepping.}
   \end{block}  
   
 \pause
     
-  \begin{block}{Why would it work}
+  \begin{block}{Why would it work ?}
     All the derivative matrices have the same sparsity pattern.
 
     In other words, the non zeros are at the same positions in the
@@ -213,7 +215,7 @@
 
   \begin{columns}
     \column{.4\linewidth}
-    \scalebox{.55}{
+    \scalebox{.7}{
       \begin{tabular}{|c|l|}
         % \hline
         % & & \\
@@ -225,22 +227,24 @@
         $n_c$ & total number of nonzeros\\
         $n_v$ & number of {\tt x} vectors \\
         $n_m$ & number of matrices \\
-        $s_M$ & size of the $n_m$ matrices in bytes\\
-        $s_x$ & size of the $n_v$ {\tt x} vectors in bytes\\
-        $s_y$ & size of the $n_v n_m$ {\tt y} vectors in bytes\\
-        \hline
+%        $s_M$ & size of the $n_m$ matrices in bytes\\
+%        $s_x$ & size of the $n_v$ {\tt x} vectors in bytes\\
+%        $s_y$ & size of the $n_v n_m$ {\tt y} vectors in bytes\\
+%        \hline
         $cl$    & size of a cache line in bytes\\
-        $b_{wT}$ & number of bytes written to memory  \\
-        $b_{rT}$ & minimum number of bytes read from memory  \\
-        $b_T$   & minimum number of bytes transferred \\
-        $B_{rT}$ & maximum number of bytes read from memory \\
-        $B_T$   & maximum number of bytes transferred \\
-        $O$     & number of floating point operations \\
-        $I_b$   & maximum computational intensity\\
-        $I_w$   & minimum computational intensity\\        
+%        $b_{wT}$ & number of bytes written to memory  \\
+%        $b_{rT}$ & minimum number of bytes read from memory  \\
+%        $b_T$   & minimum number of bytes transferred \\
+%        $B_{rT}$ & maximum number of bytes read from memory \\
+%        $B_T$   & maximum number of bytes transferred \\
+%        $O$     & number of floating point operations \\
+%        $I_b$   & maximum computational intensity\\
+%        $I_w$   & minimum computational intensity\\        
         \hline
       \end{tabular}
     }
+
+    \includegraphics[width=\linewidth]{slides-figures/PPAM-figures/spmv.pdf}
     \column{.6\linewidth}
 
     Size of the input vector:\\$s_x = n_v b_x n_r$
@@ -254,15 +258,15 @@
     Data Read (worst case):\\$B_{rT} = s_M + n_c cl \ceil{\frac{n_vb_x}{cl}}$
 
     Number of floating point operations:\\$O = 2 n_v n_m n_c = 2 n_v n_m n_z n_r$
-  \end{columns}
 
-  \begin{center}
     Intensity (Best case):\\
-    $I_b = \frac{O}{b_T+ b_{wT}} = \frac{2 n_v n_m}{ (b_i + b_x n_m) + n_v n_m b_x n_z^{-1} + n_v b_x n_z^{-1} }$
+%    $I_b = \frac{O}{b_T+ b_{wT}} = \frac{2 n_v n_m}{ (b_i + b_x n_m) + n_v n_m b_x n_z^{-1} + n_v b_x n_z^{-1} }$
+    $I_b = \frac{O}{b_T+ b_{wT}}$
     
     Intensity (Worst case):\\
-    $I_w = \frac{O}{B_T+ b_{wT}} = \frac{2 n_v n_m}{(b_i+b_x n_m) + n_v n_m b_x n_z^{-1} + cl \ceil{\frac{n_vb_x}{cl}} }$
-  \end{center}
+%    $I_w = \frac{O}{B_T+ b_{wT}} = \frac{2 n_v n_m}{(b_i+b_x n_m) + n_v n_m b_x n_z^{-1} + cl \ceil{\frac{n_vb_x}{cl}} }$
+    $I_w = \frac{O}{B_T+ b_{wT}}$
+  \end{columns}
 \end{frame}
 
 \begin{frame}
