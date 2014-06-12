@@ -53,6 +53,8 @@
   \tableofcontents[hidesubsection,hidesubsubsection]
 \end{frame}
 
+\section{Radial Basis Function - Finite Difference}
+
 \AtBeginSection[]
 {
   \begin{frame}<beamer>
@@ -61,15 +63,8 @@
   \end{frame}
 }
 
-
-
-
-\section{Introduction}
-
-\subsection{RBF-FD}
-
 \begin{frame}[fragile]
-  \frametitle{Derivative as linear algebra operators}
+  \frametitle{Derivative as (sparse) linear algebra operators}
 
   \begin{columns}
     \column{.5\linewidth}
@@ -102,255 +97,116 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}
-  \frametitle{RBF-FD methods}
-
-  \todo{Add definition of RBF}
-  
+\begin{frame}[fragile]
+  \frametitle{Radial Basis Function}
   \begin{columns}
     \column{.45\linewidth}
-    \includegraphics[width=\linewidth]{slides-figures/ICS-figures/RBFStencil_n32_a}
 
-    An example of an RBF-FD stencil of size $n=32$ on a sphere of
-    $N=1024$ nodes to approximate any derivative operator at the point
-    in the square.
-
-    \column{.55\linewidth}
-    
-    \begin{block}{Shallow waters equations of a rotating fluid}
-      \tiny
-      \begin{eqnarray}
-        \dfrac{\partial u}{\partial t} &=& - \left( u\dfrac{\partial u}{\partial x} + v\dfrac{\partial u}{\partial y} + w\dfrac{\partial u}{\partial z} + f(yw - zv) + g\dfrac{\partial h}{\partial x} \right) 
-        \nonumber \\
-        \dfrac{\partial v}{\partial t} &=& - \left( u\dfrac{\partial v}{\partial x} + v\dfrac{\partial v}{\partial y} + w\dfrac{\partial v}{\partial z} + f(zu - xw) + g\dfrac{\partial h}{\partial x} \right)
-        \nonumber\\
-        \dfrac{\partial w}{\partial t} &=& - \left( u\dfrac{\partial w}{\partial x} + v\dfrac{\partial w}{\partial y} + w\dfrac{\partial w}{\partial z} + f(xv - yu) + g\dfrac{\partial h}{\partial x} \right)
-        \nonumber\\
-        \frac{\partial h}{\partial t}& =&-\left(\dfrac{\partial (uh)}{\partial x} + \dfrac{\partial (vh)}{\partial y} + h\dfrac{\partial (wh)}{\partial z}\right) , \label{height} \nonumber
-      \end{eqnarray}
+    \begin{block}{RBF}
+      \includegraphics[width=\linewidth]{slides-figures/rbf.pdf}
+      
+      \begin{itemize}
+      \item Radial symmetry.
+      \item RBFs approximate a function $f$ sampled at N distinct location $$f(\vec{r}) = \sum_i w_i \phi(||\vec{r}-\vec{r_i}||)$$ 
+      \end{itemize}
     \end{block}
+    
+    \column{.45\linewidth}
+    \begin{block}{The RBF-FD method}
+      \includegraphics[width=.8\linewidth]{slides-figures/ICS-figures/RBFStencil_n32_a}
+      
+      Derivative operators of an RBF are approximated using the $n=32$
+      closest sampling points on a sphere of $N=1024$ points.
 
-    How to compute one simple derivative: sparse matrix
-    multiplication. Bound by (roughly) 25GFlop/s. Can we do better?
+      The DM has exactly $n$ non zero per row.
+    \end{block}
+    
   \end{columns}
 \end{frame}
 
 
-\subsection{MIC}
-
-% \begin{frame}
-%   \frametitle{What is Intel MIC}
-%   Intel Many integrated Core (MIC) is Intel's response to GPUs
-%   becoming popular in High Performance Computing.
+\begin{frame}
+  \frametitle{Computing derivatives. One at a time?}
   
-%   \begin{block}{What GPUs do well?}
-%     \begin{itemize}
-%       \item Get a lot of GFlops by using hundreds of cores
-%       \item Each core has large SIMD-like abilities
-%       \item Hide memory latency by using fast cycle context switch
-%     \end{itemize}
-%   \end{block}
-
-
-%   \begin{block}{What GPUs do not do well?}
-%     \begin{itemize}
-%       \item Alien to program
-%       \item Poor support for legacy applications
-%       \item Inter thread communications
-%       \item Branching
-%     \end{itemize}
-%   \end{block}
-
-%   Goal of \MIC : do all of it well!
-% \end{frame}
-
-\begin{frame}
-  \frametitle{Intel MIC: Overall Architecture}
-  \begin{columns}
-    \column{18em}    
-    \includegraphics[width=18em]{slides-figures/MIC-overview.pdf}
-    \column{17em}
+  \begin{block}{Shallow waters equations}
     
-    \begin{itemize}
-      \item 8 memory controllers
-        \begin{itemize}
-          \item GDDR5
-          \item 2 channels (32-bit)
-          \item 5.5GT/s
-          \item 352GB/s aggregated peak
-            \begin{itemize}
-              \item about same as a K40 
-              \item but you typically get half
-            \end{itemize}
-        \end{itemize}
-      \item 50+ cores
-        \begin{itemize}
-          \item 32KB of L1 cache
-          \item 512KB of L2 cache
-          \item LRU
-          \item 8-way associative
-        \end{itemize}
-      \item 1 PCI-e controller
-        \begin{itemize}
-          \item to the host (2GB/s guaranteed to memory)
-        \end{itemize}
-    \end{itemize}
-  \end{columns}
+    \begin{eqnarray}
+      \dfrac{\partial u}{\partial t} &=& - \left( u\dfrac{\partial u}{\partial x} + v\dfrac{\partial u}{\partial y} + w\dfrac{\partial u}{\partial z} + f(yw - zv) + g\dfrac{\partial h}{\partial x} \right) 
+      \nonumber \\
+      \dfrac{\partial v}{\partial t} &=& - \left( u\dfrac{\partial v}{\partial x} + v\dfrac{\partial v}{\partial y} + w\dfrac{\partial v}{\partial z} + f(zu - xw) + g\dfrac{\partial h}{\partial y} \right)
+      \nonumber\\
+      \dfrac{\partial w}{\partial t} &=& - \left( u\dfrac{\partial w}{\partial x} + v\dfrac{\partial w}{\partial y} + w\dfrac{\partial w}{\partial z} + f(xv - yu) + g\dfrac{\partial h}{\partial z} \right) 
+      \nonumber\\
+      \frac{\partial h}{\partial t} &=& -\left(\dfrac{\partial (uh)}{\partial x} + \dfrac{\partial (vh)}{\partial y} + h\dfrac{\partial (wh)}{\partial z}\right)  \nonumber
+    \end{eqnarray}
+    $u,v,w$ velocity. $h$ geopotential height.
+  \end{block}
+  
+  One at a time? $\dfrac{\partial u}{\partial x}$, then $\dfrac{\partial v}{\partial y}$
 
+  \only<2>{\vspace{-19em}\hspace{-1em}\begin{minipage}{.95\linewidth}
+      \colorbox{white}{
+        \includegraphics[width=\linewidth]{slides-figures/PPAM-figures/all_compare_spmv.pdf}
+        \tiny PPAM 2013
+      }
+    \end{minipage}}
+  
 \end{frame}
+  
 
 \begin{frame}
-  \frametitle{Core architecture}
-  \begin{columns}
-    \column{20em}
-    \includegraphics[width=20em,height=20em]{slides-figures/MIC-core.png}%from intelsdg  
-    \column{12em}
-    \begin{itemize}
-      \small
-    \item Clocked at 1Ghz
-    \item 64-bit
-    \item 4 hardware threads
-      \begin{itemize}
-        \footnotesize
-        \item no context switching
-        \item no 2 instructions for the same thread
-      \end{itemize}
-    \item A vectorial unit
-      \begin{itemize}
-        \footnotesize
-        \item 512-bit registers
-        \item 16 SP floats
-        \item 8 DP floats
-        \item support FMA
-      \end{itemize}
-    \item Two instruction pipes:
-      \begin{itemize}
-        \footnotesize
-        \item 2 ALU ops
-        \item ALU + MEM ops
-        \item ALU + VFP ops
-        \item VFP + MEM ops
-      \end{itemize}
-    \item In-order execution
-    \end{itemize}
-  \end{columns}
-\end{frame}
+  \frametitle{Compute all the simple derivatives at once}
 
-% \begin{frame}
-%   \frametitle{Vectorial Unit (SIMD) : The classics}
+\only<1-2>{  \begin{block}{Shallow waters equations}
+    \begin{eqnarray}
+      \dfrac{\partial u}{\partial t} &=& - \left( u\dfrac{ \textcolor{blue}{\partial}  u}{\textcolor{blue}{\partial x}} + v\dfrac{\textcolor{red}{\partial} u}{\textcolor{red}{\partial y}} + w\dfrac{\textcolor{green}{\partial} u}{\textcolor{green}{\partial z}} + f(yw - zv) + g\dfrac{\textcolor{blue}{\partial} h}{\textcolor{blue}{\partial x}} \right) 
+      \nonumber \\
+      \dfrac{\partial v}{\partial t} &=& - \left( u\dfrac{ \textcolor{blue}{\partial} v}{\textcolor{blue}{\partial x}} + v\dfrac{\textcolor{red}{\partial} v}{\textcolor{red}{\partial y}} + w\dfrac{\textcolor{green}{\partial} v}{\textcolor{green}{\partial z}} + f(zu - xw) + g\dfrac{\textcolor{red}{\partial} h}{\textcolor{red}{\partial} y} \right)
+      \nonumber \\
+      \dfrac{\partial w}{\partial t} &=& - \left( u\dfrac{\textcolor{blue}{\partial} w}{\textcolor{blue}{\partial x}} + v\dfrac{\textcolor{red}{\partial} w}{\textcolor{red}{\partial y}} + w\dfrac{\textcolor{green}{\partial} w}{\textcolor{green}{\partial z}} + f(xv - yu) + g\dfrac{\textcolor{green}{\partial} h}{\textcolor{green}{\partial z}} \right) 
+      \nonumber\\
+      \frac{\partial h}{\partial t} &=& -\left(\dfrac{\partial (uh)}{\partial x} + \dfrac{\partial (vh)}{\partial y} + h\dfrac{\partial (wh)}{\partial z}\right)  \nonumber
+    \end{eqnarray}
+  \end{block}}
+  
+\pause
 
-%   \begin{columns}
-%     \column{15em}
+  \begin{block}{Idea}
+    \scriptsize
+    \begin{equation}
+      \left( \begin{array}{cccc}
+          \underline{u}_x     & \underline{v}_x     & \underline{w}_x     & \underline{h}_x \\
+          \underline{u}_y     & \underline{v}_y     & \underline{w}_y     & \underline{h}_y \\
+          \underline{u}_z     & \underline{v}_z     & \underline{w}_z     & \underline{h}_z \\
+          \underline{u}_{hyp} & \underline{v}_{hyp} & \underline{w}_{hyp} & \underline{h}_{hyp}
+        \end{array} \right)
+      = \left(
+        \begin{array}{c}
+          \textcolor{blue}{D_{x}}\\ \textcolor{red}{D_{y}}\\ \textcolor{green}{D_{z}}\\ D_{hyp}
+        \end{array}\right)
+      \times \left(\underline{u} \,\, \underline{v} \,\, \underline{w} \,\, \underline{h} \,\,\right) \nonumber
+      \vspace{-1ex}
+    \end{equation}
+  \end{block}  
+  
+\pause
     
-%     \includegraphics[width=15em]{slides-figures/vect-basic.png}%from intelsdg
+  \begin{block}{Why would it work}
+    All the derivative matrices have the same sparsity pattern.
 
-%     \column{15em}
+    In other words, the non zeros are at the same positions in the
+    matrix, only the values of the non zero change.
 
-%     {\small 32 512-bits registers (16x32, 8x64)}
-
-%     \begin{block}{Binary operators (1 cycle throughput)}
-%       \small mul, add, sub, and, xor, or, fma
-%     \end{block}
-
-%     \begin{block}{Short Vector Math Library}
-%       sqrt, rsqrt, log, exp, div
-%     \end{block}
-
-%   \end{columns}
-% \end{frame}
-
-\begin{frame}
-  \frametitle{When Should I Use \MIC ?}
-
-  \begin{block}{Key points of SE10P}
+    Benefits:
     \begin{itemize}
-      \item Large memory bandwidth (peak: 220GB/s)
-      \item 61 cores with mandatory use of hardware threading
-      \item 512-bit wide SIMD registers: 
-        \begin{itemize} 
-          \item FMA: up to 2x16 SP Flop/c (2x8 DP Flop/c)
-          \item otherwise: up to 16 SP Flop/c (8 DP Flop/c)
-        \end{itemize}
-      \item On a 61-core configuration at 1.05Ghz:
-        \begin{itemize} 
-        \item FMA: 2x16x61x1.05Ghz = 2.048 TFlop/s SP (1.024TFlop/s DP)
-        \item otherwise: 16x61x1.05Ghz = 1.024 GFlop/s SP (512GFlop/s DP)
-        \end{itemize}
+    \item Matrix compression: 1 column ID, 4 nonzero value. (gain: 38\%)
+    \item Vector reusage.
     \end{itemize}
   \end{block}
-
-  Lots of bandwidth? Fused Multiply Add? Large vector registers?
-
-  Sounds like the perfect system for Sparse Matrix operations!
-\end{frame}
-
-% \begin{frame}
-%   \frametitle{Have to use vector operations to get high bandwidth}
-  
-%   \begin{columns}
-%     \column{.49\linewidth}
-
-%     \begin{center}
-%       \includegraphics[width=\linewidth,page=1]{slides-figures/PPAM-data/bandwidth.pdf}
-      
-%       Read
-%     \end{center}
-
-%     \column{.49\linewidth}
-
-%     \begin{center}
-%       \includegraphics[width=\linewidth,page=2]{slides-figures/PPAM-data/bandwidth.pdf}
-      
-%       Write
-%     \end{center}
-
-%   \end{columns}
-  
-
-%   \begin{itemize}
-%   \item Using the appropriate vectorial instructions gives significant
-%     improvements.
-%   \item Read Peak: 183GB/s.
-%   \item Write Peak: 160GB/s.
-%   \end{itemize}
-
-%   \tiny Source: PPAM 2013
-% \end{frame}
-
-\begin{frame}
-  \frametitle{Compute all the simple derivative at once}
-
-%  \begin{columns}
-%    \column{.5\linewidth}
-    \begin{block}{Idea}
-      \scriptsize
-      \begin{equation}
-        \left( \begin{array}{cccc}
-            \underline{u}_x     & \underline{v}_x     & \underline{w}_x     & \underline{h}_x \\
-            \underline{u}_y     & \underline{v}_y     & \underline{w}_y     & \underline{h}_y \\
-            \underline{u}_z     & \underline{v}_z     & \underline{w}_z     & \underline{h}_z \\
-            \underline{u}_{hyp} & \underline{v}_{hyp} & \underline{w}_{hyp} & \underline{h}_{hyp}
-          \end{array} \right)
-        = \left(
-          \begin{array}{c}
-            D_{x}\\ D_{y}\\ D_{z}\\ D_{hyp}
-          \end{array}\right)
-        \times \left(\underline{u} \,\, \underline{v} \,\, \underline{w} \,\, \underline{h} \,\,\right) 
-        \vspace{-1ex}
-      \end{equation}
-    \end{block}  
-%    \column{.5\linewidth}
-    
-    \begin{block}{Why would it work}
-      All the derivative matrices have the same sparsity pattern. In
-      other words, the non zeros are at the same positions in the
-      matrix, only the values of the non zero change.
-    \end{block}
-
-%  \end{columns}
 \end{frame}
 
 \section{Performance Prediction}
+
 
 \begin{frame}
   \frametitle{Is there hope in this technique? Let's model it.}
@@ -413,27 +269,29 @@
   \frametitle{Ok... So will it work? Flop to byte ratio}
 
   \begin{columns}
-    \column{.49\linewidth}
+\only<1>{    \column{.49\linewidth}
     \includegraphics[width=\linewidth]{slides-figures/ICS-figures/flops_to_bytes_best-crop.pdf}
 
     \begin{center}
       Best case\\~
     \end{center}
-
+}
     \column{.49\linewidth}
     \includegraphics[width=\linewidth]{slides-figures/ICS-figures/flops_to_bytes_worst-crop.pdf}
     \begin{center}
       Worst case\\~
     \end{center}
 
-    % \column{.33\linewidth}
-    % \includegraphics[width=\linewidth]{slides-figures/ICS-figures/flops_to_bytes_no_cache-crop.pdf}
-    % \begin{center}
-    %   Worst case \\no cacheline
-    % \end{center}
+\only<2>{
+    \column{.49\linewidth}
+    \includegraphics[width=\linewidth]{slides-figures/ICS-figures/flops_to_bytes_no_cache-crop.pdf}
+    \begin{center}
+      Worst case \\no cacheline
+    \end{center}
+}
   \end{columns}
 
-  \tiny Also, taking cacheline into account makes a large difference (see paper for details).
+%  \tiny Also, taking cacheline into account makes a large difference (see paper for details).
 \end{frame}
 
 \begin{frame}
@@ -444,15 +302,116 @@
 \end{frame}
 
 
-\section{Implementation (4 vectors, 4 matrices)}
+\section{Implementation on Xeon Phi (4 vectors, 4 matrices, Single Precision)}
+
+% \begin{frame}
+%   \frametitle{Intel MIC: Overall Architecture}
+%   \begin{columns}
+%     \column{18em}    
+%     \includegraphics[width=18em]{slides-figures/MIC-overview.pdf}
+%     \column{17em}
+    
+%     \begin{itemize}
+%       \item 8 memory controllers
+%         \begin{itemize}
+%           \item GDDR5
+%           \item 2 channels (32-bit)
+%           \item 5.5GT/s
+%           \item 352GB/s aggregated peak
+%             \begin{itemize}
+%               \item about same as a K40 
+%               \item but you typically get half
+%             \end{itemize}
+%         \end{itemize}
+%       \item 50+ cores
+%         \begin{itemize}
+%           \item 32KB of L1 cache
+%           \item 512KB of L2 cache
+%           \item LRU
+%           \item 8-way associative
+%         \end{itemize}
+%       \item 1 PCI-e controller
+%         \begin{itemize}
+%           \item to the host (2GB/s guaranteed to memory)
+%         \end{itemize}
+%     \end{itemize}
+%   \end{columns}
+
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Core architecture}
+%   \begin{columns}
+%     \column{20em}
+%     \includegraphics[width=20em,height=20em]{slides-figures/MIC-core.png}%from intelsdg  
+%     \column{12em}
+%     \begin{itemize}
+%       \small
+%     \item Clocked at 1Ghz
+%     \item 64-bit
+%     \item 4 hardware threads
+%       \begin{itemize}
+%         \footnotesize
+%         \item no context switching
+%         \item no 2 instructions for the same thread
+%       \end{itemize}
+%     \item A vectorial unit
+%       \begin{itemize}
+%         \footnotesize
+%         \item 512-bit registers
+%         \item 16 SP floats
+%         \item 8 DP floats
+%         \item support FMA
+%       \end{itemize}
+%     \item Two instruction pipes:
+%       \begin{itemize}
+%         \footnotesize
+%         \item 2 ALU ops
+%         \item ALU + MEM ops
+%         \item ALU + VFP ops
+%         \item VFP + MEM ops
+%       \end{itemize}
+%     \item In-order execution
+%     \end{itemize}
+%   \end{columns}
+% \end{frame}
 
 \begin{frame}
-  \frametitle{Observation on the 4 vectors, 4 matrices case}
+  \frametitle{Summary of \MIC}
+
+  \begin{block}{Key points of Xeon Phi SE10P}
+    \begin{itemize}
+    \item Accelerator card (soon main processor with Knights Landing) 
+    \item Large memory bandwidth (peak: 220GB/s)
+    \item 61 cores with mandatory use of hardware threading
+    \item Mandatory use of 512-bit wide SIMD registers: 
+      \begin{itemize} 
+      \item FMA: up to 2x16 SP Flop/c (2x8 DP Flop/c)
+      \item otherwise: up to 16 SP Flop/c (8 DP Flop/c)
+      \end{itemize}
+    \item On a 61-core configuration at 1.05Ghz:
+      \begin{itemize} 
+      \item FMA: 2x16x61x1.05Ghz = 2.048 TFlop/s SP (1.024TFlop/s DP)
+      \item otherwise: 16x61x1.05Ghz = 1.024 GFlop/s SP (512GFlop/s DP)
+      \end{itemize}
+    \end{itemize}
+  \end{block}
+
+  Lots of bandwidth? Fused Multiply Add? Large vector registers?
+
+  Sounds like the perfect system for scientific computing!
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Observations on the 4 vectors, 4 matrices case}
 
   \begin{itemize}
-  \item We aim at over 200Gflop/s in single precision. (\~{}  10\% of peak.)
+  \item We aim at over 200Gflop/s in single precision.
+  \item Peak of Xeon Phi is 2TFlop/s.
+  \item We want 10\% of peak performance.
   \item One instruction in ten must be a Fused Multiply Add.
-  \item The kernel must be fairly instruction efficient
+  \item The kernel must be fairly instruction-efficient.
   \end{itemize}
 \end{frame}
 
@@ -550,7 +509,7 @@
   
     \begin{block}{RBF-FD}
       \centering
-      \includegraphics[width=.6\linewidth]{slides-figures/ICS-figures/kd-tree-3d-norcm-crop.png}
+      \includegraphics[width=.6\linewidth]{slides-figures/ICS-figures/kd-tree-3d-rcm-crop.png}
     \end{block}
     
     \column{.6\linewidth}
@@ -596,6 +555,24 @@
     \item Perform a complete simulation.
     \item GPU?
     \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Thank you}
+
+  \begin{block}{Other related works}
+    \begin{itemize}
+    \item Scalability of graph algorithms on Intel MIC. (MTAAP 2012)
+    \item Sparse Matrix Vector Multiplication on Xeon Phi. (PPAM 2013)
+    \item Vectorization of Graph Centrality on Xeon Phi. (MTAAP 2014)
+    \end{itemize}
+  \end{block}
+  
+  \begin{block}{More information}
+    Contact : esaule@uncc.edu
+
+    Visit: \url{http://webpages.uncc.edu/~esaule}
   \end{block}
 \end{frame}
 
