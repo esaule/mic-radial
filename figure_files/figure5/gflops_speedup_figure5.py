@@ -184,4 +184,3 @@ print ratios_32
 
 labels = [(v+m) for v in ["v1","v4"] for m in ["m1","m4"]]
 
-

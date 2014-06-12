@@ -107,7 +107,7 @@
       
       \begin{itemize}
       \item Radial symmetry.
-      \item RBFs approximate a function $f$ sampled at N distinct location $$f(\vec{r}) = \sum_i w_i \phi(||\vec{r}-\vec{r_i}||)$$ 
+      \item RBFs approximate a function $f$ sampled at $N$ distinct locations $$f(\vec{r}) = \sum_i w_i \phi(||\vec{r}-\vec{r_i}||)$$ 
       \end{itemize}
     \end{block}
     
@@ -118,7 +118,7 @@
       Derivative operators of an RBF are approximated using the $n=32$
       closest sampling points on a sphere of $N=1024$ points.
 
-      The DM has exactly $n$ non zero per row.
+      The DM has exactly $n$ non-zeros per row.
     \end{block}
     
   \end{columns}
@@ -195,11 +195,11 @@
     All the derivative matrices have the same sparsity pattern.
 
     In other words, the non zeros are at the same positions in the
-    matrix, only the values of the non zero change.
+    matrix, only the non-zero values change.
 
     Benefits:
     \begin{itemize}
-    \item Matrix compression: 1 column ID, 4 nonzero value. (gain: 38\%)
+    \item Matrix compression: 1 column ID, 4 non-zero values. (gain: 38\%)
     \item Vector reusage.
     \end{itemize}
   \end{block}
@@ -253,7 +253,7 @@
     
     Data Read (worst case):\\$B_{rT} = s_M + n_c cl \ceil{\frac{n_vb_x}{cl}}$
 
-    Number of floating point operation:\\$O = 2 n_v n_m n_c = 2 n_v n_m n_z n_r$
+    Number of floating point operations:\\$O = 2 n_v n_m n_c = 2 n_v n_m n_z n_r$
   \end{columns}
 
   \begin{center}
